@@ -30,7 +30,7 @@ class StorePostCatalougeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.',
+            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.ssss',
             'canonical.required' => 'Bạn chưa nhập vào ô đường dẫn',
             
         ];
