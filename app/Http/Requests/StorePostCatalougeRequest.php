@@ -24,14 +24,16 @@ class StorePostCatalougeRequest extends FormRequest
         return [
             'name' => 'required',
             'canonical' => 'required',
+            'parent_id'=>'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.ssss',
+            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.',
             'canonical.required' => 'Bạn chưa nhập vào ô đường dẫn',
+            'parent_id.required' => 'Bạn chưa nhập danh mục',
             
         ];
     }
