@@ -9,5 +9,4 @@ interface ProvinceRepositoryInterface extends BaseRepositoryInterface
 {
 
 
-    public function all();
 }

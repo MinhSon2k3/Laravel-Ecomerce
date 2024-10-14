@@ -7,7 +7,7 @@ use App\Repositories\Interfaces\BaseRepositoryInterface;
 
 interface PostCatalougeRepositoryInterface extends BaseRepositoryInterface {
     
-  
+    public function createPivot();
 
      
 }

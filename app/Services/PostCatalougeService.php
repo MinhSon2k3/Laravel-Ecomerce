@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use  App\Services\Interfaces\PostCatalougeServiceInterface;
+use  App\Services\BaseService;
 use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//tương tác với database
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 
-class PostCatalougeService implements PostCatalougeServiceInterface
+class PostCatalougeService  extends BaseService implements PostCatalougeServiceInterface
 {
     protected $postCatalougeRepository;
     public function __construct( PostCatalougeRepository $postCatalougeRepository){
@@ -36,14 +37,18 @@ class PostCatalougeService implements PostCatalougeServiceInterface
         DB::beginTransaction();
         try{
             //$payload lấy dữ liệu từ các input request
-            $payload=$request->only(['parent_id','follow','publish','image']);
+            $payload=$request->only($this->payload());
 
             $payload['user_id']=Auth::id();
-            dd($payload);
            
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $postCatalouge=$this->postCatalougeRepository->create($payload);//$language biến đại diện cho model Language
-            dd($postCatalouge->id);
+            if($postCatalouge->id>0){
+                $payloadLanguage=$request->only($this->payloadLanguage());
+                $payloadLanguage['language_id']=$this->currentLanguage();
+                $payloadLanguage['post_catalouge_id']=$postCatalouge->id;
+                dd($payloadLanguage);
+            }
             DB::commit();
             return true;//thêm dữ liệu thành công
         }
@@ -94,6 +99,28 @@ class PostCatalougeService implements PostCatalougeServiceInterface
             return false;
         }
 
+    }
+
+    private function payload(){
+        return [
+            'parent_id',
+            'follow',
+            'publish',
+            'image',
+            'album',
+        ];
+    }
+
+    private function payloadLanguage(){
+        return [
+            'name',
+            'description',
+            'content',
+            'meta_title',
+            'meta_keyword',
+            'meta_description',
+            'canonical'
+        ];
     }
 
     

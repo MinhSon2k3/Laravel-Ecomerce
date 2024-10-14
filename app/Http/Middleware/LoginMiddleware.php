@@ -17,8 +17,10 @@ class LoginMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        if(Auth::id()>0){
-            return redirect()->route('dashboard.index')->with('error', 'Đã đăng nhập trước đó');
+        if(Auth::id()==null){
+           
+            return redirect()->route('auth.admin');
+           
         }
         return $next($request);
     }

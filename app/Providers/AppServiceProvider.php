@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
         //POST-CATALOUGE
         'App\Services\Interfaces\PostCatalougeServiceInterface'=>'App\Services\PostCatalougeService',
         'App\Repositories\Interfaces\PostCatalougeRepositoryInterface'=>'App\Repositories\PostCatalougeRepository',
+
+        //Base
+        'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',
+        
     ];
     /**
      * Register any application services.

@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\UserCatalougeController;
 use App\Http\Controllers\Backend\PostCatalougeController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Middleware\AuthenticateMiddleware;
+use App\Http\Middleware\LoginMiddleware;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
 
@@ -19,7 +20,7 @@ Route::prefix('auth')->group(function () {
 });
 
 // Backend dashboard route
-Route::middleware(AuthenticateMiddleware::class)->group(function () {
+Route::middleware(LoginMiddleware::class)->group(function () {
     Route::get('/', [DashBoardController::class, 'index'])->name('dashboard.index');
 });
 
