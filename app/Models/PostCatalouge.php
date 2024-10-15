@@ -12,7 +12,7 @@ class PostCatalouge extends Model
     protected $table='post_catalouges';
 
     protected $fillable = [
-        'parentid',
+        'parent_id',
         'lft',
         'rgt',
         'level',
@@ -28,8 +28,10 @@ class PostCatalouge extends Model
     ];
 
     public function languages(){
-        return $this->belongsToMany(Language::class, 'post_catalouge_language' , 'post_catalouge_id', 'language_id')
+        return $this->belongsToMany(Language::class, 'post_catalouge_languages' , 'post_catalouge_id', 'language_id')
         ->withPivot(
+            'post_catalouge_id' ,
+            'language_id',
             'name',
             'description',
             'content',

@@ -14,5 +14,5 @@ class PostCatalougeRepository extends BaseRepository implements PostCatalougeRep
         $this->model = $model;
     }
 
-   
+  
 }

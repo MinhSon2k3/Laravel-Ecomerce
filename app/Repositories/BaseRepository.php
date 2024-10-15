@@ -84,4 +84,9 @@ class BaseRepository implements BaseRepositoryInterface
         Tìm kiếm và trả về một bản ghi với ID là $modelId.*/
     }
 
+    public function createTranslatePivot($model,array $payload=[]){
+     
+        return $model->languages()->attach($model->id,$payload);
+       }
+
 }

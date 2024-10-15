@@ -38,16 +38,18 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         try{
             //$payload lấy dữ liệu từ các input request
             $payload=$request->only($this->payload());
-
             $payload['user_id']=Auth::id();
            
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $postCatalouge=$this->postCatalougeRepository->create($payload);//$language biến đại diện cho model Language
             if($postCatalouge->id>0){
                 $payloadLanguage=$request->only($this->payloadLanguage());
+             
                 $payloadLanguage['language_id']=$this->currentLanguage();
                 $payloadLanguage['post_catalouge_id']=$postCatalouge->id;
-                dd($payloadLanguage);
+              
+                $language=$this->postCatalougeRepository->createTranslatePivot($postCatalouge,$payloadLanguage);
+             
             }
             DB::commit();
             return true;//thêm dữ liệu thành công
