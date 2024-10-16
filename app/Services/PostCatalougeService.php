@@ -30,12 +30,28 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
-       $postCatalouges=$this->postCatalougeRepository->pagination($this->paginateSelect(),$condition,[],['path'=>'post/catalouge/index'],[]); 
+       $postCatalouges=$this->postCatalougeRepository->pagination(
+        $this->paginateSelect(),
+        $condition,
+        [
+            ['post_catalouge_languages as tb2', 'tb2.post_catalouge_id', '=', 'post_catalouges.id']
+
+        ],
+        ['path'=>'post/catalouge/index'],
+        []); 
+     
        return $postCatalouges;
     }
 
     public function paginateSelect(){
-        return ['id','publish','image'];
+        return [
+        'id',
+        'publish',
+        'image',
+        'level',
+        'tb2.name',
+        'tb2.canonical',
+        ];
     }
 
     public function create($request){

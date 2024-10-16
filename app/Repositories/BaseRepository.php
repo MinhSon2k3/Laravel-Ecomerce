@@ -22,7 +22,7 @@ class BaseRepository implements BaseRepositoryInterface
        array $join=[],
        array $extend=[],
        array $relations=[],
-       int $perpage=5,
+       int $perpage=2,
         ){
        $query = $this->model->select($column)->where(function($query) use ($condition){
         if(isset($condition['keyword']) && !empty($condition['keyword'])){
@@ -39,10 +39,14 @@ class BaseRepository implements BaseRepositoryInterface
             $query->withCount($relation);
         }
        }   
-       if(!empty($join)){
-        $query->join(...$join);
+       if(isset($join) && is_array($join) && count($join)){
+        foreach($join as $key =>$val){
+            $query->join($val[0],$val[1],$val[2],$val[3]);
+        }
        }
        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
+       //withQueryString Bảo toàn các tham số query string trên URL trong quá trình phân trang (ví dụ: từ khóa tìm kiếm).
+       //withPath Tùy chỉnh đường dẫn cho phân trang bằng cách ghép APP_URL và đường dẫn được cung cấp trong $extend['path'].
     }
 
     public function create(array $payload =[]){
