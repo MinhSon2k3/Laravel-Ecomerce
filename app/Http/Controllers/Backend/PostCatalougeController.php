@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Classes\Nestedsetbie;
 use Illuminate\Http\Request;
 use App\Models\PostCatalouge;
 use App\Http\Requests\StorePostCatalougeRequest;
-use  App\Services\Interfaces\PostCatalougeServiceInterface as PostCatalougeService;//thao tác create/update/delete/paginate
-use  App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//dùng cho tra cứu theo id
+use App\Services\Interfaces\PostCatalougeServiceInterface as PostCatalougeService;//thao tác create/update/delete/paginate
+use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//dùng cho tra cứu theo id
 
 
 
@@ -23,6 +24,11 @@ class PostCatalougeController  extends Controller
 
     $this->postCatalougeService = $postCatalougeService;
     $this->postCatalougeRepository = $postCatalougeRepository;
+    $this->nestedsetbie=new Nestedsetbie([
+      'table'=>'post_catalouges',
+      'foreignkey'=>'post_catalouge_id',
+      'language_id'=>3
+  ]);
   }
 
   public function index(Request $request)
@@ -47,7 +53,8 @@ class PostCatalougeController  extends Controller
     $seo = [
       'meta_title' => config('apps.postcatalouge')
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo'));
+    $dropdown=$this->nestedsetbie->Dropdown();
+    return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
   }
   //Khi nhấn vào submit create
   public  function store(StorePostCatalougeRequest $request ){ // validate các thông tin cần create

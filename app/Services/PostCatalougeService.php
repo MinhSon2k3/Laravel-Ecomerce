@@ -3,6 +3,7 @@ namespace App\Services;
 
 use  App\Services\Interfaces\PostCatalougeServiceInterface;
 use  App\Services\BaseService;
+use  App\Classes\Nestedsetbie;
 use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//tương tác với database
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,11 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
     protected $postCatalougeRepository;
     public function __construct( PostCatalougeRepository $postCatalougeRepository){
         $this->postCatalougeRepository=$postCatalougeRepository;
+        $this->nestedsetbie=new Nestedsetbie([
+            'table'=>'post_catalouges',
+            'foreignkey'=>'post_catalouge_id',
+            'language_id'=>$this->currentLanguage()
+        ]);
     }
 //userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
 
@@ -41,7 +47,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
             $payload['user_id']=Auth::id();
            
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
-            $postCatalouge=$this->postCatalougeRepository->create($payload);//$language biến đại diện cho model Language
+            $postCatalouge=$this->postCatalougeRepository->create($payload);//$postCatalouge biến đại diện cho model postCatalouge
             if($postCatalouge->id>0){
                 $payloadLanguage=$request->only($this->payloadLanguage());
              
@@ -51,6 +57,10 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
                 $language=$this->postCatalougeRepository->createTranslatePivot($postCatalouge,$payloadLanguage);
              
             }
+            $this->nestedsetbie->Get('level ASC,order ASC');
+            $this->nestedsetbie->Recursive(0,$this->nestedsetbie->Set());
+            $this->nestedsetbie->Action();
+        
             DB::commit();
             return true;//thêm dữ liệu thành công
         }

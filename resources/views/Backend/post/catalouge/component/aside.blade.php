@@ -10,9 +10,9 @@
                                         <span class="text-danger">(*)</span>
                                     </label>
                                     <select name="parent_id" class="form-control setupSelect2">
-                                        <option value="0">Chọn danh mục cha</option>
-                                        <option value="1">root</option>
-                                        <option value="2">....</option>
+                                        @foreach($dropdown as $key =>$val)
+                                            <option value="{{$key}}">{{$val}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

@@ -87,6 +87,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function createTranslatePivot($model,array $payload=[]){
      
         return $model->languages()->attach($model->id,$payload);
+        //Phương thức attach() được sử dụng để thêm một bản ghi mới vào bảng trung gian
        }
 
 }
