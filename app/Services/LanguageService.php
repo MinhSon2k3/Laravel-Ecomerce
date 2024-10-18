@@ -23,7 +23,7 @@ class LanguageService implements LanguageServiceInterface
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
-       $languages=$this->languageRepository->pagination($this->paginateSelect(),$condition,[],['path'=>'language/index'],[]); 
+       $languages=$this->languageRepository->pagination($this->paginateSelect(),$condition,[],['path'=>'language/index'],[],[]); 
        return $languages;
     }
 
@@ -82,7 +82,6 @@ class LanguageService implements LanguageServiceInterface
         try{
             
             $user=$this->languageRepository->destroy($id);
-          
             DB::commit();
             return true;//xóa dữ liệu thành công
         }

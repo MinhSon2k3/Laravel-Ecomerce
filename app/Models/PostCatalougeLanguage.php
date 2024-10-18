@@ -11,6 +11,6 @@ class PostCatalougeLanguage extends Model
     protected $table = 'post_catalouge_languages';
 
     public function post_catalouges(){
-        return $this->belongsTo(PostCatalogue::class, 'post_catalouge_id', 'id');
+        return $this->belongsTo(PostCatalouge::class, 'post_catalouge_id', 'id');
     }
 }

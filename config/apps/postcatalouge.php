@@ -3,21 +3,21 @@
 return [
     'index'=>[ 
         'title'=>'Quản lý Bài viết',
-        'table'=>'Danh sách Bài viết',
+        'table'=>'Danh sách Nhóm bài viết',
     ],
 
     'create'=>[ 
-        'title'=>'Thêm mới bài viết',
+        'title'=>'Thêm mới Nhóm bài viết',
         
     ],
 
     'edit'=>[ 
-        'title'=>'Chỉnh sửa  bài viết',
+        'title'=>'Chỉnh sửa Nhóm bài viết',
         
     ],
     
     'delete'=>[ 
-        'title'=>'Xóa  bài viết',
+        'title'=>'Xóa Nhóm bài viết',
         
     ]
     

@@ -22,7 +22,7 @@
                                 <span style="margin-right: auto !important;">Mô tả SEO</span>
                                 <span class="count_meta-title" style="margin-left: auto !important;">0 kí tự</span>
                             </label>
-                                    <input type="text" name="meta_title" value="{{old('meta_title')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="meta_title" value="{{old('meta_title',($postCatalouge->meta_title) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
                             </div>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                                 <span style="margin-right: auto !important;">Từ khóa SEO</span>
                               
                             </label>
-                                    <input type="text" name="meta_keyword" value="{{old('meta_keyword')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="meta_keyword" value="{{old('meta_keyword',($postCatalouge->meta_keyword) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
                             </div>
                             </div>
                         </div>
@@ -44,7 +44,9 @@
                                 <span style="margin-right: auto !important;">Mô tả SEO</span>
                                 <span class="count_meta-description" style="margin-left: auto !important;">0 kí tự</span>
                             </label>
-                                  <textarea type="text" name="meta_description" value="{{old('meta_description')}}" class="form-control" placeholder="" autocomplete="off"></textarea>
+                                  <textarea type="text" name="meta_description" value="{{old('meta_description',($postCatalouge->meta_description) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    {{old('meta_description',($postCatalouge->meta_description) ?? '')}}
+                                  </textarea>
                             </div>
                             </div>
                         </div>
@@ -56,7 +58,7 @@
                                 <span class="text-danger">(*)</span>
                             </label>
                              <div class="input-wrapper">
-                             <input type="text" name="canonical" value="{{old('canonical')}}" class="form-control" placeholder="" autocomplete="off">
+                             <input type="text" name="canonical" value="{{old('canonical',($postCatalouge->canonical) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
                              <span class="baseUrl">{{env('APP_URL')}}</span>
                              </div>    
                             </div>

@@ -39,7 +39,7 @@ Route::prefix('user')->middleware(AuthenticateMiddleware::class)->group(function
     Route::get('{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('{id}/update', [UserController::class, 'update'])->name('user.update');
     Route::get('{id}/delete', [UserController::class, 'delete'])->name('user.delete');
-    Route::delete('{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::post('{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
 });
 
 // Manage user catalogue
@@ -50,7 +50,7 @@ Route::prefix('user/catalouge')->middleware(AuthenticateMiddleware::class)->grou
     Route::get('{id}/edit', [UserCatalougeController::class, 'edit'])->name('user.catalouge.edit');
     Route::put('{id}/update', [UserCatalougeController::class, 'update'])->name('user.catalouge.update');
     Route::get('{id}/delete', [UserCatalougeController::class, 'delete'])->name('user.catalouge.delete');
-    Route::delete('{id}/destroy', [UserCatalougeController::class, 'destroy'])->name('user.catalouge.destroy');
+    Route::post('{id}/destroy', [UserCatalougeController::class, 'destroy'])->name('user.catalouge.destroy');
 });
 
 // Manage post catalogue
@@ -61,7 +61,7 @@ Route::prefix('post/catalouge')->middleware(AuthenticateMiddleware::class)->grou
     Route::get('{id}/edit', [PostCatalougeController::class, 'edit'])->name('post.catalouge.edit');
     Route::put('{id}/update', [PostCatalougeController::class, 'update'])->name('post.catalouge.update');
     Route::get('{id}/delete', [PostCatalougeController::class, 'delete'])->name('post.catalouge.delete');
-    Route::delete('{id}/destroy', [PostCatalougeController::class, 'destroy'])->name('post.catalouge.destroy');
+    Route::post('{id}/destroy', [PostCatalougeController::class, 'destroy'])->name('post.catalouge.destroy');
 });
 
 // Manage language
@@ -72,5 +72,5 @@ Route::prefix('language')->middleware(AuthenticateMiddleware::class)->group(func
     Route::get('{id}/edit', [LanguageController::class, 'edit'])->name('language.edit');
     Route::put('{id}/update', [LanguageController::class, 'update'])->name('language.update');
     Route::get('{id}/delete', [LanguageController::class, 'delete'])->name('language.delete');
-    Route::delete('{id}/destroy', [LanguageController::class, 'destroy'])->name('language.destroy');
+    Route::post('{id}/destroy', [LanguageController::class, 'destroy'])->name('language.destroy');
 });

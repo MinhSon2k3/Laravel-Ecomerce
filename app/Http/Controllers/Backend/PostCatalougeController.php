@@ -17,6 +17,7 @@ class PostCatalougeController  extends Controller
   protected $postCatalougeService;
   protected $postCatalougeRepository;
 
+
   public function __construct(
     PostCatalougeService $postCatalougeService,
     PostCatalougeRepository $postCatalougeRepository,
@@ -29,6 +30,7 @@ class PostCatalougeController  extends Controller
       'foreignkey'=>'post_catalouge_id',
       'language_id'=>3
   ]);
+    $this->language=$this->currentLanguage();
   }
 
   public function index(Request $request)
@@ -66,13 +68,13 @@ class PostCatalougeController  extends Controller
 
   //edit
   public function edit($id){
-    $postCatalouge = $this->postCatalougeRepository->findById($id);
-
+    $postCatalouge = $this->postCatalougeRepository->getPostCatalougeById($id,$this->language);
+    $dropdown=$this->nestedsetbie->Dropdown();
     $template = 'backend.post.catalouge.edit';
     $seo = [
         'meta_title' => config('apps.postcatalouge')
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo','postCatalouge'));
+    return view('backend.dashboard.layout', compact('template', 'seo','postCatalouge','dropdown'));
 }
   public function update($id, UpdateLanguageRequest $request){
     if($this->postCatalougeService->update($id,$request)){

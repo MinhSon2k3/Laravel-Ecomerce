@@ -22,7 +22,8 @@ class BaseRepository implements BaseRepositoryInterface
        array $join=[],
        array $extend=[],
        array $relations=[],
-       int $perpage=2,
+       array $orderBy=[],
+       int $perpage=5,
         ){
        $query = $this->model->select($column)->where(function($query) use ($condition){
         if(isset($condition['keyword']) && !empty($condition['keyword'])){
@@ -43,6 +44,9 @@ class BaseRepository implements BaseRepositoryInterface
         foreach($join as $key =>$val){
             $query->join($val[0],$val[1],$val[2],$val[3]);
         }
+       }
+       if(isset($orderBy) && !empty($orderBy)){
+            $query->orderBy($orderBy[0],$orderBy[1]);
        }
        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
        //withQueryString Bảo toàn các tham số query string trên URL trong quá trình phân trang (ví dụ: từ khóa tìm kiếm).

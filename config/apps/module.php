@@ -26,6 +26,10 @@ return [
                     'title' => 'Quản lý nhóm bài viết',
                     'route' => 'post/catalouge/index'
                 ],
+                [
+                    'title' => 'Quản lý bài viết',
+                    'route' => 'post/post/index'
+                ],
                
             ]
         ],

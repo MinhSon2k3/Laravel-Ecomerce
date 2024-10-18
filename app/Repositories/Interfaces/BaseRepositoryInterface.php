@@ -27,6 +27,7 @@ interface BaseRepositoryInterface
         array $join=[],
         array $extend=[],
         array $relations=[],
+        array $orderBy=[],
         int $perpage,
     );
     public function createTranslatePivot($model,array $payload=[]);

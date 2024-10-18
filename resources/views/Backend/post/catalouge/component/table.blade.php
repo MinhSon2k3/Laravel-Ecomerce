@@ -18,7 +18,7 @@
                                         <input type="checkbox" value="{{ $postCatalouge->id }}" id="" class="input-check checkBoxItem">
                                         </td>
                                         <td>
-                                            <div class="user-item"> {{$postCatalouge->name}} </div>  
+                                            <div class="user-item"> {{ str_repeat('|----', (($postCatalouge->level > 0)?($postCatalouge->level - 1):0)).$postCatalouge->name }} </div>  
                                         </td>
                                         <td class="text-center js-switch-{{$postCatalouge->id}}">
                                         <input type="checkbox" value="{{$postCatalouge->publish}}" class="js-switch status" data-field="publish" 

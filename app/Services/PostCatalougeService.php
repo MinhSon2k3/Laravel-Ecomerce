@@ -38,7 +38,11 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
 
         ],
         ['path'=>'post/catalouge/index'],
-        []); 
+        [],
+        [
+            'post_catalouges.lft','Asc'
+        ],
+    ); 
      
        return $postCatalouges;
     }
@@ -49,6 +53,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         'publish',
         'image',
         'level',
+        'order',
         'tb2.name',
         'tb2.canonical',
         ];
