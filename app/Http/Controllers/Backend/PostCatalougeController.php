@@ -7,6 +7,7 @@ use App\Classes\Nestedsetbie;
 use Illuminate\Http\Request;
 use App\Models\PostCatalouge;
 use App\Http\Requests\StorePostCatalougeRequest;
+use App\Http\Requests\UpdatePostCatalougeRequest;
 use App\Services\Interfaces\PostCatalougeServiceInterface as PostCatalougeService;//thao tác create/update/delete/paginate
 use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//dùng cho tra cứu theo id
 
@@ -76,7 +77,7 @@ class PostCatalougeController  extends Controller
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','postCatalouge','dropdown'));
 }
-  public function update($id, UpdateLanguageRequest $request){
+  public function update($id, UpdatePostCatalougeRequest $request){
     if($this->postCatalougeService->update($id,$request)){
       return redirect()->route('post.catalouge.index')->with('success', 'Chỉnh sửa bài viết thành công');
     }

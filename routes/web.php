@@ -37,7 +37,7 @@ Route::prefix('user')->middleware(AuthenticateMiddleware::class)->group(function
     Route::get('/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/store', [UserController::class, 'store'])->name('user.store');
     Route::get('{id}/edit', [UserController::class, 'edit'])->name('user.edit');
-    Route::put('{id}/update', [UserController::class, 'update'])->name('user.update');
+    Route::post('{id}/update', [UserController::class, 'update'])->name('user.update');
     Route::get('{id}/delete', [UserController::class, 'delete'])->name('user.delete');
     Route::post('{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
 });
@@ -48,7 +48,7 @@ Route::prefix('user/catalouge')->middleware(AuthenticateMiddleware::class)->grou
     Route::get('/create', [UserCatalougeController::class, 'create'])->name('user.catalouge.create');
     Route::post('/store', [UserCatalougeController::class, 'store'])->name('user.catalouge.store');
     Route::get('{id}/edit', [UserCatalougeController::class, 'edit'])->name('user.catalouge.edit');
-    Route::put('{id}/update', [UserCatalougeController::class, 'update'])->name('user.catalouge.update');
+    Route::post('{id}/update', [UserCatalougeController::class, 'update'])->name('user.catalouge.update');
     Route::get('{id}/delete', [UserCatalougeController::class, 'delete'])->name('user.catalouge.delete');
     Route::post('{id}/destroy', [UserCatalougeController::class, 'destroy'])->name('user.catalouge.destroy');
 });
@@ -59,7 +59,7 @@ Route::prefix('post/catalouge')->middleware(AuthenticateMiddleware::class)->grou
     Route::get('/create', [PostCatalougeController::class, 'create'])->name('post.catalouge.create');
     Route::post('/store', [PostCatalougeController::class, 'store'])->name('post.catalouge.store');
     Route::get('{id}/edit', [PostCatalougeController::class, 'edit'])->name('post.catalouge.edit');
-    Route::put('{id}/update', [PostCatalougeController::class, 'update'])->name('post.catalouge.update');
+    Route::post('{id}/update', [PostCatalougeController::class, 'update'])->name('post.catalouge.update');
     Route::get('{id}/delete', [PostCatalougeController::class, 'delete'])->name('post.catalouge.delete');
     Route::post('{id}/destroy', [PostCatalougeController::class, 'destroy'])->name('post.catalouge.destroy');
 });
@@ -70,7 +70,7 @@ Route::prefix('language')->middleware(AuthenticateMiddleware::class)->group(func
     Route::get('/create', [LanguageController::class, 'create'])->name('language.create');
     Route::post('/store', [LanguageController::class, 'store'])->name('language.store');
     Route::get('{id}/edit', [LanguageController::class, 'edit'])->name('language.edit');
-    Route::put('{id}/update', [LanguageController::class, 'update'])->name('language.update');
+    Route::post('{id}/update', [LanguageController::class, 'update'])->name('language.update');
     Route::get('{id}/delete', [LanguageController::class, 'delete'])->name('language.delete');
     Route::post('{id}/destroy', [LanguageController::class, 'destroy'])->name('language.destroy');
 });

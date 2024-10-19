@@ -10,9 +10,33 @@
                                         <span class="text-danger">(*)</span>
                                     </label>
                                     <select name="parent_id" class="form-control setupSelect2">
-                                        @foreach($dropdown as $key =>$val)
-                                            <option value="{{$key}}">{{$val}}</option>
-                                        @endforeach
+                                 @php
+    $currentId = $postCatalouge->id ?? null;
+    $currentParentId = $postCatalouge->parent_id ?? null;
+@endphp
+
+@foreach($dropdown as $key => $val)
+    @php
+        $isSelected = false;
+        if ($currentId === null) {
+            // Trường hợp tạo mới
+            $isSelected = ($key == 0); // Chọn Root (giả sử key 0 là Root)
+        } else {
+            // Trường hợp chỉnh sửa
+            $current = $currentId;
+            while($current != 0) {
+                if($current == $key) {
+                    $isSelected = true;
+                    break;
+                }
+                $current = $postCatalouge->where('id', $current)->value('parent_id');
+            }
+        }
+    @endphp
+    <option value="{{ $key }}" {{ $isSelected ? 'selected' : '' }}>
+        {{ $val }}
+    </option>
+@endforeach
                                     </select>
                                 </div>
                             </div>

@@ -5,13 +5,13 @@
                 <div class="ibox-content">
                     <div class="seo-container">
                         <div class="h3 meta-title">
-                                Bạn chưa có tiêu đề
+                                {{old('meta_title',($postCatalouge->meta_title) ?? 'Bạn chưa có tiêu đề')}}
                         </div>
                         <div class="canonical">
-                              Bạn chưa có đường dẫn
+                              {{old('canonical',($postCatalouge->canonical) ?? 'Bạn chưa có đường dẫn')}}
                         </div>
                         <div class="meta-description">
-                                 Bạn chưa có mô tả 
+                                 {{old('meta_description',($postCatalouge->meta_description) ?? ' Bạn chưa có mô tả ')}}
                         </div>
                     </div>
                     <div class="seo-wrapper">
