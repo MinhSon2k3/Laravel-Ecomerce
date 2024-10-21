@@ -50,6 +50,11 @@ class PostCatalouge extends Model
 
     public static function isNodeCheck($id=0){
       $postCatalouge=PostCatalouge::find($id);
-      dd($postCatalouge);
+      if($postCatalouge->rgt - $postCatalouge->lft !=1){
+        return false;
+      }
+      else{
+        return true;
+      }
     }
 }

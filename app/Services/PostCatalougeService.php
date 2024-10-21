@@ -127,8 +127,10 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         DB::beginTransaction();
         try{
             
-            $user=$this->postCatalougeRepository->destroy($id);
-          
+            $postCatalouge=$this->postCatalougeRepository->destroy($id);
+            $this->nestedsetbie->Get('level ASC, order ASC');
+            $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
+            $this->nestedsetbie->Action();
             DB::commit();
             return true;//xóa dữ liệu thành công
         }

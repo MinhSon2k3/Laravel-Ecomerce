@@ -20,5 +20,9 @@ class checkPostCatalougeChildrenRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
        $flag=PostCatalouge::isNodeCheck($this->id);
+
+       if($flag==false){
+            $fail('Không thể xóa do còn danh mục con');
+       }
     }
 }
