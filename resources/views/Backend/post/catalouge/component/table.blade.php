@@ -22,7 +22,7 @@
                                         </td>
                                         <td class="text-center js-switch-{{$postCatalouge->id}}">
                                         <input type="checkbox" value="{{$postCatalouge->publish}}" class="js-switch status" data-field="publish" 
-                                               data-model="Language" data-modelId="{{$postCatalouge->id}}" {{ ($postCatalouge->publish==1) ? 'checked' : ''}} />
+                                               data-model="PostCatalouge" data-modelId="{{$postCatalouge->id}}" {{ ($postCatalouge->publish==1) ? 'checked' : ''}} />
                                         </td>
                                         <td class="text-center">
                                         <a class="btn btn-success"href="{{ route('post.catalouge.edit', ['id' => $postCatalouge->id]) }}"><i class="fa fa-edit"></i></a>

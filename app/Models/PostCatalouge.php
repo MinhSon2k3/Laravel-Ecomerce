@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class PostCatalouge extends Model
 {  
@@ -44,5 +45,11 @@ class PostCatalouge extends Model
 
     public function post_catalouge_languages(){
         return $this->hasMany(PostCatalougeLanguage::class,'post_catalouge_id','id');
+    }
+
+
+    public static function isNodeCheck($id=0){
+      $postCatalouge=PostCatalouge::find($id);
+      dd($postCatalouge);
     }
 }

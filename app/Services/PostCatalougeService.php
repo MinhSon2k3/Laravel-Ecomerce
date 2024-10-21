@@ -97,15 +97,20 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
 
         DB::beginTransaction();
         try{
-            //$payload lấy dữ liệu từ các input request
-            $payload=$request->input();
-           
-           
-         
-            //lấy dữ liệu từ payload và $id để thêm vào database bằng update() từ userCatalougeRepository
-            $user=$this->postCatalougeRepository->update($id,$payload);
-          
-           
+            $postCatalouge = $this->postCatalougeRepository->findById($id);
+            $payload=$request->only($this->payload());
+            $flag = $this->postCatalougeRepository->update($id, $payload);
+            if($flag == TRUE){
+                $payloadLanguage=$request->only($this->payloadLanguage());
+                $payloadLanguage['language_id']=$this->currentLanguage();
+                $payloadLanguage['post_catalouge_id']=$id;
+                $postCatalouge->languages()->detach([$payloadLanguage['language_id'],$id]);
+                $response = $this->postCatalougeRepository->createTranslatePivot($postCatalouge, $payloadLanguage);
+                $this->nestedsetbie->Get('level ASC, order ASC');
+                $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
+                $this->nestedsetbie->Action();
+
+            }
             DB::commit();
             return true;//sửa dữ liệu thành công
         }
@@ -116,6 +121,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         }
 
     }
+    
     public function destroy($id){
 
         DB::beginTransaction();
@@ -156,6 +162,20 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         ];
     }
 
-    
+    public function updateStatus($post=[]){
+        DB::beginTransaction();
+        try{
+            
+            $payload[$post['field']] =(($post['value']==1)?2 :1 ) ;//nếu value=1 gán bằng  2 còn lại =1
+            $postCatalouge=$this->postCatalougeRepository->update($post['modelId'],$payload);
+            DB::commit();
+            return true;
+        }
+        catch(\Exception $e){
+            DB::rollback(); 
+            dd($e->getMessage());
+            return false;   
+        }
+    }
 
 }

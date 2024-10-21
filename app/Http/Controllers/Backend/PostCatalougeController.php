@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\PostCatalouge;
 use App\Http\Requests\StorePostCatalougeRequest;
 use App\Http\Requests\UpdatePostCatalougeRequest;
+use App\Http\Requests\DeletePostCatalougeRequest;
 use App\Services\Interfaces\PostCatalougeServiceInterface as PostCatalougeService;//thao tác create/update/delete/paginate
 use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//dùng cho tra cứu theo id
 
@@ -85,15 +86,15 @@ class PostCatalougeController  extends Controller
   }
 
   public function delete($id){
-    $postCatalouge = $this->postCatalougeRepository->findById($id);  
+    $postCatalouge = $this->postCatalougeRepository->getPostCatalougeById($id,$this->language);
     $template = 'backend.post.catalouge.delete';
     $seo = [
-        'meta_title' => config('apps.langpostcatalougeuage')
+        'meta_title' => config('apps.postcatalouge')
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','postCatalouge'));
 }
 
-public function destroy($id){
+public function destroy($id,DeletePostCatalougeRequest $request){
   if($this->postCatalougeService->destroy($id)){
     return redirect()->route('post.catalouge.index')->with('success', 'Xóa bài viết thành công');
   }

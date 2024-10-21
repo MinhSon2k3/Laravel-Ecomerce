@@ -29,7 +29,7 @@
         </div>
         
         <div class="text-right">
-            <button class="btn btn-primary" type="submit" name="send" value="">Thêm bài viết</button>
+            <button class="btn btn-primary" type="submit" name="send" value="">Chỉnh sửa bài viết</button>
         </div>
     </div>
 
