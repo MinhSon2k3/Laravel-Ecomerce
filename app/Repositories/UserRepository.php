@@ -36,6 +36,10 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
               
                 $query->where('publish','=',$condition['publish']);
             }
+            if(isset($condition['user_catalouge_id']) && $condition['user_catalouge_id']!=0){
+              
+                $query->where('user_catalouge_id','=',$condition['user_catalouge_id']);
+            }
             return $query;
         })->with('user_catalouge');//lấy thông tin từ model user_catalouges của public function user_catalouge() của model User để show chung
         if(!empty($join)){

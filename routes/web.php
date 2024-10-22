@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\DashBoardController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserCatalougeController;
 use App\Http\Controllers\Backend\PostCatalougeController;
+use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Middleware\AuthenticateMiddleware;
 use App\Http\Middleware\LoginMiddleware;
@@ -63,6 +64,18 @@ Route::prefix('post/catalouge')->middleware(AuthenticateMiddleware::class)->grou
     Route::get('{id}/delete', [PostCatalougeController::class, 'delete'])->name('post.catalouge.delete');
     Route::post('{id}/destroy', [PostCatalougeController::class, 'destroy'])->name('post.catalouge.destroy');
 });
+
+// Manage post 
+Route::prefix('post')->middleware(AuthenticateMiddleware::class)->group(function () {
+    Route::get('/index', [PostController::class, 'index'])->name('post.index');
+    Route::get('/create', [PostController::class, 'create'])->name('post.create');
+    Route::post('/store', [PostController::class, 'store'])->name('post.store');
+    Route::get('{id}/edit', [PostController::class, 'edit'])->name('post.edit');
+    Route::post('{id}/update', [PostController::class, 'update'])->name('post.update');
+    Route::get('{id}/delete', [PostController::class, 'delete'])->name('post.delete');
+    Route::post('{id}/destroy', [PostController::class, 'destroy'])->name('post.destroy');
+});
+
 
 // Manage language
 Route::prefix('language')->middleware(AuthenticateMiddleware::class)->group(function () {

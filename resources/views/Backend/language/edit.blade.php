@@ -1,8 +1,7 @@
 @include('backend.dashboard.component.breadcrumb',['title'=>$seo['meta_title']['edit']['title']])
 
-<form action="{{ route('language.update', ['id' => $language->id]) }}" method="post" class="box">
+<form action="{{ route('language.update', ['id' => $language->id]) }}" method="POST" class="box">
     @csrf
-    @method('PUT')
     <div class="wrapper wrapper-content aminated fadeInRight">
         <div class="row">
             <div class="col-lg-5">
@@ -24,7 +23,7 @@
                                     <label for="" class="control-lable text-right">Tên ngôn ngữ
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="name" value="{{old('name',($language->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="name" value="{{old('name',($language->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -32,7 +31,7 @@
                                     <label for="" class="control-lable text-right">Canonical
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="canonical" value="{{old('canonical',($language->canonical) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="canonical" value="{{old('canonical',($language->canonical) ?? '')}}" class="form-control" placeholder="" autocomplete="off" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -40,14 +39,14 @@
                                     <label for="" class="control-lable text-right">Mô tả
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="description" value="{{old('description',($language->description) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="description" value="{{old('description',($language->description) ?? '')}}" class="form-control" placeholder="" autocomplete="off" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                             <div class="form-row">
                                     <label for="" class="control-lable text-right">Ảnh đại diện
                                     </label>
-                                    <input type="text" name="image" value="{{old('image',($language->image) ?? '')}}" class="form-control input-image" placeholder="" autocomplete="off" data-type="Images">
+                                    <input type="text" name="image" value="{{old('image',($language->image) ?? '')}}" class="form-control input-image" placeholder="" autocomplete="off" data-type="Images" required>
                                 </div>
                             </div>
                     </div>

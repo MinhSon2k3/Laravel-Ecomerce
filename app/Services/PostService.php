@@ -1,10 +1,10 @@
 <?php
 namespace App\Services;
 
-use  App\Services\Interfaces\PostCatalougeServiceInterface;
+use  App\Services\Interfaces\PostServiceInterface;
 use  App\Services\BaseService;
 use  App\Classes\Nestedsetbie;
-use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//tương tác với database
+use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;//tương tác với database
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -15,14 +15,14 @@ use Illuminate\Support\Str;
 
 
 
-class PostCatalougeService  extends BaseService implements PostCatalougeServiceInterface
+class PostService  extends BaseService implements PostServiceInterface
 {
-    protected $postCatalougeRepository;
-    public function __construct( PostCatalougeRepository $postCatalougeRepository){
-        $this->postCatalougeRepository=$postCatalougeRepository;
+    protected $postRepository;
+    public function __construct( PostRepository $postRepository){
+        $this->postRepository=$postRepository;
         $this->nestedsetbie=new Nestedsetbie([
-            'table'=>'post_catalouges',
-            'foreignkey'=>'post_catalouge_id',
+            'table'=>'posts',
+            'foreignkey'=>'post_id',
             'language_id'=>$this->currentLanguage()
         ]);
     }
@@ -31,21 +31,21 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
-       $postCatalouges=$this->postCatalougeRepository->pagination(
+       $posts=$this->postRepository->pagination(
         $this->paginateSelect(),
         $condition,
         [
-            ['post_catalouge_languages as tb2', 'tb2.post_catalouge_id', '=', 'post_catalouges.id']
+            ['post_languages as tb2', 'tb2.post_id', '=', 'posts.id']
 
         ],
-        ['path'=>'post/catalouge/index'],
+        ['path'=>'post//index'],
         [],
         [
-            'post_catalouges.lft','Asc'
+            'posts.id','Asc'
         ],
     ); 
      
-       return $postCatalouges;
+       return $posts;
     }
 
     public function paginateSelect(){
@@ -69,14 +69,14 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
             $payload['user_id']=Auth::id();
            
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
-            $postCatalouge=$this->postCatalougeRepository->create($payload);//$postCatalouge biến đại diện cho model postCatalouge
-            if($postCatalouge->id>0){
+            $post=$this->postRepository->create($payload);//$post biến đại diện cho model post
+            if($post->id>0){
                 $payloadLanguage=$request->only($this->payloadLanguage());
              
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalouge_id']=$postCatalouge->id;
+                $payloadLanguage['post__id']=$post->id;
               
-                $language=$this->postCatalougeRepository->createTranslatePivot($postCatalouge,$payloadLanguage);
+                $language=$this->postRepository->createTranslatePivot($post,$payloadLanguage);
              
             }
             $this->nestedsetbie->Get('level ASC,order ASC');
@@ -98,16 +98,16 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
 
         DB::beginTransaction();
         try{
-            $postCatalouge = $this->postCatalougeRepository->findById($id);
+            $post = $this->postRepository->findById($id);
             $payload=$request->only($this->payload());
-            $flag = $this->postCatalougeRepository->update($id, $payload);
+            $flag = $this->postRepository->update($id, $payload);
             if($flag == TRUE){
                 $payloadLanguage=$request->only($this->payloadLanguage());
                 $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalouge_id']=$id;
-                $postCatalouge->languages()->detach([$payloadLanguage['language_id'],$id]);
-                $response = $this->postCatalougeRepository->createTranslatePivot($postCatalouge, $payloadLanguage);
+                $payloadLanguage['post__id']=$id;
+                $post->languages()->detach([$payloadLanguage['language_id'],$id]);
+                $response = $this->postRepository->createTranslatePivot($post, $payloadLanguage);
                 $this->nestedsetbie->Get('level ASC, order ASC');
                 $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
                 $this->nestedsetbie->Action();
@@ -128,7 +128,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         DB::beginTransaction();
         try{
             
-            $postCatalouge=$this->postCatalougeRepository->destroy($id);
+            $post=$this->postRepository->destroy($id);
             $this->nestedsetbie->Get('level ASC, order ASC');
             $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
             $this->nestedsetbie->Action();
@@ -169,7 +169,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         try{
             
             $payload[$post['field']] =(($post['value']==1)?2 :1 ) ;//nếu value=1 gán bằng  2 còn lại =1
-            $postCatalouge=$this->postCatalougeRepository->update($post['modelId'],$payload);
+            $post=$this->postRepository->update($post['modelId'],$payload);
             DB::commit();
             return true;
         }

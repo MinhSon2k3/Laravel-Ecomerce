@@ -28,7 +28,7 @@ return [
                 ],
                 [
                     'title' => 'Quản lý bài viết',
-                    'route' => 'post/post/index'
+                    'route' => 'post/index'
                 ],
                
             ]

@@ -2,7 +2,7 @@
 
 return [
     'index'=>[ 
-        'title'=>'Quản lý Bài viết',
+        'title'=>'Quản lý nhóm bài viết',
         'table'=>'Danh sách Nhóm bài viết',
     ],
 

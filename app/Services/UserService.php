@@ -22,6 +22,7 @@ class UserService implements UserServiceInterface
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
+       $condition['user_catalouge_id'] = $request->integer('user_catalouge_id');
      
        $users=$this->userRepository->pagination($this->paginateSelect(),$condition,[],['path'=>'user/index']); 
        return $users;
@@ -29,7 +30,7 @@ class UserService implements UserServiceInterface
     }
 
     public function paginateSelect(){
-        return ['id','email','name','phone','address','publish','user_catalouge_id'];
+        return ['id','email','name','phone','address','publish','user_catalouge_id'];    
     }
 
     public function create($request){

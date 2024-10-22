@@ -11,9 +11,6 @@ class AppServiceProvider extends ServiceProvider
         //USER
         'App\Services\Interfaces\UserServiceInterface'=>'App\Services\UserService',
         'App\Repositories\Interfaces\UserRepositoryInterface'=>'App\Repositories\UserRepository',
-         //LANGUAGE
-        'App\Services\Interfaces\LanguageServiceInterface'=>'App\Services\LanguageService',
-        'App\Repositories\Interfaces\LanguageRepositoryInterface'=>'App\Repositories\LanguageRepository',
          //USER-CATALOGUE  
         'App\Services\Interfaces\UserCatalougeServiceInterface'=>'App\Services\UserCatalougeService',
         'App\Repositories\Interfaces\UserCatalougeRepositoryInterface'=>'App\Repositories\UserCatalougeRepository',
@@ -23,6 +20,12 @@ class AppServiceProvider extends ServiceProvider
         //POST-CATALOUGE
         'App\Services\Interfaces\PostCatalougeServiceInterface'=>'App\Services\PostCatalougeService',
         'App\Repositories\Interfaces\PostCatalougeRepositoryInterface'=>'App\Repositories\PostCatalougeRepository',
+        //POST
+        'App\Services\Interfaces\PostServiceInterface'=>'App\Services\PostService',
+        'App\Repositories\Interfaces\PostRepositoryInterface'=>'App\Repositories\PostRepository',
+         //LANGUAGE
+         'App\Services\Interfaces\LanguageServiceInterface'=>'App\Services\LanguageService',
+         'App\Repositories\Interfaces\LanguageRepositoryInterface'=>'App\Repositories\LanguageRepository',
 
         //Base
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',

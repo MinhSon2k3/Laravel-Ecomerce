@@ -28,6 +28,10 @@ class PostCatalouge extends Model
       
     ];
 
+    public function posts(){
+      return $this->belongsToMany(Post::class, 'post_catalouge_post' , 'id', 'post_catalouge_id');
+    }
+
     public function languages(){
         return $this->belongsToMany(Language::class, 'post_catalouge_languages' , 'post_catalouge_id', 'language_id')
         ->withPivot(
