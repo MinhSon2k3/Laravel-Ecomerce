@@ -8,7 +8,7 @@
         </ul>
     </div>
 @endif
-<form action="{{route('post.catalouge.update', ['id' => $postCatalouge->id])}}" method="post" class="box">
+<form action="{{route('post.update', ['id' => $post->id])}}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content aminated fadeInRight">
         <div class="row">

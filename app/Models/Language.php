@@ -24,7 +24,7 @@ class Language extends Model
 
 
     public function languages(){
-        return $this->belongsToMany(PostCatalouge::class, 'post_catalouge_language' , 'post_catalouge_id', 'language_id')
+        return $this->belongsToMany(PostCatalouge::class, 'post_catalouge_languages' , 'post_catalouge_id', 'language_id')
         ->withPivot(
             'name',
             'description',

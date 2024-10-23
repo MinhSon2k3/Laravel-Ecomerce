@@ -8,7 +8,7 @@
         </ul>
     </div>
 @endif
-<form action="{{ route('post.catalouge.destroy', ['id' => $postCatalouge->id]) }}" method="post" class="box">
+<form action="{{ route('post.destroy', ['id' => $post->id]) }}" method="post" class="box">
     @csrf
    
     <div class="wrapper wrapper-content aminated fadeInRight">
@@ -16,7 +16,7 @@
             <div class="col-lg-5">
                 <div class="panel-head">
                     <div class="panel-title">
-                        <p> <strong>Bạn có chắc muốn xóa nhóm bài viết :</strong> {{$postCatalouge->name}}</p>
+                        <p> <strong>Bạn có chắc muốn xóa nhóm bài viết :</strong> {{$post->name}}</p>
                         <label for="" class="control-lable text-right">Lưu ý
                             <span class="text-danger">Không thể khôi phục khi xóa</span>
                         </label>

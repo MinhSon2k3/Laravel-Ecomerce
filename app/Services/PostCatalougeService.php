@@ -78,6 +78,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
               
                 $language=$this->postCatalougeRepository->createTranslatePivot($postCatalouge,$payloadLanguage);
              
+             
             }
             $this->nestedsetbie->Get('level ASC,order ASC');
             $this->nestedsetbie->Recursive(0,$this->nestedsetbie->Set());

@@ -13,35 +13,32 @@ class Post extends Model
     protected $table='posts';
 
     protected $fillable = [
-        'post_catalouge_id',
-        'image',
-        'icon',
+       'image',
         'album',
         'publish',
+        'follow',
         'order',
         'user_id',
-        'follow',
+        'post_catalouge_id',
   
       
     ];
 
     public function languages(){
-        return $this->belongsToMany(Language::class, 'post_languages' , 'language_id', 'id')
+        return $this->belongsToMany(Language::class, 'post_languages' , 'post_id', 'language_id')
         ->withPivot(
-            'post_catalouge_id' ,
-            'language_id',
             'name',
-            'description',
-            'content',
+            'canonical',
             'meta_title',
             'meta_keyword',
             'meta_description',
-            'canonical'
+            'description',
+            'content'
         )->withTimestamps();
     }
 
     public function post_catalouges(){
-        return $this->hasMany(PostCatalouge::class,'post_catalouge_posts','post_catalouge_id','id');
+        return $this->belongsToMany(PostCatalouge::class,'post_catalouge_posts','post_id','post_catalouge_id');
     }
 
 }

@@ -31,6 +31,8 @@ interface BaseRepositoryInterface
         int $perpage,
     );
     public function createTranslatePivot($model,array $payload=[]);
+
+    public function createPivot($model,array $payload=[],string $relation='');
       
 
 }

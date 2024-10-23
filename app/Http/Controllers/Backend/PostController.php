@@ -28,8 +28,8 @@ class PostController  extends Controller
     $this->postService = $postService;
     $this->postRepository = $postRepository;
     $this->nestedsetbie=new Nestedsetbie([
-      'table'=>'posts',
-      'foreignkey'=>'post_id',
+      'table'=>'post_catalouges',
+      'foreignkey'=>'post_catalouge_id',
       'language_id'=>3
   ]);
     $this->language=$this->currentLanguage();
@@ -58,7 +58,6 @@ class PostController  extends Controller
       'meta_title' => config('apps.post')
     ];
     $dropdown=$this->nestedsetbie->Dropdown();
-    dd($dropdown);
     return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
   }
   //Khi nhấn vào submit create
@@ -73,7 +72,7 @@ class PostController  extends Controller
   public function edit($id){
     $post = $this->postRepository->getPostById($id,$this->language);
     $dropdown=$this->nestedsetbie->Dropdown();
-    $template = 'backend.post.edit';
+    $template = 'backend.post.post.edit';
     $seo = [
         'meta_title' => config('apps.post')
     ];
@@ -88,7 +87,7 @@ class PostController  extends Controller
 
   public function delete($id){
     $post = $this->postRepository->getPostById($id,$this->language);
-    $template = 'backend.post.delete';
+    $template = 'backend.post.post.delete';
     $seo = [
         'meta_title' => config('apps.post')
     ];

@@ -20,11 +20,7 @@ class PostService  extends BaseService implements PostServiceInterface
     protected $postRepository;
     public function __construct( PostRepository $postRepository){
         $this->postRepository=$postRepository;
-        $this->nestedsetbie=new Nestedsetbie([
-            'table'=>'posts',
-            'foreignkey'=>'post_id',
-            'language_id'=>$this->currentLanguage()
-        ]);
+       
     }
 //userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
 
@@ -41,7 +37,7 @@ class PostService  extends BaseService implements PostServiceInterface
         ['path'=>'post//index'],
         [],
         [
-            'posts.id','Asc'
+            'posts.id','Desc'
         ],
     ); 
      
@@ -67,23 +63,21 @@ class PostService  extends BaseService implements PostServiceInterface
             //$payload lấy dữ liệu từ các input request
             $payload=$request->only($this->payload());
             $payload['user_id']=Auth::id();
-           
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $post=$this->postRepository->create($payload);//$post biến đại diện cho model post
             if($post->id>0){
                 $payloadLanguage=$request->only($this->payloadLanguage());
-             
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post__id']=$post->id;
+                $payloadLanguage['post_id']=$post->id;
+                $language=$this->postRepository->createPivot($post,$payloadLanguage,'languages');
+                $catalouge=$this->catalouge($request);
+                $post->post_catalouges()->sync($catalouge);
               
-                $language=$this->postRepository->createTranslatePivot($post,$payloadLanguage);
-             
+               
             }
-            $this->nestedsetbie->Get('level ASC,order ASC');
-            $this->nestedsetbie->Recursive(0,$this->nestedsetbie->Set());
-            $this->nestedsetbie->Action();
         
             DB::commit();
+
             return true;//thêm dữ liệu thành công
         }
         catch(\Exception $e){
@@ -107,10 +101,7 @@ class PostService  extends BaseService implements PostServiceInterface
                 $payloadLanguage['language_id']=$this->currentLanguage();
                 $payloadLanguage['post__id']=$id;
                 $post->languages()->detach([$payloadLanguage['language_id'],$id]);
-                $response = $this->postRepository->createTranslatePivot($post, $payloadLanguage);
-                $this->nestedsetbie->Get('level ASC, order ASC');
-                $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
-                $this->nestedsetbie->Action();
+                $response = $this->postRepository->createPivot($post, $payloadLanguage);
             }
             DB::commit();
             return true;//sửa dữ liệu thành công
@@ -129,9 +120,6 @@ class PostService  extends BaseService implements PostServiceInterface
         try{
             
             $post=$this->postRepository->destroy($id);
-            $this->nestedsetbie->Get('level ASC, order ASC');
-            $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
-            $this->nestedsetbie->Action();
             DB::commit();
             return true;//xóa dữ liệu thành công
         }
@@ -145,7 +133,7 @@ class PostService  extends BaseService implements PostServiceInterface
 
     private function payload(){
         return [
-            'parent_id',
+            'post_catalouge_id',
             'follow',
             'publish',
             'image',
@@ -162,6 +150,12 @@ class PostService  extends BaseService implements PostServiceInterface
             'meta_description',
             'canonical'
         ];
+    }
+
+    public function catalouge($request){
+       return array_unique(array_merge($request->input('catalouge'),[$request->post_catalouge_id]));
+
+
     }
 
     public function updateStatus($post=[]){

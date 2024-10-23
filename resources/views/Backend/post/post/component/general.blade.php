@@ -4,7 +4,7 @@
                                     <label for="" class="control-lable text-right">Tiêu đề nhóm bài viết
                                     </label>
                                     <span class="text-danger">(*)</span>
-                                    <input type="text" name="name" value="{{old('name',($postCatalouge->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="name" value="{{old('name',($post->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -14,8 +14,8 @@
                                     <label for="" class="control-lable text-right">Mô tả ngắn
 
                                     </label>
-                                    <textarea type="text" name="description" value="{{old('description',($postCatalouge->description) ?? '')}}" class="form-control ckeditor " placeholder="" autocomplete="off">
-                                    {{old('description',($postCatalouge->description) ?? '')}}
+                                    <textarea type="text" name="description" value="{{old('description',($post->description) ?? '')}}" class="form-control ckeditor " placeholder="" autocomplete="off">
+                                    {{old('description',($post->description) ?? '')}}
                                     </textarea>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
 
                                     </label>
                                     <textarea type="text" name="content" value="{{old('content')}}" class="form-control ckeditor" placeholder="" autocomplete="off">
-                                    {{old('content',($postCatalouge->content) ?? '')}}
+                                    {{old('content',($post->content) ?? '')}}
                                     </textarea>
                             </div>
                         </div>

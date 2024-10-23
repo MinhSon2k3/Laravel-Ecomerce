@@ -29,7 +29,7 @@ class PostCatalouge extends Model
     ];
 
     public function posts(){
-      return $this->belongsToMany(Post::class, 'post_catalouge_post' , 'id', 'post_catalouge_id');
+      return $this->belongsToMany(Post::class, 'post_catalouge_post' , 'post_catalouge_id', 'post_id');
     }
 
     public function languages(){
