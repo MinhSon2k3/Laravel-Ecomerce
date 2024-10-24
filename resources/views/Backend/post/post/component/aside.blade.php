@@ -10,7 +10,7 @@
                                     <select name="post_catalouge_id" class="form-control setupSelect2">
                                         @foreach($dropdown as $key => $val)
                                             <option {{ 
-                                                $key == old('post_catalouge_id', (isset($postCatalouge->post_catalouge_id)) ? $postCatalouge->post_catalouge_id : '') ? 'selected' : '' 
+                                                $key == old('post_catalouge_id', (isset($post->post_catalouge_id)) ? $post->post_catalouge_id : '') ? 'selected' : '' 
                                                 }} value="{{ $key }}">{{ $val }}
                                         </option>
                                         @endforeach
@@ -47,9 +47,9 @@
                             <div class="col-lg-12">
                                 <div class="form-row">
                                 <span class="image img-cover image-target">
-                                    <img src="{{ old('image', ($postCatalouge->image ?? 'userfiles/image/language/images.png')) }}" alt="">
+                                    <img src="{{ old('image', ($post->image ?? 'userfiles/image/language/images.png')) }}" alt="">
                                 </span>
-                                   <input type="text" name="image" value="{{old('image',($postCatalouge->image) ?? '')}}">
+                                   <input type="text" name="image" value="{{old('image',($post->image) ?? '')}}">
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                                    <select name="publish" class="form-control setupSelect2">
                                         @foreach(config('apps.general.publish') as $key => $val)
                                         <option  {{ 
-                                            $key == old('publish', (isset($postCatalouge->publish)) ? $postCatalouge->publish : '') ? 'selected' : '' 
+                                            $key == old('publish', (isset($post->publish)) ? $post->publish : '') ? 'selected' : '' 
                                             }}  value="{{ $key }}">{{ $val }}
                                         </option>
                                         @endforeach
@@ -78,7 +78,7 @@
                                     <select name="follow" class="form-control setupSelect2">
                                         @foreach(config('apps.general.follow') as $key => $val)
                                         <option  {{ 
-                                            $key == old('follow', (isset($postCatalouge->follow)) ? $postCatalouge->follow : '') ? 'selected' : '' 
+                                            $key == old('follow', (isset($post->follow)) ? $post->follow : '') ? 'selected' : '' 
                                             }}  value="{{ $key }}">{{ $val }}
                                         </option>
                                         @endforeach

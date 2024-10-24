@@ -18,13 +18,13 @@
                     <h5>Thông tin chung</h5>
                 </div>
                 <div class="ibox-content">
-                 @include('backend.post.catalouge.component.general')
+                 @include('backend.post.post.component.general')
                 </div>
               </div>
-              @include('backend.post.catalouge.component.seo')
+              @include('backend.post.post.component.seo')
             </div>
             <div class="col-lg-3">
-            @include('backend.post.catalouge.component.aside')
+            @include('backend.post.post.component.aside')
             </div>
         </div>
         

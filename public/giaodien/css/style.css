@@ -6037,7 +6037,7 @@ ul.notes li div {
 }
 
 .file .icon,
-.file .image {
+.file {
   height: 100px;
   overflow: hidden;
 }

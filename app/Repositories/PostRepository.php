@@ -17,13 +17,13 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
   public function getPostById(int $id = 0, $language_id = 0)
     {
         return $this->model->select([
-                    'post_s.id',
-                    'post_s.parent_id',
-                    'post_s.image',
-                    'post_s.icon',
-                    'post_s.album',
-                    'post_s.publish',
-                    'post_s.follow',
+                    'posts.id',
+                    'posts.post_catalouge_id',
+                    'posts.image',
+                    'posts.icon',
+                    'posts.album',
+                    'posts.publish',
+                    'posts.follow',
                     'tb2.name',
                     'tb2.description',
                     'tb2.content',
@@ -32,8 +32,8 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                     'tb2.meta_description',
                     'tb2.canonical'
                 ])
-                ->join('post__languages as tb2', 'tb2.post__id', '=', 'post_s.id')
-                ->where('post_s.id', $id)
+                ->join('post_languages as tb2', 'tb2.post_id', '=', 'posts.id')
+                ->where('posts.id', $id)
                 ->where('tb2.language_id', $language_id)
                 ->first();
     }

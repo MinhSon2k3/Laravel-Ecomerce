@@ -34,11 +34,12 @@ class PostService  extends BaseService implements PostServiceInterface
             ['post_languages as tb2', 'tb2.post_id', '=', 'posts.id']
 
         ],
-        ['path'=>'post//index'],
-        [],
+        ['path'=>'post/index'],
+        ['post_catalouges'],
         [
             'posts.id','Desc'
         ],
+        5,
     ); 
      
        return $posts;
@@ -49,7 +50,6 @@ class PostService  extends BaseService implements PostServiceInterface
         'id',
         'publish',
         'image',
-        'level',
         'order',
         'tb2.name',
         'tb2.canonical',
@@ -99,9 +99,10 @@ class PostService  extends BaseService implements PostServiceInterface
                 $payloadLanguage=$request->only($this->payloadLanguage());
                 $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post__id']=$id;
+                $payloadLanguage['post_id']=$id;
                 $post->languages()->detach([$payloadLanguage['language_id'],$id]);
-                $response = $this->postRepository->createPivot($post, $payloadLanguage);
+                $response = $this->postRepository->createPivot($post, $payloadLanguage,'languages');
+              
             }
             DB::commit();
             return true;//sửa dữ liệu thành công
