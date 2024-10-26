@@ -32,17 +32,13 @@ class PostService  extends BaseService implements PostServiceInterface
         $condition,
         [
             ['post_languages as tb2', 'tb2.post_id', '=', 'posts.id']
-
         ],
         ['path'=>'post/index'],
         ['post_catalouges'],
         [
             'posts.id','Desc'
         ],
-        5,
-    ); 
-     
-       return $posts;
+        5,);    return $posts;
     }
 
     public function paginateSelect(){
@@ -66,14 +62,10 @@ class PostService  extends BaseService implements PostServiceInterface
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $post=$this->postRepository->create($payload);//$post biến đại diện cho model post
             if($post->id>0){
-                $payloadLanguage=$request->only($this->payloadLanguage());
-                $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_id']=$post->id;
+                $payloadLanguage=$this->formatLanguageForPost($post,$request);
                 $language=$this->postRepository->createPivot($post,$payloadLanguage,'languages');
                 $catalouge=$this->catalouge($request);
                 $post->post_catalouges()->sync($catalouge);
-              
-               
             }
         
             DB::commit();
@@ -93,17 +85,12 @@ class PostService  extends BaseService implements PostServiceInterface
         DB::beginTransaction();
         try{
             $post = $this->postRepository->findById($id);
-            $payload=$request->only($this->payload());
-            $flag = $this->postRepository->update($id, $payload);
-            if($flag == TRUE){
-                $payloadLanguage=$request->only($this->payloadLanguage());
-                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-                $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_id']=$id;
-                $post->languages()->detach([$payloadLanguage['language_id'],$id]);
-                $response = $this->postRepository->createPivot($post, $payloadLanguage,'languages');
+            $payloadLanguage=$this->formatLanguageForPost($post,$request);
+            $response = $this->postRepository->createPivot($post, $payloadLanguage,'languages');
+            $catalouge=$this->catalouge($request);
+            $post->post_catalouges()->sync($catalouge); 
               
-            }
+
             DB::commit();
             return true;//sửa dữ liệu thành công
         }
@@ -116,20 +103,19 @@ class PostService  extends BaseService implements PostServiceInterface
     }
     
     public function destroy($id){
-
         DB::beginTransaction();
         try{
-            
-            $post=$this->postRepository->destroy($id);
+          
+            $this->postRepository->destroy($id);
+            DB::table('post_languages')->where('post_id', $id)->delete();
             DB::commit();
-            return true;//xóa dữ liệu thành công
+            return true;
         }
         catch(\Exception $e){
             DB::rollback();
-            dd($e->getMessage());
+            Log::error($e->getMessage());
             return false;
         }
-
     }
 
     private function payload(){
@@ -152,6 +138,14 @@ class PostService  extends BaseService implements PostServiceInterface
             'canonical'
         ];
     }
+
+   private function formatLanguageForPost($post,$request){
+    $payload=$request->only($this->payloadLanguage());
+    $payload['canonical']=Str::slug($payload['canonical']);
+    $payload['language_id']=$this->currentLanguage();
+    $payload['post_id']=$post->id;
+    return $payload;
+   }
 
     public function catalouge($request){
        return array_unique(array_merge($request->input('catalouge'),[$request->post_catalouge_id]));

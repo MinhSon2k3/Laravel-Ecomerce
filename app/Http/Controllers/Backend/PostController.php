@@ -94,7 +94,7 @@ class PostController  extends Controller
     return view('backend.dashboard.layout', compact('template', 'seo','post'));
 }
 
-public function destroy($id,DeletePostRequest $request){
+public function destroy($id,Request $request){
   if($this->postService->destroy($id)){
     return redirect()->route('post.index')->with('success', 'Xóa bài viết thành công');
   }
