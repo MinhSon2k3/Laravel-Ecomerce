@@ -42,18 +42,7 @@
   border-right: 0;
 }
 
-.image {
-  display: flex !important;
-  align-items: center !important;
-  white-space: nowrap !important;
-}
 
-.img-cover {
-  display: block !important;
-  margin-right: 10px !important;
-  flex-shrink: 0 !important;
-  /* Ngăn hình ảnh bị thu nhỏ */
-}
 
 .image-post img {
   width: 75px !important;
@@ -69,4 +58,17 @@
 
 .main-title {
   color: #2962ff;
+}
+
+.image {
+  display: flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+}
+
+.img-cover {
+  display: block !important;
+  margin-right: 10px !important;
+  flex-shrink: 0 !important;
+  /* Ngăn hình ảnh bị thu nhỏ */
 }

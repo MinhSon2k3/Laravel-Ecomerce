@@ -10,7 +10,14 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-top-links navbar-right">
                 <li>
-                    <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                <div class="language-container">
+                    @foreach($languages as $key => $val)
+                        <a href="" class="language-item">
+                            <img class="image-language" src="{{ $val->image }}" alt="" style="width: 35px !important; height: 25px !important; object-fit: cover !important; border: 1px solid #ddd;">
+                        </a>
+                    @endforeach
+                </div>
+
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

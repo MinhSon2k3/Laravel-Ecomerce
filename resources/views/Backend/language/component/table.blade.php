@@ -14,8 +14,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(isset($languages)&& is_object($languages))
-                                    @foreach($languages as $language)
+                                @if(isset($languagess)&& is_object($languagess))
+                                    @foreach($languagess as $language)
                                     <tr>
                                         <td>
                                         <input type="checkbox" value="{{ $language->id }}" id="" class="input-check checkBoxItem">
@@ -46,7 +46,7 @@
                                 @endif
                                 </tbody>
     </table>
-    {{  $languages->links('pagination::bootstrap-4') }}
+    {{  $languagess->links('pagination::bootstrap-4') }}
 
                             
 </div>      

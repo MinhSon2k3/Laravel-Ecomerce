@@ -35,16 +35,16 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return $query;
        });
-       if(isset($relations) && !empty($relations)){
-        foreach($relations as $relation){
-            $query->withCount($relation);
-        }
-       }   
        if(isset($join) && is_array($join) && count($join)){
         foreach($join as $key =>$val){
             $query->join($val[0],$val[1],$val[2],$val[3]);
         }
        }
+       if(isset($relations) && !empty($relations)){
+        foreach($relations as $relation){
+            $query->withCount($relation);
+        }
+       }   
        if(isset($orderBy) && !empty($orderBy)){
             $query->orderBy($orderBy[0],$orderBy[1]);
        }

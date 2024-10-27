@@ -29,6 +29,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
 //userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
 
     public function paginate($request){
+
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
        $postCatalouges=$this->postCatalougeRepository->pagination(
@@ -36,19 +37,19 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         $condition,
         [
             ['post_catalouge_languages as tb2', 'tb2.post_catalouge_id', '=', 'post_catalouges.id']
-
         ],
         ['path'=>'post/catalouge/index'],
         [],
         [
             'post_catalouges.lft','Asc'
         ],
-    ); 
-     
-       return $postCatalouges;
-    }
+        ); 
+        return $postCatalouges;
+        }
 
-    public function paginateSelect(){
+
+  
+        public function paginateSelect(){
         return [
         'id',
         'publish',
@@ -72,13 +73,10 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
             $postCatalouge=$this->postCatalougeRepository->create($payload);//$postCatalouge biến đại diện cho model postCatalouge
             if($postCatalouge->id>0){
                 $payloadLanguage=$request->only($this->payloadLanguage());
-             
                 $payloadLanguage['language_id']=$this->currentLanguage();
                 $payloadLanguage['post_catalouge_id']=$postCatalouge->id;
-              
                 $language=$this->postCatalougeRepository->createTranslatePivot($postCatalouge,$payloadLanguage);
-             
-             
+            
             }
             $this->nestedsetbie->Get('level ASC,order ASC');
             $this->nestedsetbie->Recursive(0,$this->nestedsetbie->Set());
@@ -153,6 +151,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
             'album',
         ];
     }
+    
     private function payloadLanguage(){
         return [
             'name',

@@ -35,8 +35,7 @@ class PostController  extends Controller
     $this->language=$this->currentLanguage();
   }
 
-  public function index(Request $request)
-  {
+  public function index(Request $request){
     //controller->service->repository thực hiện nghiệp vụ
     $posts = $this->postService->paginate($request);
     $seo = [
@@ -49,10 +48,7 @@ class PostController  extends Controller
     return view('backend.dashboard.layout', compact('template', 'posts', 'seo'));
   }
 
-  //khi ấn vào dòng thêm
-  public function create()
-  { 
-
+  public function create(){ 
     $template = 'backend.post.post.create';
     $seo = [
       'meta_title' => config('apps.post')
@@ -60,24 +56,25 @@ class PostController  extends Controller
     $dropdown=$this->nestedsetbie->Dropdown();
     return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
   }
-  //Khi nhấn vào submit create
-  public  function store(StorePostRequest $request ){ // validate các thông tin cần create
+
+  public function store(StorePostRequest $request ){ 
     if($this->postService->create($request)){
-      return redirect()->route('post.index')->with('success', 'Thêm mới thành công');
-    }
-    return redirect()->route('post.index')->with('error', 'Thêm mới ko thành công');
+      
+        return redirect()->route('post.index')->with('success', 'Thêm mới thành công');
+      }
+        return redirect()->route('post.index')->with('error', 'Thêm mới ko thành công');
   }
 
-  //edit
-  public function edit($id){
-    $post = $this->postRepository->getPostById($id,$this->language);
-    $dropdown=$this->nestedsetbie->Dropdown();
-    $template = 'backend.post.post.edit';
-    $seo = [
-        'meta_title' => config('apps.post')
-    ];
-    return view('backend.dashboard.layout', compact('template', 'seo','post','dropdown'));
-}
+  public function edit($id) { 
+      $post = $this->postRepository->getPostById($id,$this->language);
+      $dropdown=$this->nestedsetbie->Dropdown();
+      $template = 'backend.post.post.edit';
+      $seo = [
+          'meta_title' => config('apps.post')
+      ];
+      return view('backend.dashboard.layout', compact('template', 'seo','post','dropdown'));
+  }
+
   public function update($id, UpdatePostRequest $request){
     if($this->postService->update($id,$request)){
       return redirect()->route('post.index')->with('success', 'Chỉnh sửa bài viết thành công');
@@ -92,15 +89,14 @@ class PostController  extends Controller
         'meta_title' => config('apps.post')
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','post'));
-}
-
-public function destroy($id,Request $request){
-  if($this->postService->destroy($id)){
-    return redirect()->route('post.index')->with('success', 'Xóa bài viết thành công');
   }
-  return redirect()->route('post.index')->with('error', 'Xóa bài viết ko thành công');
-}
 
+  public function destroy($id,Request $request){
+    if($this->postService->destroy($id)){
+      return redirect()->route('post.index')->with('success', 'Xóa bài viết thành công');
+    }
+    return redirect()->route('post.index')->with('error', 'Xóa bài viết ko thành công');
+  }
 
 }
 

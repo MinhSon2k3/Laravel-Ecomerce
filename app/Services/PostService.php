@@ -30,15 +30,12 @@ class PostService  extends BaseService implements PostServiceInterface
        $posts=$this->postRepository->pagination(
         $this->paginateSelect(),
         $condition,
-        [
-            ['post_languages as tb2', 'tb2.post_id', '=', 'posts.id']
-        ],
+        [['post_languages as tb2', 'tb2.post_id', '=', 'posts.id']],
         ['path'=>'post/index'],
         ['post_catalouges'],
-        [
-            'posts.id','Desc'
-        ],
-        5,);    return $posts;
+        ['posts.id','Desc'],
+        5,);
+            return $posts;
     }
 
     public function paginateSelect(){
@@ -53,7 +50,6 @@ class PostService  extends BaseService implements PostServiceInterface
     }
 
     public function create($request){
-
         DB::beginTransaction();
         try{
             //$payload lấy dữ liệu từ các input request
@@ -81,16 +77,18 @@ class PostService  extends BaseService implements PostServiceInterface
     }
 
     public function update($id,$request){
-
         DB::beginTransaction();
         try{
             $post = $this->postRepository->findById($id);
-            $payloadLanguage=$this->formatLanguageForPost($post,$request);
-            $response = $this->postRepository->createPivot($post, $payloadLanguage,'languages');
-            $catalouge=$this->catalouge($request);
-            $post->post_catalouges()->sync($catalouge); 
-              
-
+            $payload=$request->only($this->payload());
+            $flag=$this->postRepository->update($id,$payload);
+            if($flag==true){
+                $payloadLanguage=$this->formatLanguageForPost($post,$request);
+                $post->languages()->detach([$payloadLanguage['language_id'],$id]);
+                $response = $this->postRepository->createPivot($post, $payloadLanguage,'languages');
+                $catalouge=$this->catalouge($request);
+                $post->post_catalouges()->sync($catalouge); 
+            }
             DB::commit();
             return true;//sửa dữ liệu thành công
         }

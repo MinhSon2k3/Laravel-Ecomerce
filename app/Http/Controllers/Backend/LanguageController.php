@@ -29,7 +29,7 @@ class LanguageController  extends Controller
   public function index(Request $request)
   {
     //controller->service->repository thực hiện nghiệp vụ
-    $languages = $this->languageService->paginate($request);
+    $languagess = $this->languageService->paginate($request);
     $seo = [
       //Hàm config lấy giá trị từ file cấu hình của ứng dụng.
       'meta_title' => config('apps.language')
@@ -37,7 +37,7 @@ class LanguageController  extends Controller
     // Định nghĩa đường dẫn tới template
     $template = 'backend.language.index';
     // Trả về view với layout 'backend.dashboard.layout' và truyền biến 'template' và 'users' tới view
-    return view('backend.dashboard.layout', compact('template', 'languages', 'seo'));
+    return view('backend.dashboard.layout', compact('template', 'languagess', 'seo'));
   }
 
   //khi ấn vào dòng thêm người dùng

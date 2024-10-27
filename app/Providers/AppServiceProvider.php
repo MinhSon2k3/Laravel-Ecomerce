@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\PostRepositoryInterface'=>'App\Repositories\PostRepository',
          //LANGUAGE
          'App\Services\Interfaces\LanguageServiceInterface'=>'App\Services\LanguageService',
-         'App\Repositories\Interfaces\LanguageRepositoryInterface'=>'App\Repositories\LanguageRepository',
+        
 
         //Base
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',

@@ -24,7 +24,14 @@ class UserService implements UserServiceInterface
        $condition['publish'] = $request->integer('publish');
        $condition['user_catalouge_id'] = $request->integer('user_catalouge_id');
      
-       $users=$this->userRepository->pagination($this->paginateSelect(),$condition,[],['path'=>'user/index']); 
+       $users=$this->userRepository->pagination(
+        $this->paginateSelect(),
+        $condition,
+        [],
+        ['path'=>'user/index'],
+        [],
+        [],
+         5 ); 
        return $users;
         
     }

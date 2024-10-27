@@ -25,7 +25,14 @@ class UserCatalougeService implements UserCatalougeServiceInterface
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
-       $userCatalouges=$this->userCatalougeRepository->pagination($this->paginateSelect(),$condition,[],['path'=>'user/catalouge/index'],['users']); 
+       $userCatalouges=$this->userCatalougeRepository->pagination(
+        $this->paginateSelect(),
+        $condition,
+        [],
+        ['path'=>'user/catalouge/index'],
+        ['users'],
+        [],
+        5  ); 
        return $userCatalouges;
     }
 
@@ -78,6 +85,7 @@ class UserCatalougeService implements UserCatalougeServiceInterface
         }
 
     }
+    
     public function destroy($id){
 
         DB::beginTransaction();
