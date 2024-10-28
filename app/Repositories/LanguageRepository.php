@@ -41,4 +41,8 @@ class LanguageRepository extends BaseRepository implements LanguageRepositoryInt
         }
         return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
      }
+
+     public function findCurrentLanguage(){
+        return $this->model->select('canonical')->where('current','=',1)->first();
+     }
 }

@@ -72,3 +72,12 @@
   flex-shrink: 0 !important;
   /* Ngăn hình ảnh bị thu nhỏ */
 }
+
+
+.language-item.active {
+
+  border: 1px solid #2962ff !important;
+  /* để test */
+  padding: 2px !important;
+  /* thêm padding để thấy background */
+}

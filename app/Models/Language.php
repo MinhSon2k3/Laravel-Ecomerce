@@ -17,6 +17,7 @@ class Language extends Model
         'user_id',
         'image',
         'description',
+        'current',
       
     ];
 

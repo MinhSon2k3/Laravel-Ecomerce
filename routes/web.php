@@ -86,4 +86,5 @@ Route::prefix('language')->middleware(AuthenticateMiddleware::class)->group(func
     Route::post('{id}/update', [LanguageController::class, 'update'])->name('language.update');
     Route::get('{id}/delete', [LanguageController::class, 'delete'])->name('language.delete');
     Route::post('{id}/destroy', [LanguageController::class, 'destroy'])->name('language.destroy');
+    Route::post('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->name('language.switch');
 });

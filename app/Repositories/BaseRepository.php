@@ -103,5 +103,12 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->{$relation}()->attach($model->id,$payload);
         //Phương thức attach() được sử dụng để thêm một bản ghi mới vào bảng trung gian
        }
-
+    
+    public function updateByWhere($condition=[],array $payload=[]){
+        $query=$this->model->newQuery();
+        foreach($condition as $key => $val){
+            $query->where($val[0],$val[1],$val[2]);
+        }
+        return $query->update($payload);
+    }
 }

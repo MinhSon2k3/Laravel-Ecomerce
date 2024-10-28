@@ -11,11 +11,15 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li>
                 <div class="language-container">
-                    @foreach($languages as $key => $val)
-                        <a href="" class="language-item">
-                            <img class="image-language" src="{{ $val->image }}" alt="" style="width: 35px !important; height: 25px !important; object-fit: cover !important; border: 1px solid #ddd;">
-                        </a>
-                    @endforeach
+                @foreach($languages as $key => $val)
+                    <form action="{{ route('language.switch', $val->id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="language-item {{ ($val->current == 1) ? 'active' : '' }}" 
+                        style="border: none; cursor: pointer; padding: 0;">
+                        <img class="image-language" src="{{ $val->image }}" alt="" style="width: 35px !important; height: 25px !important; object-fit: cover !important; border: 1px solid #ddd;">
+                        </button>
+                    </form>
+                @endforeach
                 </div>
 
                 </li>

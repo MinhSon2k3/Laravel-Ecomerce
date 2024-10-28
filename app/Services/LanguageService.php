@@ -35,7 +35,7 @@ class LanguageService implements LanguageServiceInterface
     }
 
     public function paginateSelect(){
-        return ['id','name','canonical','publish','description','image'];
+        return ['id','name','canonical','publish','description','image','current'];
     }
 
     public function create($request){
@@ -132,4 +132,23 @@ class LanguageService implements LanguageServiceInterface
         }
     }
 
+    public function switch($id){
+        DB::beginTransaction();
+        try{
+            $language=$this->languageRepository->findById($id);
+            $this->languageRepository->update($id,['current'=> 1]);
+            $payload=['current'=>0];
+            $this->languageRepository->updateByWhere([
+                ['id','!=',$id],
+            ],$payload);
+            DB::commit();
+            return true;
+        }
+        catch(\Exception $e){
+            DB::rollback(); 
+            dd($e->getMessage());
+            return false;
+        }
+       
+    }
 }

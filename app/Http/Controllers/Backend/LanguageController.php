@@ -91,7 +91,10 @@ public function destroy($id){
   return redirect()->route('language.index')->with('error', 'Xóa ngôn ngữ ko thành công');
 }
 
-
+public function switchBackendLanguage($id){
+  $this->languageService->switch($id);
+  return back();
+}
 }
 
 

@@ -15,40 +15,24 @@
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="profile.html">Profile</a></li>
                             <li><a href="contacts.html">Contacts</a></li>
-                            <li><a href="mailbox.html">Mailbox</a></li>
-                            <li class="divider"></li>
-                         
+                            <li><a href="mailbox.html">Mailbox</a></li>             
                         </ul>
                     </div>
                   
                 </li>
 
-                @php
-                $modules = config('apps.module.module');
-                @endphp
-
-                @if(!empty($modules) && is_array($modules))
-                    @foreach($modules as $module)
-                        <li class="{{($segment==$module['name']) ? 'active' : ''}}">
-                            <a href="#">
-                                {!! $module['icon'] ?? '' !!}
-                                <span class="nav-label">{{ $module['title'] ?? '' }}</span>
-                                <span class="fa arrow"></span>
-                            </a>
-                            @if(!empty($module['subModule']))
-                                <ul class="nav nav-second-level">
-                                    @foreach($module['subModule'] as $subModule)
-                                        <li>
-                                            <a href="{{ url($subModule['route']) }}">
-                                                {{ $subModule['title'] }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </li>
+                @foreach(__('sidebar.module') as $key => $val)
+            <li class="{{ (in_array($segment, $val['name'])) ? 'active' : '' }}">
+                <a href=""><i class="{{ $val['icon'] }}"></i> <span class="nav-label">{{ $val['title'] }}</span> <span class="fa arrow"></span></a>
+                @if(isset($val['subModule']))
+                <ul class="nav nav-second-level">
+                    @foreach($val['subModule'] as $module)
+                    <li><a href="{{ $module['route'] }}">{{ $module['title'] }}</a></li>
                     @endforeach
+                </ul>
                 @endif
+            </li>
+            @endforeach
             </ul>
 
         </div>
