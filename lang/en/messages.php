@@ -2,7 +2,7 @@
 return [
     'postCatalogue' => [
         'index' => [
-            'title' => 'Post Management',
+            'title' => 'Post Group Management',
             'table' => 'Post Group List'
         ],
         'create' => [
@@ -92,6 +92,7 @@ return [
     'deleteButton' => 'Delete data',
     'tableHeading' => 'General Information',
     'save' => 'Save',
+    'add' => 'Add',
     'publish' => [
         '0' => 'Choose status',
         '1' => 'Unpublished',
@@ -108,5 +109,8 @@ return [
     ],
     'generalTitle' => 'General Information',
     'generalDescription' => 'You are about to delete a language named:
-    Note: Data cannot be restored after deleting. Make sure you want to perform this function'
+    Note: Data cannot be restored after deleting. Make sure you want to perform this function',
+     'deletenoitice' => 'You want to delete:',
+     'note' => 'Note:',
+     
 ];

@@ -16,8 +16,8 @@
             <div class="col-lg-5">
                 <div class="panel-head">
                     <div class="panel-title">
-                        <p> <strong>Bạn có chắc muốn xóa nhóm bài viết :</strong> {{$postCatalouge->name}}</p>
-                        <label for="" class="control-lable text-right">Lưu ý
+                    <p> <strong>{{__('messages.deletenoitice')}}</strong> {{$postCatalouge->name}}</p>
+                        <label for="" class="control-lable text-right">{{__('messages.note')}}
                             <span class="text-danger">Không thể khôi phục khi xóa</span>
                         </label>
                     </div>

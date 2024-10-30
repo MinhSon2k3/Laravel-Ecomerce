@@ -2,22 +2,7 @@
 return [
     'module' => [
         [
-            'title' => 'Article',
-            'icon' => 'fa fa-file',
-            'name' => ['post'],
-            'subModule' => [
-                [
-                    'title' => 'Article Group',
-                    'route' => 'post/catalouge/index'
-                ],
-                [
-                    'title' => 'Article',
-                    'route' => 'post/index'
-                ]
-            ]
-        ],
-        [
-            'title' => 'User Group',
+            'title' => 'User',
             'icon' => 'fa fa-user',
             'name' => ['user'],
             'subModule' => [
@@ -29,9 +14,20 @@ return [
                     'title' => 'User',
                     'route' => 'user/index'
                 ],
+            ]
+        ],
+        [
+            'title' => 'Article',
+            'icon' => 'fa fa-file',
+            'name' => ['post'],
+            'subModule' => [
                 [
-                    'title' => 'Permission',
-                    'route' => 'permission/index'
+                    'title' => 'Article Group',
+                    'route' => 'post/catalouge/index'
+                ],
+                [
+                    'title' => 'Article',
+                    'route' => 'post/index'
                 ]
             ]
         ],

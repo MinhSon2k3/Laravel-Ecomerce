@@ -5,9 +5,9 @@
                                     <th>
                                         <input type="checkbox" value=" " id="checkAll" class="">
                                     </th>
-                                    <th>Tiêu đề</th>
-                                    <th class="text-center">Tình trạng</th>
-                                    <th class="text-center">Thao tác</th>
+                                    <th>{{__('messages.title')}}</th>
+                                    <th class="text-center">{{__('messages.tableStatus')}}</th>
+                                    <th class="text-center">{{__('messages.tableAction')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -29,7 +29,7 @@
                                                         </div>
                                                      
                                                         <div class="catalouge">
-                                                            <span class="text-danger">Nhóm hiển thị</span>
+                                                            <span class="text-danger">{{__('messages.tableGroup')}}</span>
                                                             @foreach($post->post_catalouges as $val)
                                                             @foreach($val->post_catalouge_languages as $cat)
                                                               <a href="{{route('post.index',['post_catalouge_id'=>$val->id])}}"> {{$cat->name}}</a>

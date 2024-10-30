@@ -1,0 +1,47 @@
+<?php   
+return [
+    'module' => [
+        [
+            'title' => 'QL Người dùng',
+            'icon' => 'fa fa-user',
+            'name' => ['user','permission'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Thành Viên',
+                    'route' => 'user/catalouge/index'
+                ],
+                [
+                    'title' => 'QL Thành Viên',
+                    'route' => 'user/index'
+                ],
+            ]
+        ],
+        [
+            'title' => 'QL Bài viết',
+            'icon' => 'fa fa-file',
+            'name' => ['post'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Bài Viết',
+                    'route' => 'post/catalouge/index'
+                ],
+                [
+                    'title' => 'QL Bài Viết',
+                    'route' => 'post/index'
+                ]
+            ]
+        ],
+        [
+            'title' => 'Cấu hình chung',
+            'icon' => 'fa fa-file',
+            'name' => ['language','generate'],
+            'subModule' => [
+                [
+                    'title' => 'QL Ngôn ngữ',
+                    'route' => 'language/index'
+                ],
+                
+            ]
+        ]
+    ],
+];

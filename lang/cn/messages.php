@@ -92,6 +92,7 @@ return [
     'deleteButton' => '删除数据',
     'tableHeading' => '一般信息',
     'save' => '保存',
+    'add' => '添加',
     'publish' => [
         '0' => '选择状态',
         '1' => '未发布',
@@ -108,5 +109,7 @@ return [
     ],
     'generalTitle' => '一般信息',
     'generalDescription' => '您即将删除名为的语言：
-    注意：删除后无法恢复数据。 请确保您要执行此功能'
+    注意：删除后无法恢复数据。 请确保您要执行此功能',
+     'deletenoitice' => '你想要删除:',
+     'note' => '笔记:',
 ];

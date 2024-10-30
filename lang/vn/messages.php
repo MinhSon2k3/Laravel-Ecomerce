@@ -82,7 +82,7 @@ return [
     ],
     'postCatalogue' => [
         'index' => [
-            'title' => 'Quản lý bài viết',
+            'title' => 'Quản lý nhóm bài viết',
             'table' => 'Danh sách nhóm bài viết'
         ],
         'create' => [
@@ -98,7 +98,7 @@ return [
     'post' => [
         'index' => [
             'title' => 'Quản lý bài viết',
-            'table' => 'Danh sách bài viết'
+            'table' => 'Danh sách bài viết',
         ],
         'create' => [
             'title' => 'Thêm mới bài viết'
@@ -175,7 +175,7 @@ return [
     'seo' => 'Cấu hình seo',
     'seoTitle' => 'Bạn chưa có tiêu đề SEO',
     'seoCanonical' => 'https://duong-dan-cua-ban.html',
-    'seoDescription' => 'Bạn chưa có tiêu đề SEO',
+    'seoDescription' => 'Bạn chưa có mô tả SEO',
     'seoMetaTitle' => 'Tiêu đề SEO',
     'seoMetaKeyword' => 'Từ khóa SEO',
     'seoMetaDescription' => 'Mô tả SEO',
@@ -189,6 +189,7 @@ return [
     'deleteButton' => 'Xóa dữ liệu',
     'tableHeading' => 'Thông tin chung',
     'save' => 'Lưu lại',
+    'add' => 'Thêm mới',
     'publish' => [
         '0' => 'Chọn tình trạng',
         '1' => 'Không xuất bản',
@@ -207,5 +208,7 @@ return [
     'generalTitle' => 'Thông tin chung',
     'generalDescription' => 'Bạn đang muốn xóa ngôn ngữ có tên là:
     Lưu ý: Không thể khôi phục dữ liệu sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức năng này',
-   
+    'deletenoitice' => 'Bạn đang muốn xóa:',
+     'note' => 'Lưu ý:',
+     'posts' => 'Post',
 ];

@@ -8,21 +8,21 @@
                     @endphp    
                             <select name="publish" class="form-control" id="">
                                    
-                                    @foreach(config('apps.general.publish') as $key =>$item)
+                                    @foreach(__('messages.publish') as $key =>$item)
                                     <option {{($publish==$key) ? 'selected':''}} value="{{$key}}">{{$item}}</option>
                                     @endforeach
                             </select>
                     </div>
                     <div class="col-lg-6 w-100">
                             <div class="col-lg-6 w-100">
-                                <input class="form-control "name="keyword" type="search" value="{{request('keyword')? : old('keyword')}}" placeholder="Nhập Từ Khóa" aria-label="Search">
+                                <input class="form-control "name="keyword" type="search" value="{{request('keyword')? : old('keyword')}}" placeholder="{{__('messages.searchInput')}}" aria-label="Search">
                             </div>
                              <div class="col-lg-6">
-                                <button class="btn btn-success"name="search" value="search" type="submit">Tìm Kiếm</button>
+                                <button class="btn btn-success"name="search" value="search" type="submit">{{__('messages.search')}}</button>
                             </div>                                                       
                     </div>                  
                     <div class="col-lg-4">
-                        <a href="{{route('post.catalouge.create')}}" class="btn btn-danger"><i class="fa fa-plus"> Thêm mới nhóm bài viết</i></a>
+                        <a href="{{route('post.catalouge.create')}}" class="btn btn-danger"><i class="fa fa-plus">{{__('messages.add')}}</i></a>
                     </div>
                
             </div>            

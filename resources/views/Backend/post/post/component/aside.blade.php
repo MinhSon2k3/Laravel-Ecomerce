@@ -1,12 +1,12 @@
 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Danh mục cha</h5>
+                        <h5>{{__('messages.parent')}}</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-row">
-                                        <span class="text-danger notice">*Chọn root nếu ko có danh mục cha</span>
+                                        <span class="text-danger notice">{{__('messages.parentNotice')}}</span>
                                     <select name="post_catalouge_id" class="form-control setupSelect2">
                                         @foreach($dropdown as $key => $val)
                                             <option {{ 
@@ -33,7 +33,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-row">
-                                    <label class="control-label">Danh mục phụ</label>
+                                    <label class="control-label">{{__('messages.subparent')}}</label>
                                     <select multiple name="catalouge[]" class="form-control setupSelect2">
                                     @foreach($dropdown as $key => $val)
                                         <option
@@ -51,7 +51,7 @@
                 </div>
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Ảnh đại diện</h5>
+                        <h5>{{__('messages.image')}}</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
@@ -68,7 +68,7 @@
                 </div>
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Cấu hình nâng cao</h5>
+                        <h5>{{__('messages.advange')}}</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
@@ -76,7 +76,7 @@
                                 <div class="form-row">
                                    <div class="mb-15">
                                    <select name="publish" class="form-control setupSelect2">
-                                        @foreach(config('apps.general.publish') as $key => $val)
+                                        @foreach(__('messages.publish') as $key => $val)
                                         <option  {{ 
                                             $key == old('publish', (isset($post->publish)) ? $post->publish : '') ? 'selected' : '' 
                                             }}  value="{{ $key }}">{{ $val }}
@@ -87,7 +87,7 @@
                                    </div>
                                     <div>
                                     <select name="follow" class="form-control setupSelect2">
-                                        @foreach(config('apps.general.follow') as $key => $val)
+                                        @foreach(__('messages.follow')  as $key => $val)
                                         <option  {{ 
                                             $key == old('follow', (isset($post->follow)) ? $post->follow : '') ? 'selected' : '' 
                                             }}  value="{{ $key }}">{{ $val }}

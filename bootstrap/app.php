@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\AuthenticateMiddleware;
+use App\Http\Middleware\LoginMiddleware;
+use App\Http\Middleware\SetLocale;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,7 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'authenticate' => AuthenticateMiddleware::class,
+            'login' => LoginMiddleware::class,
+            'locale' => SetLocale::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -92,7 +92,12 @@ public function destroy($id){
 }
 
 public function switchBackendLanguage($id){
-  $this->languageService->switch($id);
+  $language = $this->languageRepository->findById($id);  
+  
+  if( $this->languageService->switch($id)){
+    session(['app_locale'=>$language->canonical]);
+    \App::setLocale($language->canonical);
+  }
   return back();
 }
 }

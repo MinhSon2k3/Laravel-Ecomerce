@@ -16,8 +16,8 @@
             <div class="col-lg-5">
                 <div class="panel-head">
                     <div class="panel-title">
-                        <p> <strong>Bạn có chắc muốn xóa nhóm bài viết :</strong> {{$post->name}}</p>
-                        <label for="" class="control-lable text-right">Lưu ý
+                        <p> <strong>{{__('messages.deletenoitice')}}</strong> {{$post->name}}</p>
+                        <label for="" class="control-lable text-right">{{__('messages.note')}}
                             <span class="text-danger">Không thể khôi phục khi xóa</span>
                         </label>
                     </div>
@@ -33,7 +33,7 @@
                                     <label for="" class="control-lable text-right">Nhóm bài viết
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="name" value="{{old('name',($postCatalouge->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="name" value="{{old('name',($post->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="text-right">
-            <button class="btn btn-danger" type="submit" name="send" value="">Xóa dữ liệu</button>
+            <button class="btn btn-danger" type="submit" name="send" value="">{{__('messages.deleteButton')}}</button>
         </div>
     </div>
 </form>

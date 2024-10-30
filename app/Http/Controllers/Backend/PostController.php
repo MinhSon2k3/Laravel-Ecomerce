@@ -40,8 +40,9 @@ class PostController  extends Controller
     $posts = $this->postService->paginate($request);
     $seo = [
       //Hàm config lấy giá trị từ file cấu hình của ứng dụng.
-      'meta_title' => config('apps.post')
+      'meta_title' => __('messages.post') 
     ];
+   
     // Định nghĩa đường dẫn tới template
     $template = 'backend.post.post.index';
     // Trả về view với layout 'backend.dashboard.layout' và truyền biến 'template' và 'posts' tới view
@@ -51,7 +52,7 @@ class PostController  extends Controller
   public function create(){ 
     $template = 'backend.post.post.create';
     $seo = [
-      'meta_title' => config('apps.post')
+      'meta_title' =>__('messages.post') 
     ];
     $dropdown=$this->nestedsetbie->Dropdown();
     return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
@@ -70,7 +71,7 @@ class PostController  extends Controller
       $dropdown=$this->nestedsetbie->Dropdown();
       $template = 'backend.post.post.edit';
       $seo = [
-          'meta_title' => config('apps.post')
+          'meta_title' =>__('messages.post') 
       ];
       return view('backend.dashboard.layout', compact('template', 'seo','post','dropdown'));
   }
@@ -86,7 +87,7 @@ class PostController  extends Controller
     $post = $this->postRepository->getPostById($id,$this->language);
     $template = 'backend.post.post.delete';
     $seo = [
-        'meta_title' => config('apps.post')
+        'meta_title' =>__('messages.post') 
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','post'));
   }

@@ -8,11 +8,10 @@ use App\Http\Controllers\Backend\UserCatalougeController;
 use App\Http\Controllers\Backend\PostCatalougeController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
-use App\Http\Middleware\AuthenticateMiddleware;
-use App\Http\Middleware\LoginMiddleware;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
 
+Route::middleware('locale')->group(function () {
 // Login and logout
 Route::prefix('auth')->group(function () {
     Route::get('admin', [AuthController::class, 'index'])->name('auth.admin');
@@ -21,7 +20,7 @@ Route::prefix('auth')->group(function () {
 });
 
 // Backend dashboard route
-Route::middleware(LoginMiddleware::class)->group(function () {
+Route::middleware('login')->group(function () {
     Route::get('/', [DashBoardController::class, 'index'])->name('dashboard.index');
 });
 
@@ -33,7 +32,7 @@ Route::prefix('ajax')->group(function () {
 });
 
 // Manage user
-Route::prefix('user')->middleware(AuthenticateMiddleware::class)->group(function () {
+Route::prefix('user')->middleware('authenticate')->group(function () {
     Route::get('/index', [UserController::class, 'index'])->name('user.index');
     Route::get('/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/store', [UserController::class, 'store'])->name('user.store');
@@ -44,7 +43,7 @@ Route::prefix('user')->middleware(AuthenticateMiddleware::class)->group(function
 });
 
 // Manage user catalogue
-Route::prefix('user/catalouge')->middleware(AuthenticateMiddleware::class)->group(function () {
+Route::prefix('user/catalouge')->middleware('authenticate')->group(function () {
     Route::get('/index', [UserCatalougeController::class, 'index'])->name('user.catalouge.index');
     Route::get('/create', [UserCatalougeController::class, 'create'])->name('user.catalouge.create');
     Route::post('/store', [UserCatalougeController::class, 'store'])->name('user.catalouge.store');
@@ -55,7 +54,7 @@ Route::prefix('user/catalouge')->middleware(AuthenticateMiddleware::class)->grou
 });
 
 // Manage post catalogue
-Route::prefix('post/catalouge')->middleware(AuthenticateMiddleware::class)->group(function () {
+Route::prefix('post/catalouge')->middleware('authenticate')->group(function () {
     Route::get('/index', [PostCatalougeController::class, 'index'])->name('post.catalouge.index');
     Route::get('/create', [PostCatalougeController::class, 'create'])->name('post.catalouge.create');
     Route::post('/store', [PostCatalougeController::class, 'store'])->name('post.catalouge.store');
@@ -66,7 +65,7 @@ Route::prefix('post/catalouge')->middleware(AuthenticateMiddleware::class)->grou
 });
 
 // Manage post 
-Route::prefix('post')->middleware(AuthenticateMiddleware::class)->group(function () {
+Route::prefix('post')->middleware('authenticate')->group(function () {
     Route::get('/index', [PostController::class, 'index'])->name('post.index');
     Route::get('/create', [PostController::class, 'create'])->name('post.create');
     Route::post('/store', [PostController::class, 'store'])->name('post.store');
@@ -78,7 +77,7 @@ Route::prefix('post')->middleware(AuthenticateMiddleware::class)->group(function
 
 
 // Manage language
-Route::prefix('language')->middleware(AuthenticateMiddleware::class)->group(function () {
+Route::prefix('language')->middleware('authenticate')->group(function () {
     Route::get('/index', [LanguageController::class, 'index'])->name('language.index');
     Route::get('/create', [LanguageController::class, 'create'])->name('language.create');
     Route::post('/store', [LanguageController::class, 'store'])->name('language.store');
@@ -87,4 +86,6 @@ Route::prefix('language')->middleware(AuthenticateMiddleware::class)->group(func
     Route::get('{id}/delete', [LanguageController::class, 'delete'])->name('language.delete');
     Route::post('{id}/destroy', [LanguageController::class, 'destroy'])->name('language.destroy');
     Route::post('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->name('language.switch');
+});
+
 });

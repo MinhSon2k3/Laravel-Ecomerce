@@ -5,9 +5,9 @@
                                     <th>
                                         <input type="checkbox" value=" " id="checkAll" class="">
                                     </th>
-                                    <th>Tên nhóm</th>
-                                    <th class="text-center">Tình trạng</th>
-                                    <th class="text-center">Thao tác</th>
+                                    <th>{{__('messages.title')}}</th>
+                                    <th class="text-center">{{__('messages.tableStatus')}}</th>
+                                    <th class="text-center">{{__('messages.tableAction')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>

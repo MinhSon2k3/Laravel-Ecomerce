@@ -15,7 +15,7 @@
             <div class="col-lg-9">
               <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Thông tin chung</h5>
+                    <h5>{{__('messages.tableHeading')}}</h5>
                 </div>
                 <div class="ibox-content">
                  @include('backend.post.post.component.general')
@@ -29,7 +29,7 @@
         </div>
         
         <div class="text-right">
-            <button class="btn btn-primary" type="submit" name="send" value="">Thêm bài viết</button>
+            <button class="btn btn-primary" type="submit" name="send" value="">{{__('messages.add')}}</button>
         </div>
     </div>
 

@@ -41,7 +41,7 @@ class PostCatalougeController  extends Controller
     $postCatalouges = $this->postCatalougeService->paginate($request);
     $seo = [
       //Hàm config lấy giá trị từ file cấu hình của ứng dụng.
-      'meta_title' => config('apps.postcatalouge')
+      'meta_title' => __('messages.postCatalogue') 
     ];
     // Định nghĩa đường dẫn tới template
     $template = 'backend.post.catalouge.index';
@@ -55,7 +55,7 @@ class PostCatalougeController  extends Controller
 
     $template = 'backend.post.catalouge.create';
     $seo = [
-      'meta_title' => config('apps.postcatalouge')
+      'meta_title' => __('messages.postCatalogue') 
     ];
     $dropdown=$this->nestedsetbie->Dropdown();
     return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
@@ -74,7 +74,7 @@ class PostCatalougeController  extends Controller
     $dropdown=$this->nestedsetbie->Dropdown();
     $template = 'backend.post.catalouge.edit';
     $seo = [
-        'meta_title' => config('apps.postcatalouge')
+        'meta_title' => __('messages.postCatalogue') 
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','postCatalouge','dropdown'));
 }
@@ -89,7 +89,7 @@ class PostCatalougeController  extends Controller
     $postCatalouge = $this->postCatalougeRepository->getPostCatalougeById($id,$this->language);
     $template = 'backend.post.catalouge.delete';
     $seo = [
-        'meta_title' => config('apps.postcatalouge')
+        'meta_title' => __('messages.postCatalogue') 
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','postCatalouge'));
 }
