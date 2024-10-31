@@ -23,7 +23,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:post_languages',
+            'canonical' => 'required|unique:routers',
             'parent_id' => 'gt:0',
         ];
     }

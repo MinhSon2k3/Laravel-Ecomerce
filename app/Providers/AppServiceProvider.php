@@ -29,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
 
         //Base
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',
+
+        //Router
+        'App\Repositories\Interfaces\RouterRepositoryInterface'=>'App\Repositories\RouterRepository',
         
     ];
     /**

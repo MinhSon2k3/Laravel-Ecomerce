@@ -1,10 +1,11 @@
 <?php
 namespace App\Services;
 
-use  App\Services\Interfaces\PostCatalougeServiceInterface;
-use  App\Services\BaseService;
-use  App\Classes\Nestedsetbie;
+use App\Services\Interfaces\PostCatalougeServiceInterface;
+use App\Services\BaseService;
+use App\Classes\Nestedsetbie;
 use App\Repositories\Interfaces\PostCatalougeRepositoryInterface as PostCatalougeRepository;//tương tác với database
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -18,15 +19,17 @@ use Illuminate\Support\Str;
 class PostCatalougeService  extends BaseService implements PostCatalougeServiceInterface
 {
     protected $postCatalougeRepository;
-    public function __construct( PostCatalougeRepository $postCatalougeRepository){
+    protected $routerRepository;
+
+    public function __construct( PostCatalougeRepository $postCatalougeRepository,RouterRepository $routerRepository ){
         $this->postCatalougeRepository=$postCatalougeRepository;
+        $this->routerRepository=$routerRepository;
         $this->nestedsetbie=new Nestedsetbie([
             'table'=>'post_catalouges',
             'foreignkey'=>'post_catalouge_id',
             'language_id'=>$this->currentLanguage()
         ]);
     }
-//userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
 
     public function paginate($request){
 
@@ -45,11 +48,9 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
         ],
         ); 
         return $postCatalouges;
-        }
+    }
 
-
-  
-        public function paginateSelect(){
+    public function paginateSelect(){
         return [
         'id',
         'publish',
@@ -73,10 +74,17 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
             $postCatalouge=$this->postCatalougeRepository->create($payload);//$postCatalouge biến đại diện cho model postCatalouge
             if($postCatalouge->id>0){
                 $payloadLanguage=$request->only($this->payloadLanguage());
+                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
                 $payloadLanguage['post_catalouge_id']=$postCatalouge->id;
                 $language=$this->postCatalougeRepository->createTranslatePivot($postCatalouge,$payloadLanguage);
-            
+
+                $router=[
+                    'canonical'=>$payloadLanguage['canonical'],
+                    'module_id'=>$postCatalouge->id,
+                    'controllers'=>'App\Http\Controllers\Backend\PostCatalougeController'
+                ];
+               $this->routerRepository->create($router);
             }
             $this->nestedsetbie->Get('level ASC,order ASC');
             $this->nestedsetbie->Recursive(0,$this->nestedsetbie->Set());
@@ -107,6 +115,20 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
                 $payloadLanguage['post_catalouge_id']=$id;
                 $postCatalouge->languages()->detach([$payloadLanguage['language_id'],$id]);
                 $response = $this->postCatalougeRepository->createTranslatePivot($postCatalouge, $payloadLanguage);
+
+                $payloadRouter=[
+                    'canonical'=>$payloadLanguage['canonical'],
+                    'module_id'=>$postCatalouge->id,
+                    'controllers'=>'App\Http\Controllers\Backend\PostCatalougeController'
+                ];
+                $condition=[
+                    [ 'module_id','=',$postCatalouge->id],
+                    [ 'controllers','=','App\Http\Controllers\Backend\PostCatalougeController']
+
+                ];
+                $router=$this->routerRepository->findByCondition($condition);
+                $this->routerRepository->update($router->id,$payloadRouter);
+
                 $this->nestedsetbie->Get('level ASC, order ASC');
                 $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
                 $this->nestedsetbie->Action();
@@ -131,6 +153,7 @@ class PostCatalougeService  extends BaseService implements PostCatalougeServiceI
             $this->nestedsetbie->Get('level ASC, order ASC');
             $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
             $this->nestedsetbie->Action();
+            DB::table('routers')->where('module_id', $id)->where('controllers', 'App\Http\Controllers\Backend\PostCatalougeController')->delete();
             DB::commit();
             return true;//xóa dữ liệu thành công
         }

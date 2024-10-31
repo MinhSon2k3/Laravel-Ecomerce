@@ -58,8 +58,7 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->fresh();
     }
 
-    public function update(int $id = 0, array $payload = [])
-    {
+    public function update(int $id = 0, array $payload = []){
         $model = $this->model->find($id);
         if ($model) {
             $model->update($payload);
@@ -78,13 +77,11 @@ class BaseRepository implements BaseRepositoryInterface
        return  $model = $this->model->find($id)->delete();
     }
 
-    public function all()
-    {
+    public function all(){
         return  $this->model->all();;
     }
 
-    public function findById(int $modelId, array $column = ['*'], array $relation = [])
-    {
+    public function findById(int $modelId, array $column = ['*'], array $relation = []){
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
        /* Lấy một model ($this->model).
         Chọn các cột được chỉ định ($column).
@@ -96,13 +93,13 @@ class BaseRepository implements BaseRepositoryInterface
    
         return $model->languages()->attach($model->id,$payload);
         //Phương thức attach() được sử dụng để thêm một bản ghi mới vào bảng trung gian
-       }
+    }
 
     public function createPivot($model,array $payload=[], string $relation=''){
    
         return $model->{$relation}()->attach($model->id,$payload);
         //Phương thức attach() được sử dụng để thêm một bản ghi mới vào bảng trung gian
-       }
+    }
     
     public function updateByWhere($condition=[],array $payload=[]){
         $query=$this->model->newQuery();
@@ -110,5 +107,13 @@ class BaseRepository implements BaseRepositoryInterface
             $query->where($val[0],$val[1],$val[2]);
         }
         return $query->update($payload);
+    }
+
+    public function findByCondition($condition=[]){
+        $query=$this->model->newQuery(); 
+        foreach($condition as $key => $val){
+            $query->where($val[0],$val[1],$val[2]);
+        }
+        return $query->first();
     }
 }

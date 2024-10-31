@@ -5,6 +5,7 @@ use  App\Services\Interfaces\PostServiceInterface;
 use  App\Services\BaseService;
 use  App\Classes\Nestedsetbie;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;//tương tác với database
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -18,8 +19,10 @@ use Illuminate\Support\Str;
 class PostService  extends BaseService implements PostServiceInterface
 {
     protected $postRepository;
-    public function __construct( PostRepository $postRepository){
+    protected $routerRepository;
+    public function __construct( PostRepository $postRepository,RouterRepository $routerRepository ){
         $this->postRepository=$postRepository;
+        $this->routerRepository=$routerRepository;
        
     }
 //userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
@@ -62,6 +65,14 @@ class PostService  extends BaseService implements PostServiceInterface
                 $language=$this->postRepository->createPivot($post,$payloadLanguage,'languages');
                 $catalouge=$this->catalouge($request);
                 $post->post_catalouges()->sync($catalouge);
+
+                $router=[
+                    'canonical'=>$payloadLanguage['canonical'],
+                    'module_id'=>$post->id,
+                    'controllers'=>'App\Http\Controllers\Backend\PostController'
+                ];
+             
+               $this->routerRepository->create($router);
             }
         
             DB::commit();
@@ -88,6 +99,19 @@ class PostService  extends BaseService implements PostServiceInterface
                 $response = $this->postRepository->createPivot($post, $payloadLanguage,'languages');
                 $catalouge=$this->catalouge($request);
                 $post->post_catalouges()->sync($catalouge); 
+
+                $payloadRouter=[
+                    'canonical'=>$payloadLanguage['canonical'],
+                    'module_id'=>$post->id,
+                    'controllers'=>'App\Http\Controllers\Backend\PostController'
+                ];
+                $condition=[
+                    [ 'module_id','=',$post->id],
+                    [ 'controllers','=','App\Http\Controllers\Backend\PostController']
+
+                ];
+                $router=$this->routerRepository->findByCondition($condition);
+                $this->routerRepository->update($router->id,$payloadRouter);
             }
             DB::commit();
             return true;//sửa dữ liệu thành công
@@ -106,6 +130,7 @@ class PostService  extends BaseService implements PostServiceInterface
           
             $this->postRepository->destroy($id);
             DB::table('post_languages')->where('post_id', $id)->delete();
+            DB::table('routers')->where('module_id', $id)->where('controllers', 'App\Http\Controllers\Backend\PostController')->delete();
             DB::commit();
             return true;
         }
