@@ -1,43 +1,41 @@
 <?php
 namespace App\Services;
 
-use  App\Services\Interfaces\UserCatalougeServiceInterface;
-use App\Repositories\Interfaces\UserCatalougeRepositoryInterface as UserCatalougeRepository;//tương tác với database
-use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
+use  App\Services\Interfaces\PermissionServiceInterface;
+use App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;//tương tác với database
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 
-class UserCatalougeService implements UserCatalougeServiceInterface
+class PermissionService implements PermissionServiceInterface
 {
-    protected $userCatalougeRepository;
-    protected $userRepository;
-    public function __construct(UserCatalougeRepository $userCatalougeRepository , UserRepository $userRepository){
-        $this->userCatalougeRepository=$userCatalougeRepository;
-        $this->userRepository=$userRepository;
+    protected $permissionRepository;
+    public function __construct( PermissionRepository $permissionRepository){
+        $this->permissionRepository=$permissionRepository;
     }
-//userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
+//permissionRepository là dependency của class permissionService vì permissionService phụ thuộc permissionRepository
 
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
        $condition['publish'] = $request->integer('publish');
-       $userCatalouges=$this->userCatalougeRepository->pagination(
+       $permissions=$this->permissionRepository->pagination(
         $this->paginateSelect(),
         $condition,
         [],
-        ['path'=>'user/catalouge/index'],
-        ['users'],
+        ['path'=>'permission/index'],
         [],
-        5  ); 
-       return $userCatalouges;
+        [],
+         10); 
+       return $permissions;
     }
 
     public function paginateSelect(){
-        return ['id','description','name','publish'];
+        return ['id','name','canonical'];
     }
 
     public function create($request){
@@ -46,17 +44,17 @@ class UserCatalougeService implements UserCatalougeServiceInterface
         try{
             //$payload lấy dữ liệu từ các input request
             $payload=$request->input();
-          
-            
-            //lấy dữ liệu từ payload để thêm vào database bằng create() từ userRepository
-            $user=$this->userCatalougeRepository->create($payload);//$user biến đại diện cho model User
+            $payload['permission_id']=Auth::id();
+           
+            //lấy dữ liệu từ payload để thêm vào database bằng create() từ permissionRepository
+            $permission=$this->permissionRepository->create($payload);//$permission biến đại diện cho model permission
            
             DB::commit();
             return true;//thêm dữ liệu thành công
         }
         catch(\Exception $e){
             DB::rollback();
-            echo $e->getMessage();
+            dd($e->getMessage());
             return false;
         }
 
@@ -71,8 +69,8 @@ class UserCatalougeService implements UserCatalougeServiceInterface
            
            
          
-            //lấy dữ liệu từ payload và $id để thêm vào database bằng update() từ userCatalougeRepository
-            $user=$this->userCatalougeRepository->update($id,$payload);
+            //lấy dữ liệu từ payload và $id để thêm vào database bằng update() từ permissionCatalougeRepository
+            $permission=$this->permissionRepository->update($id,$payload);
           
            
             DB::commit();
@@ -85,14 +83,12 @@ class UserCatalougeService implements UserCatalougeServiceInterface
         }
 
     }
-    
     public function destroy($id){
 
         DB::beginTransaction();
         try{
             
-            $user=$this->userCatalougeRepository->destroy($id);
-          
+            $permission=$this->permissionRepository->destroy($id);
             DB::commit();
             return true;//xóa dữ liệu thành công
         }
@@ -108,26 +104,24 @@ class UserCatalougeService implements UserCatalougeServiceInterface
         DB::beginTransaction();
         try{
             
-            $payload[$post['field']] =(($post['value']==1)?2 :1) ;//nếu value=1 gán bằng  2 còn lại =1
-            $user=$this->userCatalougeRepository->update($post['modelId'],$payload);
-            $this->changeUserStatus($post,$payload[$post['field']]);
+            $payload[$post['field']] =(($post['value']==1)?2 :1 ) ;//nếu value=1 gán bằng  2 còn lại =1
+            $permission=$this->permissionRepository->update($post['modelId'],$payload);
             DB::commit();
-            return true;//xóa dữ liệu thành công
+            return true;
         }
         catch(\Exception $e){
             DB::rollback(); 
             dd($e->getMessage());
-            return false;
+            return false;   
         }
     }
-
+   
     public function updateStatusAll($post=[]){
         
         DB::beginTransaction();
         try{
             $payload[$post['field']] =$post['value'] ;
-            $user=$this->userCatalougeRepository->updateByWhereIn('id',$post['id'],$payload);
-            $this->changeUserStatus($post,$post['value']);
+            $permission=$this->permissionRepository->updateByWhereIn('id',$post['id'],$payload);
             DB::commit();
             return true;
         }
@@ -138,22 +132,15 @@ class UserCatalougeService implements UserCatalougeServiceInterface
         }
     }
 
-    public function changeUserStatus($post,$value){
-
+    public function switch($id){
         DB::beginTransaction();
         try{
-            $array=[];
-            if(isset($post['modelId'])){
-                $array[]=$post['modelId'];
-            }else{
-                $array=$post['id'];
-            }
-           $payload[$post['field']]=$value;
-        
-           $this->userRepository->updateByWhereIn('user_catalouge_id',$array,$payload);//update theo model của userRepository(User) theo trường user_catalouge_id
-          
-
-
+            $permission=$this->permissionRepository->findById($id);
+            $this->permissionRepository->update($id,['current'=> 1]);
+            $payload=['current'=>0];
+            $this->permissionRepository->updateByWhere([
+                ['id','!=',$id],
+            ],$payload);
             DB::commit();
             return true;
         }
@@ -162,9 +149,6 @@ class UserCatalougeService implements UserCatalougeServiceInterface
             dd($e->getMessage());
             return false;
         }
-    }
-
-    public function setPermission(){
-        
+       
     }
 }

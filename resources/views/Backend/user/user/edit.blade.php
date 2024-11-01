@@ -1,7 +1,6 @@
 @include('backend.dashboard.component.breadcrumb',['title'=>$seo['meta_title']['edit']['title']])
 <form action="{{ route('user.update', ['id' => $user->id]) }}" method="post" class="box">
     @csrf
-    @method('PUT')
     <div class="wrapper wrapper-content aminated fadeInRight">
         <div class="row">
             <div class="col-lg-5">

@@ -9,6 +9,8 @@ use App\Http\Requests\StoreUserCatalougeRequest;
 use App\Http\Requests\UpdateUserRequest;
 use  App\Services\Interfaces\UserCatalougeServiceInterface as UserCatalougeService;//thao tác create/update/delete/paginate
 use  App\Repositories\Interfaces\UserCatalougeRepositoryInterface as UserCatalougeRepository;//dùng cho tra cứu theo id
+use  App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;
+
 
 
 
@@ -16,13 +18,16 @@ class UserCatalougeController extends Controller
 {
   protected $userCatalougeService;
   protected $userCatalougeRepository;
+  protected $permissionRepository;
   public function __construct(
     UserCatalougeService $userCatalougeService,
     UserCatalougeRepository $userCatalougeRepository,
+    PermissionRepository  $permissionRepository
   ) {
 
     $this->userCatalougeService = $userCatalougeService;
     $this->userCatalougeRepository = $userCatalougeRepository;
+    $this->permissionRepository = $permissionRepository;
   }
 
   public function index(Request $request)
@@ -91,6 +96,22 @@ public function destroy($id){
   return redirect()->route('user.catalouge.index')->with('error', 'Xóa thông tin ko thành công');
 }
 
+public function permission(){
+  $userCatalouges=$this->userCatalougeRepository->all();
+  $permissions=$this->permissionRepository->all();
+  $template = 'backend.user.catalouge.permission';
+  $seo = [
+      'meta_title' => __('messages.permission') 
+  ];
+  return view('backend.dashboard.layout', compact('template', 'seo','userCatalouges','permissions'));
+}
+
+public function updatePermission(Request $request){
+  if($this->userCatalougeService->setPermission()){
+    return redirect()->route('user.catalouge.index')->with('success', 'Cập nhật quyền thành công');
+  }
+  return redirect()->route('user.catalouge.index')->with('error', 'Cập nhật quyền ko thành công');
+}
 
 }
 

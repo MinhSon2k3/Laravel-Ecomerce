@@ -14,6 +14,9 @@ class AppServiceProvider extends ServiceProvider
          //USER-CATALOGUE  
         'App\Services\Interfaces\UserCatalougeServiceInterface'=>'App\Services\UserCatalougeService',
         'App\Repositories\Interfaces\UserCatalougeRepositoryInterface'=>'App\Repositories\UserCatalougeRepository',
+         //Permission
+         'App\Services\Interfaces\PermissionServiceInterface'=>'App\Services\PermissionService',
+         'App\Repositories\Interfaces\PermissionRepositoryInterface'=>'App\Repositories\PermissionRepository',
         //ADDRESS
         'App\Repositories\Interfaces\ProvinceRepositoryInterface'=>'App\Repositories\ProvinceRepository',
         'App\Repositories\Interfaces\DistrictRepositoryInterface'=>'App\Repositories\DistrictRepository',

@@ -23,5 +23,12 @@ class UserCatalouge extends Model
         return $this->hasMany(User::class,'user_catalouge_id','id');
     }
 
+    public function permissions(){
+        return $this->belongsToMany(Permission::class, 'user_catalouge_permissions' , 'user_catalouge_id', 'permission_id')
+        ->withPivot(
+            'name',
+            'canonical'
+        )->withTimestamps();
+    }
 
 }

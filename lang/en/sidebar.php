@@ -14,6 +14,10 @@ return [
                     'title' => 'User',
                     'route' => 'user/index'
                 ],
+                [
+                    'title' => 'QL Quyền',
+                    'route' => 'permission/index'
+                ],
             ]
         ],
         [

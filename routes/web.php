@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashBoardController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserCatalougeController;
+use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\PostCatalougeController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
@@ -51,6 +52,19 @@ Route::prefix('user/catalouge')->middleware('authenticate')->group(function () {
     Route::post('{id}/update', [UserCatalougeController::class, 'update'])->name('user.catalouge.update');
     Route::get('{id}/delete', [UserCatalougeController::class, 'delete'])->name('user.catalouge.delete');
     Route::post('{id}/destroy', [UserCatalougeController::class, 'destroy'])->name('user.catalouge.destroy');
+    Route::get('/permission', [UserCatalougeController::class, 'permission'])->name('user.catalouge.permission');
+    Route::post('/updatePermission', [UserCatalougeController::class, 'updatePermission'])->name('user.catalouge.updatepermission');
+});
+
+// Manage permission
+Route::prefix('permission')->middleware('authenticate')->group(function () {
+    Route::get('/index', [PermissionController::class, 'index'])->name('permission.index');
+    Route::get('/create', [PermissionController::class, 'create'])->name('permission.create');
+    Route::post('/store', [PermissionController::class, 'store'])->name('permission.store');
+    Route::get('{id}/edit', [PermissionController::class, 'edit'])->name('permission.edit');
+    Route::post('{id}/update', [PermissionController::class, 'update'])->name('permission.update');
+    Route::get('{id}/delete', [PermissionController::class, 'delete'])->name('permission.delete');
+    Route::post('{id}/destroy', [PermissionController::class, 'destroy'])->name('permission.destroy');
 });
 
 // Manage post catalogue

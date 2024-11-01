@@ -14,6 +14,10 @@ return [
                     'title' => 'QL Thành Viên',
                     'route' => 'user/index'
                 ],
+                [
+                    'title' => 'QL Quyền',
+                    'route' => 'permission/index'
+                ],
             ]
         ],
         [
