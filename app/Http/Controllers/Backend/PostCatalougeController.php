@@ -37,6 +37,7 @@ class PostCatalougeController  extends Controller
 
   public function index(Request $request)
   {
+    $this->authorize('modules','post.catalouge.index');
     //controller->service->repository thực hiện nghiệp vụ
     $postCatalouges = $this->postCatalougeService->paginate($request);
     $seo = [
@@ -52,7 +53,7 @@ class PostCatalougeController  extends Controller
   //khi ấn vào dòng thêm
   public function create()
   { 
-
+    $this->authorize('modules','post.catalouge.create');
     $template = 'backend.post.catalouge.create';
     $seo = [
       'meta_title' => __('messages.postCatalogue') 
@@ -70,6 +71,7 @@ class PostCatalougeController  extends Controller
 
   //edit
   public function edit($id){
+    $this->authorize('modules','post.catalouge.edit');
     $postCatalouge = $this->postCatalougeRepository->getPostCatalougeById($id,$this->language);
     $dropdown=$this->nestedsetbie->Dropdown();
     $template = 'backend.post.catalouge.edit';
@@ -86,6 +88,7 @@ class PostCatalougeController  extends Controller
   }
 
   public function delete($id){
+    $this->authorize('modules','post.catalouge.delete');
     $postCatalouge = $this->postCatalougeRepository->getPostCatalougeById($id,$this->language);
     $template = 'backend.post.catalouge.delete';
     $seo = [

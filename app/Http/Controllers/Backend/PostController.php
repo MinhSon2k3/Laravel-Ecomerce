@@ -36,6 +36,7 @@ class PostController  extends Controller
   }
 
   public function index(Request $request){
+    $this->authorize('modules','post.index');
     //controller->service->repository thực hiện nghiệp vụ
     $posts = $this->postService->paginate($request);
     $seo = [
@@ -50,6 +51,7 @@ class PostController  extends Controller
   }
 
   public function create(){ 
+    $this->authorize('modules','post.create');
     $template = 'backend.post.post.create';
     $seo = [
       'meta_title' =>__('messages.post') 
@@ -67,6 +69,7 @@ class PostController  extends Controller
   }
 
   public function edit($id) { 
+      $this->authorize('modules','post.edit');
       $post = $this->postRepository->getPostById($id,$this->language);
       $dropdown=$this->nestedsetbie->Dropdown();
       $template = 'backend.post.post.edit';
@@ -84,6 +87,7 @@ class PostController  extends Controller
   }
 
   public function delete($id){
+    $this->authorize('modules','post.delete');
     $post = $this->postRepository->getPostById($id,$this->language);
     $template = 'backend.post.post.delete';
     $seo = [

@@ -35,7 +35,7 @@
                                             <div class="user-item"> {{$user->address}}</div>
                                         </td>
                                         <td>
-                                            <div class="user-item text-center"> {{$user->user_catalouge->name}} </div>
+                                            <div class="user-item text-center"> {{$user->user_catalouges->name}} </div>
                                         </td>
                                     
                                         <td class="text-center js-switch-{{$user->id}}">

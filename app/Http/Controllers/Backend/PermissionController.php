@@ -68,7 +68,7 @@ class PermissionController  extends Controller
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','permission'));
 }
-  public function update($id, UpdatePermissionRequestt $request){
+  public function update($id, UpdatePermissionRequest $request){
     if($this->permissionService->update($id,$request)){
       return redirect()->route('permission.index')->with('success', 'Chỉnh sửa ngôn ngữ thành công');
     }

@@ -27,6 +27,7 @@ class UserController extends Controller
 
   public function index(Request $request)
   {
+    $this->authorize('modules','user.index');
     //controller->service->repository thực hiện nghiệp vụ
     $users = $this->userService->paginate($request);
     $seo = [
@@ -42,7 +43,7 @@ class UserController extends Controller
   //khi ấn vào dòng thêm người dùng
   public function create()
   { 
-  
+    $this->authorize('modules','user.create');
     $provinces = $this->provinceRepository->all();
     $template = 'backend.user.user.create';
     $seo = [
@@ -60,6 +61,7 @@ class UserController extends Controller
 
   //edit
   public function edit($id){
+    $this->authorize('modules','user.edit');
     $user = $this->userRepository->findById($id);
     $provinces = $this->provinceRepository->all();
    
@@ -81,6 +83,7 @@ class UserController extends Controller
 
 
   public function delete($id){
+    $this->authorize('modules','user.delete');
     $user = $this->userRepository->findById($id);  
     $template = 'backend.user.user.delete';
     $seo = [

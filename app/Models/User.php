@@ -56,8 +56,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function user_catalouge()
+    public function user_catalouges()
     {
         return $this->belongsTo(UserCatalouge::class, 'user_catalouge_id', 'id');
     }
+
+    public function hasPermission($permissionCanonical){
+        return $this->user_catalouges->permissions->contains('canonical', $permissionCanonical);
+    }
+
+   
 }

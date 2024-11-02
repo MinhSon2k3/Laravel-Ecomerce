@@ -28,6 +28,8 @@ class LanguageController  extends Controller
 
   public function index(Request $request)
   {
+    
+    $this->authorize('modules','language.index');
     //controller->service->repository thực hiện nghiệp vụ
     $languagess = $this->languageService->paginate($request);
     $seo = [
@@ -43,7 +45,7 @@ class LanguageController  extends Controller
   //khi ấn vào dòng thêm người dùng
   public function create()
   { 
-
+    $this->authorize('modules','language.create');
     $template = 'backend.language.create';
     $seo = [
       'meta_title' => config('apps.language')
@@ -60,6 +62,7 @@ class LanguageController  extends Controller
 
   //edit
   public function edit($id){
+    $this->authorize('modules','language.edit');
     $language = $this->languageRepository->findById($id);
 
     $template = 'backend.language.edit';
@@ -76,6 +79,7 @@ class LanguageController  extends Controller
   }
 
   public function delete($id){
+    $this->authorize('modules','language.delete');
     $language = $this->languageRepository->findById($id);  
     $template = 'backend.language.delete';
     $seo = [

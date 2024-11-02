@@ -48,7 +48,7 @@ class UserCatalougeController extends Controller
   public function create()
   { 
   
-   
+    $this->authorize('modules','user.catalouge.create');
     $template = 'backend.user.catalouge.create';
     $seo = [
       'meta_title' => config('apps.usercatalouge')
@@ -65,6 +65,7 @@ class UserCatalougeController extends Controller
   
   //edit
   public function edit($id){
+    $this->authorize('modules','user.catalouge.edit');
     $userCatalouges = $this->userCatalougeRepository->findById($id); 
     $template = 'backend.user.catalouge.edit';
     $seo = [
@@ -81,6 +82,7 @@ class UserCatalougeController extends Controller
 
 
   public function delete($id){
+    $this->authorize('modules','user.catalouge.delete');
     $userCatalouges = $this->userCatalougeRepository->findById($id);  
     $template = 'backend.user.catalouge.delete';
     $seo = [
@@ -97,8 +99,8 @@ public function destroy($id){
 }
 
 public function permission(){
-  $userCatalouges=$this->userCatalougeRepository->all();
-  $permissions=$this->permissionRepository->all();
+  $userCatalouges=$this->userCatalougeRepository->all(['permissions']);
+  $permissions=$this->permissionRepository->all(['user_catalouges']);
   $template = 'backend.user.catalouge.permission';
   $seo = [
       'meta_title' => __('messages.permission') 
@@ -107,7 +109,7 @@ public function permission(){
 }
 
 public function updatePermission(Request $request){
-  if($this->userCatalougeService->setPermission()){
+  if($this->userCatalougeService->setPermission($request)){
     return redirect()->route('user.catalouge.index')->with('success', 'Cập nhật quyền thành công');
   }
   return redirect()->route('user.catalouge.index')->with('error', 'Cập nhật quyền ko thành công');

@@ -77,9 +77,11 @@ class BaseRepository implements BaseRepositoryInterface
        return  $model = $this->model->find($id)->delete();
     }
 
-    public function all(){
-        return  $this->model->all();;
+    public function all(array $relation = [])
+    {
+        return $this->model->with($relation)->get();
     }
+    
 
     public function findById(int $modelId, array $column = ['*'], array $relation = []){
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
