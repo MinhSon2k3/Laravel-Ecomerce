@@ -15,7 +15,7 @@ return [
                     'route' => 'user/index'
                 ],
                 [
-                    'title' => 'QL Quyền',
+                    'title' => 'Permission',
                     'route' => 'permission/index'
                 ],
             ]
@@ -37,12 +37,16 @@ return [
         ],
         [
             'title' => 'General',
-            'icon' => 'fa fa-file',
+            'icon' => 'fa fa-gear',
             'name' => ['language'],
             'subModule' => [
                 [
                     'title' => 'Language',
                     'route' => 'language/index'
+                ],
+                [
+                    'title' => 'Module',
+                    'route' => 'generate/index'
                 ],
             ]
         ]

@@ -17,9 +17,6 @@ class AppServiceProvider extends ServiceProvider
          //Permission
          'App\Services\Interfaces\PermissionServiceInterface'=>'App\Services\PermissionService',
          'App\Repositories\Interfaces\PermissionRepositoryInterface'=>'App\Repositories\PermissionRepository',
-        //ADDRESS
-        'App\Repositories\Interfaces\ProvinceRepositoryInterface'=>'App\Repositories\ProvinceRepository',
-        'App\Repositories\Interfaces\DistrictRepositoryInterface'=>'App\Repositories\DistrictRepository',
         //POST-CATALOUGE
         'App\Services\Interfaces\PostCatalougeServiceInterface'=>'App\Services\PostCatalougeService',
         'App\Repositories\Interfaces\PostCatalougeRepositoryInterface'=>'App\Repositories\PostCatalougeRepository',
@@ -29,10 +26,15 @@ class AppServiceProvider extends ServiceProvider
          //LANGUAGE
          'App\Services\Interfaces\LanguageServiceInterface'=>'App\Services\LanguageService',
          'App\Repositories\Interfaces\LanguageRepositoryInterface'=>'App\Repositories\LanguageRepository',
+        //Generate
+         'App\Services\Interfaces\GenerateServiceInterface'=>'App\Services\GenerateService',
+         'App\Repositories\Interfaces\GenerateRepositoryInterface'=>'App\Repositories\GenerateRepository',
 
+        //ADDRESS
+        'App\Repositories\Interfaces\ProvinceRepositoryInterface'=>'App\Repositories\ProvinceRepository',
+        'App\Repositories\Interfaces\DistrictRepositoryInterface'=>'App\Repositories\DistrictRepository',
         //Base
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',
-
         //Router
         'App\Repositories\Interfaces\RouterRepositoryInterface'=>'App\Repositories\RouterRepository',
         

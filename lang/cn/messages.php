@@ -63,6 +63,21 @@ return [
             'title' => '删除权限'
         ],   
     ],
+    'generate' => [
+        'index' => [
+            'title' => 'Quản lý Module',
+            'table' => 'Danh sách Module'
+        ],
+        'create' => [
+            'title' => 'Thêm mới Module'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật Module'
+        ],
+        'delete' => [
+            'title' => 'Xóa Module'
+        ],
+    ],
     'parent' => '选择父级类别',
     'parentNotice' => '如果没有父级类别，请选择Root',
     'subparent' => '选择子类别（如有）',

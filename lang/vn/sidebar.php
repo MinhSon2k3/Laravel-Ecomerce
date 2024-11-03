@@ -37,12 +37,16 @@ return [
         ],
         [
             'title' => 'Cấu hình chung',
-            'icon' => 'fa fa-file',
+            'icon' => 'fa fa-gear',
             'name' => ['language','generate'],
             'subModule' => [
                 [
                     'title' => 'QL Ngôn ngữ',
                     'route' => 'language/index'
+                ],
+                [
+                    'title' => 'QL Module',
+                    'route' => 'generate/index'
                 ],
                 
             ]

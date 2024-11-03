@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\PostCatalougeController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
+use App\Http\Controllers\Backend\GenerateController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
 
@@ -101,5 +102,17 @@ Route::prefix('language')->middleware('authenticate')->group(function () {
     Route::post('{id}/destroy', [LanguageController::class, 'destroy'])->name('language.destroy');
     Route::post('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->name('language.switch');
 });
+
+// Manage generate
+Route::prefix('generate')->middleware('authenticate')->group(function () {
+    Route::get('/index', [GenerateController::class, 'index'])->name('generate.index');
+    Route::get('/create', [GenerateController::class, 'create'])->name('generate.create');
+    Route::post('/store', [GenerateController::class, 'store'])->name('generate.store');
+    Route::get('{id}/edit', [GenerateController::class, 'edit'])->name('generate.edit');
+    Route::post('{id}/update', [GenerateController::class, 'update'])->name('generate.update');
+    Route::get('{id}/delete', [GenerateController::class, 'delete'])->name('generate.delete');
+    Route::post('{id}/destroy', [GenerateController::class, 'destroy'])->name('generate.destroy');
+});
+
 
 });

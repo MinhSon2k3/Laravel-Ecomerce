@@ -63,6 +63,21 @@ return [
             'title' => 'Delete Permission'
         ],   
     ],
+    'generate' => [
+        'index' => [
+            'title' => 'Quản lý Module',
+            'table' => 'Danh sách Module'
+        ],
+        'create' => [
+            'title' => 'Thêm mới Module'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật Module'
+        ],
+        'delete' => [
+            'title' => 'Xóa Module'
+        ],
+    ],
     'parent' => 'Choose parent category',
     'parentNotice' => 'Choose Root if there is no parent category',
     'subparent' => 'Choose sub-category (if available)',
