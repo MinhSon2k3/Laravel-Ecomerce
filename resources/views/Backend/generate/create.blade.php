@@ -49,7 +49,7 @@
                                     <label for="" class="control-lable text-right">Schema 
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <textarea type="text" name="schema" value="{{old('schema',($generate->schema) ?? '')}}" class="form-control" placeholder="" autocomplete="off"></textarea>
+                                    <textarea type="text" name="schema" value="{{old('schema',($generate->schema) ?? '')}}" class="form-control schema " placeholder="" autocomplete="off"></textarea>
                                 </div>
                             </div>
                         </div>

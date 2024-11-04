@@ -50,7 +50,9 @@ class GenerateService implements GenerateServiceInterface
     public function create($request){
          DB::beginTransaction();
         try{
-           
+            $this->makeDatabase($request);
+            $payload['user_id']= Auth::id();
+            $generate=$this->generateRepository->create($payload);
             DB::commit();
             return true;
         }catch(\Exception $e ){
@@ -59,6 +61,81 @@ class GenerateService implements GenerateServiceInterface
             echo $e->getMessage().'-'.$e->getLine();die();
             return false;
         }
+    }
+
+    public function makeDatabase($request){
+        $payload = $request->only('schema', 'name','module_type');
+        $tableName =$this->convertModuleNameToTableName($payload['name']).'s';  
+        $module = date('Y_m_d_His').'_create_'.$tableName.'_table.php';
+        $migrationPath=database_path('migrations/'.$module);
+        $migrationTemplate=$this->createMigrationFile($payload);
+        FILE::put($migrationPath,$migrationTemplate);
+        if($payload['module_type']!==3){
+            $foreignKey=$this->convertModuleNameToTableName($payload['name'].'_id');
+            $pivotTableName =$this->convertModuleNameToTableName($payload['name']).'_language';  
+            $pivotSchema=$this->pivotSchema($tableName,$foreignKey,$pivotTableName);
+             $migrationPivotTemplate=$this->createMigrationFile([
+                'schema'=>$pivotSchema,
+                'name'=>$pivotTableName,
+             ]);
+             $module1 = date('Y_m_d_His',time() + 100).'_create_'.$pivotTableName.'_table.php';
+             $migrationPivotPath=database_path('migrations/'.$module1);
+            FILE::put($migrationPivotPath,$migrationPivotTemplate);   
+        }
+        ARTISAN::call('migrate');
+    }
+
+    private function createMigrationFile($payload){
+        $migrationTemplate= <<<MIGRATION
+        <?php
+
+        use Illuminate\Database\Migrations\Migration;
+        use Illuminate\Database\Schema\Blueprint;
+        use Illuminate\Support\Facades\Schema;
+
+        return new class extends Migration
+        {
+            /**
+             * Run the migrations.
+             */
+            public function up(): void
+            {
+                {$payload['schema']}
+            }
+
+            /**
+             * Reverse the migrations.
+             */
+            public function down(): void
+            {
+                Schema::dropIfExists('{$this->convertModuleNameToTableName($payload['name'])}');
+            }
+        };  
+        MIGRATION;
+        return $migrationTemplate;
+    }
+
+    private function pivotSchema($tableName,$foreignKey,$pivotTableName){
+        $pivotSchema= <<<SCHEMA
+         Schema::create('$pivotTableName', function (Blueprint \$table) {
+            \$table->unsignedbigInteger('{$foreignKey}');
+            \$table->unsignedbigInteger('language_id');
+            \$table->foreign('$foreignKey')->references('id')->on('$tableName')->onDelete('cascade');
+            \$table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
+            \$table->string('name');
+            \$table->text('description');
+            \$table->longText('content');
+            \$table->string('meta_title');
+            \$table->string('meta_keyword');
+            \$table->text('meta_description');
+        });
+        SCHEMA;
+        return $pivotSchema;
+    }
+
+    private function convertModuleNameToTableName($name){
+        $temp = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
+        return $temp;
     }
 
     public function update($id, $request){

@@ -97,9 +97,7 @@ class LanguageService implements LanguageServiceInterface
             dd($e->getMessage());
             return false;
         }
-
     }
-
     public function updateStatus($post=[]){
         DB::beginTransaction();
         try{

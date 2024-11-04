@@ -81,3 +81,7 @@
   padding: 2px !important;
   /* thêm padding để thấy background */
 }
+
+.schema {
+  height: 300px !important;
+}
