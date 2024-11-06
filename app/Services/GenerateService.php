@@ -50,9 +50,11 @@ class GenerateService implements GenerateServiceInterface
     public function create($request){
          DB::beginTransaction();
         try{
-            $this->makeDatabase($request);
-            $payload['user_id']= Auth::id();
-            $generate=$this->generateRepository->create($payload);
+            //$this->makeDatabase($request);
+            //$this->makeController($request);
+            $this->makeModel($request);
+            // $payload['user_id']= Auth::id();
+            // $generate=$this->generateRepository->create($payload);
             DB::commit();
             return true;
         }catch(\Exception $e ){
@@ -64,6 +66,7 @@ class GenerateService implements GenerateServiceInterface
     }
 
     public function makeDatabase($request){
+        try{
         $payload = $request->only('schema', 'name','module_type');
         $tableName =$this->convertModuleNameToTableName($payload['name']).'s';  
         $module = date('Y_m_d_His').'_create_'.$tableName.'_table.php';
@@ -83,8 +86,14 @@ class GenerateService implements GenerateServiceInterface
             FILE::put($migrationPivotPath,$migrationPivotTemplate);   
         }
         ARTISAN::call('migrate');
-    }
+            return true;
+        }catch(\Exception $e ){
+            echo $e->getMessage().'-'.$e->getLine();die();
+            return false;
+        }
 
+    }
+    //makeDatabase
     private function createMigrationFile($payload){
         $migrationTemplate= <<<MIGRATION
         <?php
@@ -114,7 +123,7 @@ class GenerateService implements GenerateServiceInterface
         MIGRATION;
         return $migrationTemplate;
     }
-
+     //makeDatabase
     private function pivotSchema($tableName,$foreignKey,$pivotTableName){
         $pivotSchema= <<<SCHEMA
          Schema::create('$pivotTableName', function (Blueprint \$table) {
@@ -132,10 +141,148 @@ class GenerateService implements GenerateServiceInterface
         SCHEMA;
         return $pivotSchema;
     }
-
+     //convertModuleName
     private function convertModuleNameToTableName($name){
         $temp = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
         return $temp;
+    }
+    
+    public function makeController($request){
+        try{
+            $payload=$request->only('name','module_type');
+            switch($payload['module_type']){
+                case 1:
+                    $this->createTemplateCatalougeController($payload['name'],'TemplateCatalougeController');
+                    break;
+                case 2:
+                    $this->createTemplateController($payload['name'],'TemplateController');
+                    break; 
+                default:
+                    $this->createSingleController($payload['name'],'SingleController');
+                    break;
+                    
+            }
+            return true;
+        }catch(\Exception $e ){
+          
+            echo $e->getMessage().'-'.$e->getLine();die();
+            return false;
+        }
+    }
+    //makeController
+    private function createTemplateCatalougeController($name,$controllerFile){
+        $controllerName=$name.'Controller';
+        $templateControllerPath = base_path('app/Templates/'.$controllerFile.'.php');
+        $modelContent = file_get_contents($templateControllerPath);
+        $replace = [
+            'ModuleTemplate' => $name,
+            'moduleTemplate' => lcfirst($name),
+            'foreignkey'=>$this->convertModuleNameToTableName($name.'_id'),
+            'moduleView'=>str_replace('_','.',$this->convertModuleNameToTableName($name)),
+            'tableName'=>$this->convertModuleNameToTableName($name.'s')
+        ];
+        $controllerContent=str_replace('{ModuleTemplate}',$replace['ModuleTemplate'],$controllerContent);
+        $controllerContent=str_replace('{moduleTemplate}',$replace['moduleTemplate'],$controllerContent);
+        $controllerContent=str_replace('{foreignkey}',$replace['foreignkey'],$controllerContent);
+        $controllerContent=str_replace('{moduleView}',$replace['moduleView'],$controllerContent);
+        $controllerContent=str_replace('{tableName}',$replace['tableName'],$controllerContent);
+        
+        $controllerPath=base_path('app/Http/Controllers/Backend/'.$controllerName.'.php');
+        FILE::put($controllerPath,$controllerContent);
+        
+    }
+    //makeController
+    private function createTemplateController($name,$controllerFile){
+        $controllerName=$name.'Controller';
+        $templateControllerPath = base_path('app/Templates/'.$controllerFile.'.php');
+        $controllerContent = file_get_contents($templateControllerPath);
+        $replace = [
+            'ModuleTemplate' => $name,
+            'moduleTemplate' => lcfirst($name),
+            'moduleView'=>str_replace('_','.',$this->convertModuleNameToTableName($name).'.'.$this->convertModuleNameToTableName($name)),
+        ];
+        $controllerContent=str_replace('{ModuleTemplate}',$replace['ModuleTemplate'],$controllerContent);
+        $controllerContent=str_replace('{moduleTemplate}',$replace['moduleTemplate'],$controllerContent);
+        $controllerContent=str_replace('{moduleView}',$replace['moduleView'],$controllerContent);
+       
+        
+        $controllerPath=base_path('app/Http/Controllers/Backend/'.$controllerName.'.php');
+        FILE::put($controllerPath,$controllerContent);
+    }
+    //makeController
+    private function createSingleController($name,$controllerName){
+        return 0;
+    }
+
+    public function makeModel($request){
+        try{
+            if($request->input('module_type')==1){
+                $this->createTemplateCatalougeModel($request);
+            }
+            if($request->input('module_type')==2){
+                $this->createTemplateModel($request);
+            }
+            return true;
+        }catch(\Exception $e ){
+          
+            echo $e->getMessage().'-'.$e->getLine();die();
+            return false;
+        }
+    }
+    //makeModel
+    private function createTemplateCatalougeModel($request){
+            $modelName=$request->input('name');
+            $templateModelPath = base_path('app/Templates/TemplateCatalougeModel.php');
+            $modelContent = file_get_contents($templateModelPath);
+            $module=$this->convertModuleNameToTableName($modelName);
+            $extractModule=explode('_',$module);
+            $replace = [
+                'ModuleTemplate' => $modelName,
+                'tableName'=>$module.'s',
+                'relation' => $extractModule[0],
+                'relationTable' => ucfirst($extractModule[0]),
+                'relationPivot'=>$module.'_'.$extractModule[0],
+                'foreignkey'=>$module.'_id',
+                'pivotTable'=>$module.'_languages',
+                'pivotModel'=>$modelName.'Language'
+            ];
+            $modelContent=str_replace('{ModuleTemplate}',$replace['ModuleTemplate'],$modelContent);
+            $modelContent=str_replace('{tableName}',$replace['tableName'],$modelContent);
+            $modelContent=str_replace('{relation}',$replace['relation'],$modelContent);
+            $modelContent=str_replace('{relationTable}',$replace['relationTable'],$modelContent);
+            $modelContent=str_replace('{relationPivot}',$replace['relationPivot'],$modelContent);
+            $modelContent=str_replace('{foreignkey}',$replace['foreignkey'],$modelContent);
+            $modelContent=str_replace('{pivotTable}',$replace['pivotTable'],$modelContent);
+            $modelContent=str_replace('{pivotModel}',$replace['pivotModel'],$modelContent);
+           
+            $modelPath=base_path('app/Models/'.$modelName.'.php');
+            FILE::put($modelPath,$modelContent);
+    }
+    //makeModel
+    private function createTemplateModel($request){
+        $modelName=$request->input('name');
+        $templateModelPath = base_path('app/Templates/TemplateModel.php');
+        $modelContent = file_get_contents($templateModelPath);
+        $module=$this->convertModuleNameToTableName($modelName);
+        $extractModule=explode('_',$module);
+        $replace = [
+            'ModuleTemplate' => $modelName,
+            'tableName'=>$this->convertModuleNameToTableName($modelName.'s'),
+            'relation' => $extractModule[0].'_catalouge',
+            'relationTable' => ucfirst($extractModule[0]).'Catalouge',
+            'relationPivot'=>$module.'_catalouge_'.$module,
+            'foreignkey'=>$this->convertModuleNameToTableName($modelName.'_id'),
+            'pivotTable'=>$module.'_languages',
+        ];
+        $modelContent=str_replace('{ModuleTemplate}',$replace['ModuleTemplate'],$modelContent);
+        $modelContent=str_replace('{tableName}',$replace['tableName'],$modelContent);
+        $modelContent=str_replace('{relation}',$replace['relation'],$modelContent);
+        $modelContent=str_replace('{relationTable}',$replace['relationTable'],$modelContent);
+        $modelContent=str_replace('{relationPivot}',$replace['relationPivot'],$modelContent);
+        $modelContent=str_replace('{foreignkey}',$replace['foreignkey'],$modelContent);
+        $modelContent=str_replace('{pivotTable}',$replace['pivotTable'],$modelContent);       
+        $modelPath=base_path('app/Models/'.$modelName.'.php');
+        FILE::put($modelPath,$modelContent);
     }
 
     public function update($id, $request){

@@ -95,15 +95,6 @@ public function destroy($id){
   return redirect()->route('generate.index')->with('error', 'Xóa ngôn ngữ ko thành công');
 }
 
-public function switchBackendgenerate($id){
-  $generate = $this->generateRepository->findById($id);  
-  
-  if( $this->generateService->switch($id)){
-    session(['app_locale'=>$generate->canonical]);
-    \App::setLocale($generate->canonical);
-  }
-  return back();
-}
 }
 
 

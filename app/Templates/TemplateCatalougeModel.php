@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
-class PostCatalouge extends Model
+class {ModuleTemplate} extends Model
 {  
     use HasFactory;
 
-    protected $table='post_catalouges';
+    protected $table='{tableName}';
 
     protected $fillable = [
         'parent_id',
@@ -28,14 +28,14 @@ class PostCatalouge extends Model
       
     ];
 
-    public function posts(){
-      return $this->belongsToMany(Post::class, 'post_catalouge_post' , 'post_catalouge_id', 'post_id');
+    public function {relation}s(){
+      return $this->belongsToMany({relationTable}::class, '{relationPivot}' , '{foreignkey}', '{relation}_id');
     }
 
     public function languages(){
-        return $this->belongsToMany(Language::class, 'post_catalouge_languages' , 'post_catalouge_id', 'language_id')
+        return $this->belongsToMany(Language::class, '{pivotTable}' , '{foreignkey}', 'language_id')
         ->withPivot(
-            'post_catalouge_id' ,
+            '{foreignkey}' ,
             'language_id',
             'name',
             'description',
@@ -47,14 +47,14 @@ class PostCatalouge extends Model
         )->withTimestamps();
     }
 
-    public function post_catalouge_languages(){
-        return $this->hasMany(PostCatalougeLanguage::class,'post_catalouge_id','id');
+    public function {pivotTable}_languages(){
+        return $this->hasMany({pivotModel}::class,'{foreignkey}','id');
     }
 
 
     public static function isNodeCheck($id=0){
-      $postCatalouge=PostCatalouge::find($id);
-      if($postCatalouge->rgt - $postCatalouge->lft !=1){
+      ${relation}Catalouge={ModuleTemplate}::find($id);
+      if(${relation}Catalouge->rgt - ${relation}Catalouge->lft !=1){
         return false;
       }
       else{
