@@ -52,7 +52,9 @@ class GenerateService implements GenerateServiceInterface
         try{
             //$this->makeDatabase($request);
             //$this->makeController($request);
-            $this->makeModel($request);
+            //$this->makeModel($request);
+            //$this->makeRepository($request);
+            $this->makeService($request);
             // $payload['user_id']= Auth::id();
             // $generate=$this->generateRepository->create($payload);
             DB::commit();
@@ -285,6 +287,55 @@ class GenerateService implements GenerateServiceInterface
         FILE::put($modelPath,$modelContent);
     }
 
+    public function makeRepository($request){
+        $name = $request->input('name');
+        $option = [
+            'repositoryName' => $name . 'Repository',
+            'repositoryInterfaceName' => $name . 'RepositoryInterface',
+        ];
+        
+        $templateRepositoryInterfacePath = base_path('app/Templates/TemplateRepositoryInterface.php');
+        $repositoryInterfaceContent = file_get_contents($templateRepositoryInterfacePath);
+        $templateRepositoryPath = base_path('app/Templates/TemplateRepository.php');
+        $repositoryContent = file_get_contents($templateRepositoryPath);
+        $replace = [
+            'Module' => $name,
+            'tableName' =>$this->convertModuleNameToTableName($name),
+        ];
+        $repositoryInterfaceContent = str_replace('{Module}', $replace['Module'], $repositoryInterfaceContent);
+        $repositoryInterfacePath = base_path('app/Repositories/Interfaces/' . $option['repositoryInterfaceName'].'.php');
+        $repositoryContent = str_replace('{Module}', $replace['Module'], $repositoryContent);
+        $repositoryContent = str_replace('{tableName}', $replace['tableName'], $repositoryContent);
+        $repositoryPath = base_path('app/Repositories/' . $option['repositoryName'].'.php');
+        FILE::put($repositoryInterfacePath,$repositoryInterfaceContent);
+        FILE::put($repositoryPath,$repositoryContent);
+        
+    }
+
+    public function makeService($request){
+        $name = $request->input('name');
+        $option = [
+            'serviceName' => $name . 'Service',
+            'serviceInterfaceName' => $name . 'ServiceInterface',
+        ];
+        $templateServiceInterfacePath = base_path('app/Templates/TemplateServiceInterface.php');
+        $serviceInterfaceContent = file_get_contents($templateServiceInterfacePath);
+     
+        $templateServicePath = base_path('app/Templates/TemplateService.php');
+        $serviceContent = file_get_contents($templateServicePath);
+        $replace = [
+            'Module' => $name,
+            'tableName' =>$this->convertModuleNameToTableName($name),
+        ];
+        $serviceInterfaceContent = str_replace('{Module}', $replace['Module'], $serviceInterfaceContent);
+        $serviceInterfacePath = base_path('app/Services/Interfaces/' . $option['serviceInterfaceName'].'.php');
+        $serviceContent = str_replace('{Module}', $replace['Module'], $serviceContent);
+        $serviceContent = str_replace('{tableName}', $replace['tableName'], $serviceContent);
+        $servicePath = base_path('app/Services/' . $option['serviceName'].'.php');
+        FILE::put($serviceInterfacePath,$serviceInterfaceContent);
+       
+    }
+    
     public function update($id, $request){
         DB::beginTransaction();
         try{
