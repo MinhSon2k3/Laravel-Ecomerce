@@ -7,7 +7,7 @@ use App\Repositories\Interfaces\GenerateRepositoryInterface as GenerateRepositor
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Arttisan;
 use Illuminate\Support\Facades\File;
 
 /**
@@ -50,11 +50,15 @@ class GenerateService implements GenerateServiceInterface
     public function create($request){
          DB::beginTransaction();
         try{
-            //$this->makeDatabase($request);
-            //$this->makeController($request);
-            //$this->makeModel($request);
-            //$this->makeRepository($request);
-            $this->makeService($request);
+            // $database=$this->makeDatabase($request);
+            //$controller=$this->makeController($request);
+            //$model=$this->makeModel($request);
+            //$repository=$this->makeRepository($request);
+            // $service=$this->makeService($request);
+            //$provider=$this->makeProvider($request);
+            //$requests=$this->makeRequest($request);
+            //$rule=$this->makeRule($request);
+             $view=$this->makeView($request);
             // $payload['user_id']= Auth::id();
             // $generate=$this->generateRepository->create($payload);
             DB::commit();
@@ -75,7 +79,7 @@ class GenerateService implements GenerateServiceInterface
         $migrationPath=database_path('migrations/'.$module);
         $migrationTemplate=$this->createMigrationFile($payload);
         FILE::put($migrationPath,$migrationTemplate);
-        if($payload['module_type']!==3){
+        if($payload['module_type']!=='difference'){
             $foreignKey=$this->convertModuleNameToTableName($payload['name'].'_id');
             $pivotTableName =$this->convertModuleNameToTableName($payload['name']).'_language';  
             $pivotSchema=$this->pivotSchema($tableName,$foreignKey,$pivotTableName);
@@ -153,10 +157,10 @@ class GenerateService implements GenerateServiceInterface
         try{
             $payload=$request->only('name','module_type');
             switch($payload['module_type']){
-                case 1:
+                case 'catalouge':
                     $this->createTemplateCatalougeController($payload['name'],'TemplateCatalougeController');
                     break;
-                case 2:
+                case 'detail':
                     $this->createTemplateController($payload['name'],'TemplateController');
                     break; 
                 default:
@@ -174,8 +178,8 @@ class GenerateService implements GenerateServiceInterface
     //makeController
     private function createTemplateCatalougeController($name,$controllerFile){
         $controllerName=$name.'Controller';
-        $templateControllerPath = base_path('app/Templates/'.$controllerFile.'.php');
-        $modelContent = file_get_contents($templateControllerPath);
+        $templateControllerPath = base_path('app/Templates/controllers/'.$controllerFile.'.php');
+        $controllerContent = file_get_contents($templateControllerPath);
         $replace = [
             'ModuleTemplate' => $name,
             'moduleTemplate' => lcfirst($name),
@@ -196,7 +200,7 @@ class GenerateService implements GenerateServiceInterface
     //makeController
     private function createTemplateController($name,$controllerFile){
         $controllerName=$name.'Controller';
-        $templateControllerPath = base_path('app/Templates/'.$controllerFile.'.php');
+        $templateControllerPath = base_path('app/Templates/controllers/'.$controllerFile.'.php');
         $controllerContent = file_get_contents($templateControllerPath);
         $replace = [
             'ModuleTemplate' => $name,
@@ -218,10 +222,10 @@ class GenerateService implements GenerateServiceInterface
 
     public function makeModel($request){
         try{
-            if($request->input('module_type')==1){
+            if($request->input('module_type')=='catalouge'){
                 $this->createTemplateCatalougeModel($request);
             }
-            if($request->input('module_type')==2){
+            if($request->input('module_type')=='detail'){
                 $this->createTemplateModel($request);
             }
             return true;
@@ -234,7 +238,7 @@ class GenerateService implements GenerateServiceInterface
     //makeModel
     private function createTemplateCatalougeModel($request){
             $modelName=$request->input('name');
-            $templateModelPath = base_path('app/Templates/TemplateCatalougeModel.php');
+            $templateModelPath = base_path('app/Templates/models/TemplateCatalougeModel.php');
             $modelContent = file_get_contents($templateModelPath);
             $module=$this->convertModuleNameToTableName($modelName);
             $extractModule=explode('_',$module);
@@ -263,7 +267,7 @@ class GenerateService implements GenerateServiceInterface
     //makeModel
     private function createTemplateModel($request){
         $modelName=$request->input('name');
-        $templateModelPath = base_path('app/Templates/TemplateModel.php');
+        $templateModelPath = base_path('app/Templates/models/TemplateModel.php');
         $modelContent = file_get_contents($templateModelPath);
         $module=$this->convertModuleNameToTableName($modelName);
         $extractModule=explode('_',$module);
@@ -294,9 +298,9 @@ class GenerateService implements GenerateServiceInterface
             'repositoryInterfaceName' => $name . 'RepositoryInterface',
         ];
         
-        $templateRepositoryInterfacePath = base_path('app/Templates/TemplateRepositoryInterface.php');
+        $templateRepositoryInterfacePath = base_path('app/Templates/repositorys/TemplateRepositoryInterface.php');
         $repositoryInterfaceContent = file_get_contents($templateRepositoryInterfacePath);
-        $templateRepositoryPath = base_path('app/Templates/TemplateRepository.php');
+        $templateRepositoryPath = base_path('app/Templates/repositorys/TemplateRepository.php');
         $repositoryContent = file_get_contents($templateRepositoryPath);
         $replace = [
             'Module' => $name,
@@ -318,24 +322,83 @@ class GenerateService implements GenerateServiceInterface
             'serviceName' => $name . 'Service',
             'serviceInterfaceName' => $name . 'ServiceInterface',
         ];
-        $templateServiceInterfacePath = base_path('app/Templates/TemplateServiceInterface.php');
+        $templateServiceInterfacePath = base_path('app/Templates/services/TemplateServiceInterface.php');
         $serviceInterfaceContent = file_get_contents($templateServiceInterfacePath);
      
-        $templateServicePath = base_path('app/Templates/TemplateService.php');
+        $templateServicePath = base_path('app/Templates/services/TemplateService.php');
         $serviceContent = file_get_contents($templateServicePath);
         $replace = [
             'Module' => $name,
             'tableName' =>$this->convertModuleNameToTableName($name),
+            'modulePath'=>str_replace('_','/',$this->convertModuleNameToTableName($name)),
+            'moduleTemplate'=> lcfirst($name),
+            'foreignkey'=>$this->convertModuleNameToTableName($name.'_id')
         ];
         $serviceInterfaceContent = str_replace('{Module}', $replace['Module'], $serviceInterfaceContent);
         $serviceInterfacePath = base_path('app/Services/Interfaces/' . $option['serviceInterfaceName'].'.php');
+        //FILE::put($serviceInterfacePath,$serviceInterfaceContent);
+        
         $serviceContent = str_replace('{Module}', $replace['Module'], $serviceContent);
         $serviceContent = str_replace('{tableName}', $replace['tableName'], $serviceContent);
+        $serviceContent = str_replace('{modulePath}', $replace['modulePath'], $serviceContent);
+        $serviceContent = str_replace('{moduleTemplate}', $replace['moduleTemplate'], $serviceContent);
+        $serviceContent = str_replace('{foreignkey}', $replace['foreignkey'], $serviceContent);
         $servicePath = base_path('app/Services/' . $option['serviceName'].'.php');
-        FILE::put($serviceInterfacePath,$serviceInterfaceContent);
+        FILE::put($servicePath,$serviceContent);
        
     }
     
+    public function makeProvider($request){
+        $name = $request->input('name');
+        $provider = [
+            'providerPath' => base_path('app/Providers/AppServiceProvider.php'),
+            'repositoryProviderPath' => base_path('app/Providers/RepositoryServiceProvider.php'),
+        ];
+        
+        foreach($provider as $key => $val){
+            $content = file_get_contents($val);
+            $insertLine = ($key == 'providerPath') ? "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service'," : "'App\\Repositories\\Interfaces\\{$name}RepositoryInterface' => 'App\\Repositories\\{$name}Repository',"; 
+            $position = strpos($content, '];');
+
+            if($position !== false){
+                $newContent = substr_replace($content, "    ".$insertLine . "\n".'    ', $position, 0);
+            }
+            File::put($val, $newContent);
+        }
+    }
+
+    public function makeRequest($request){
+        $name = $request->input('name');
+        $requestArray = ['Store'.$name.'Request', 'Update'.$name.'Request', 'Delete'.$name.'Request'];
+        $requestTemplate = ['RequestTemplateStore','RequestTemplateUpdate','RequestTemplateDelete'];
+        if($request->input('module_type') != 'catalouge'){
+            unset($requestArray[2]);
+            unset($requestTemplate[2]);
+        }
+        foreach($requestTemplate as $key => $val){
+            $requestPath = base_path('app/Templates/requests/'.$val.'.php');
+            $requestContent = file_get_contents($requestPath);
+            $requestContent = str_replace('{Module}', $name, $requestContent);
+            $requestPut = base_path('app/Http/Requests/'.$requestArray[$key].'.php');
+            FILE::put($requestPut, $requestContent);
+        }
+    }
+
+    public function makeRule($request){
+        $name = $request->input('name');
+        $destination = base_path('app/Rules/Check'.$name.'ChildrenRule.php');
+        $ruleTemplate = base_path('app/Templates/rules/RuleTemplate.php');
+        $content = file_get_contents($ruleTemplate);
+        $content = str_replace('{Module}', $name, $content);
+        if(!FILE::exists($destination)){
+            FILE::put($destination, $content);
+        }
+    }
+
+    public function makeView($request){
+        
+    }
+
     public function update($id, $request){
         DB::beginTransaction();
         try{

@@ -9,62 +9,113 @@
     </div>
 @endif
 <form action="{{route('generate.store')}}" method="post" class="box">
-    @csrf
-    <div class="wrapper wrapper-content aminated fadeInRight">
+@csrf
+    <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox">
-                    <div class="ibox-title">
-                        <h5>Thông tin chung</h5>
+            <div class="col-lg-5">
+                <div class="panel-head">
+                    <div class="panel-title">Thông tin chung</div>
+                    <div class="panel-description">
+                        <p>Nhập thông tin chung của Module</p>
+                        <p>Lưu ý: Những trường đánh dấu <span class="text-danger">(*)</span> là bắt buộc</p>
                     </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="ibox">
                     <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-lg-12">
+                        <div class="row mb15">
+                            <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-lable text-right">Tên mudule
-                                        <span class="text-danger">(*)</span>
-                                    </label>
-                                    <input type="text" name="name" value="{{old('name')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <label for="" class="control-label text-left">Tên Model <span class="text-danger">(*)</span></label>
+                                    <input 
+                                        type="text"
+                                        name="name"
+                                        value="{{ old('name', ($generate->name) ?? '' ) }}"
+                                        class="form-control"
+                                        placeholder=""
+                                        autocomplete="off"
+                                    >
                                 </div>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <div class="form-row">
-                                    <div>
-                                    <label for="" class="control-lable text-right">Loại module
-                                        <span class="text-danger">(*)</span>
-                                    </label>
-                                    </div>
-                                    <div>
-                                    <select name="module_type" id="" class="setupSelect2 col-lg-5">
-                                        <option value="0">Chọn loại module</option>
-                                        <option value="1">Module danh mục</option>
-                                        <option value="2">Module chi tiết</option>
-                                        <option value="3">Module khác</option>
-                                   </select>
-                                    </div>
+                                    <label for="" class="control-label text-left">Tên chức năng <span class="text-danger">(*)</span></label>
+                                    <input 
+                                        type="text"
+                                        name="module"
+                                        value="{{ old('module', ($generate->module) ?? '' ) }}"
+                                        class="form-control"
+                                        placeholder=""
+                                        autocomplete="off"
+                                    >
                                 </div>
                             </div>
-                            <div class="col-lg-12">
+                        </div>
+                        <div class="row mb15">
+                            <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-lable text-right">Schema 
-                                        <span class="text-danger">(*)</span>
-                                    </label>
-                                    <textarea type="text" name="schema" value="{{old('schema',($generate->schema) ?? '')}}" class="form-control schema " placeholder="" autocomplete="off"></textarea>
+                                    <label for="" class="control-label text-left">Loại Module<span class="text-danger">(*)</span></label>
+                                    <select name="module_type" id="" class="form-control  setupSelect2">
+                                        <option value="0">Chọn Loại Module</option>
+                                        <option value="catalouge">Module danh mục</option>
+                                        <option value="detail">Module chi tiết</option>
+                                        <option value="difference">Module khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">Đường dẫn<span class="text-danger">(*)</span></label>
+                                    <input 
+                                        type="text"
+                                        name="path"
+                                        value="{{ old('path', ($generate->path) ?? '' ) }}"
+                                        class="form-control"
+                                        placeholder=""
+                                        autocomplete="off"
+                                    >
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            
         </div>
-        
-        <div class="text-right">
-            <button class="btn btn-primary" type="submit" name="send" value="">Thêm module</button>
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="panel-head">
+                    <div class="panel-title">Thông tin Schema</div>
+                    <div class="panel-description">
+                        <p>Nhập thông tin Schema</p>
+                        <p>Lưu ý: Những trường đánh dấu <span class="text-danger">(*)</span> là bắt buộc</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="row mb15">
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">Schema <span class="text-danger">(*)</span></label>
+                                    <textarea 
+                                        name="schema"
+                                        value="{{ old('schema', ($generate->schema) ?? '' ) }}"
+                                        class="form-control schema"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="text-right mb15">
+            <button class="btn btn-primary" type="submit" name="send" value="send">Lưu lại</button>
         </div>
     </div>
-
 </form>
 
 

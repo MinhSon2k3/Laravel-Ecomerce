@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreGenerateRequest extends FormRequest
+class Update{Module}Request extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,19 +21,20 @@ class StoreGenerateRequest extends FormRequest
      */
     public function rules(): array
     {
+
+
         return [
-            'name' => 'required|unique:generates',
-            'schema' => 'required',
+            'name' => 'required',
+            'canonical' => 'required|unique:routers,canonical, '.$this->id.',module_id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập vào tên module.',
-            'name.unique' => 'Module đã tồn tại.',
-             'module_type.gt' => 'Bạn phải chọn kiểu module.',
-            'schema.required' => 'Bạn chưa nhập vào schema của module.',
+            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.',
+            'canonical.required' => 'Bạn chưa nhập vào ô đường dẫn',
+            'canonical.unique' => 'Đường dẫn đã tồn tại, Hãy chọn đường dẫn khác',
         ];
     }
 }

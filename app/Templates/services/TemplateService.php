@@ -25,8 +25,8 @@ class {Module}Service  extends BaseService implements {Module}ServiceInterface
         $this->{moduleTemplate}Repository=${moduleTemplate}Repository;
         $this->routerRepository=$routerRepository;
         $this->nestedsetbie=new Nestedsetbie([
-            'table'=>'post_catalouges',
-            'foreignkey'=>'post_catalouge_id',
+            'table'=>'{tableName}s',
+            'foreignkey'=>'{foreignkey}',
             'language_id'=>$this->currentLanguage()
         ]);
     }
@@ -39,12 +39,12 @@ class {Module}Service  extends BaseService implements {Module}ServiceInterface
         $this->paginateSelect(),
         $condition,
         [
-            ['post_catalouge_languages as tb2', 'tb2.post_catalouge_id', '=', 'post_catalouges.id']
+            ['{tableName}_languages as tb2', 'tb2.{foreignkey}', '=', '{tableName}s.id']
         ],
-        ['path'=>'post/catalouge/index'],
+        ['path'=>'{modulePath}/index'],
         [],
         [
-            'post_catalouges.lft','Asc'
+            '{tableName}s.lft','Asc'
         ],
         ); 
         return ${moduleTemplate}s;
@@ -76,13 +76,13 @@ class {Module}Service  extends BaseService implements {Module}ServiceInterface
                 $payloadLanguage=$request->only($this->payloadLanguage());
                 $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalouge_id']=${moduleTemplate}->id;
+                $payloadLanguage['{foreignkey}']=${moduleTemplate}->id;
                 $language=$this->{moduleTemplate}Repository->createTranslatePivot(${moduleTemplate},$payloadLanguage);
 
                 $router=[
                     'canonical'=>$payloadLanguage['canonical'],
                     'module_id'=>${moduleTemplate}->id,
-                    'controllers'=>'App\Http\Controllers\Backend\{moduleTemplate}Controller'
+                    'controllers'=>'App\Http\Controllers\Backend\{Module}Controller'
                 ];
                $this->routerRepository->create($router);
             }
@@ -112,18 +112,18 @@ class {Module}Service  extends BaseService implements {Module}ServiceInterface
                 $payloadLanguage=$request->only($this->payloadLanguage());
                 $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalouge_id']=$id;
+                $payloadLanguage['{foreignkey}']=$id;
                 ${moduleTemplate}->languages()->detach([$payloadLanguage['language_id'],$id]);
                 $response = $this->{moduleTemplate}Repository->createTranslatePivot(${moduleTemplate}, $payloadLanguage);
 
                 $payloadRouter=[
                     'canonical'=>$payloadLanguage['canonical'],
                     'module_id'=>${moduleTemplate}->id,
-                    'controllers'=>'App\Http\Controllers\Backend\{moduleTemplate}Controller'
+                    'controllers'=>'App\Http\Controllers\Backend\{Module}Controller'
                 ];
                 $condition=[
                     [ 'module_id','=',${moduleTemplate}->id],
-                    [ 'controllers','=','App\Http\Controllers\Backend\{moduleTemplate}Controller']
+                    [ 'controllers','=','App\Http\Controllers\Backend\{Module}Controller']
 
                 ];
                 $router=$this->routerRepository->findByCondition($condition);
@@ -153,7 +153,7 @@ class {Module}Service  extends BaseService implements {Module}ServiceInterface
             $this->nestedsetbie->Get('level ASC, order ASC');
             $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
             $this->nestedsetbie->Action();
-            DB::table('routers')->where('module_id', $id)->where('controllers', 'App\Http\Controllers\Backend\{moduleTemplate}Controller')->delete();
+            DB::table('routers')->where('module_id', $id)->where('controllers', 'App\Http\Controllers\Backend\{Module}Controller')->delete();
             DB::commit();
             return true;//xóa dữ liệu thành công
         }
@@ -185,22 +185,6 @@ class {Module}Service  extends BaseService implements {Module}ServiceInterface
             'meta_description',
             'canonical'
         ];
-    }
-
-    public function updateStatus($post=[]){
-        DB::beginTransaction();
-        try{
-            
-            $payload[$post['field']] =(($post['value']==1)?2 :1 ) ;//nếu value=1 gán bằng  2 còn lại =1
-            ${moduleTemplate}=$this->{moduleTemplate}Repository->update($post['modelId'],$payload);
-            DB::commit();
-            return true;
-        }
-        catch(\Exception $e){
-            DB::rollback(); 
-            dd($e->getMessage());
-            return false;   
-        }
     }
 
 }
