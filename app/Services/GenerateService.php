@@ -51,14 +51,17 @@ class GenerateService implements GenerateServiceInterface
          DB::beginTransaction();
         try{
             // $database=$this->makeDatabase($request);
-            //$controller=$this->makeController($request);
-            //$model=$this->makeModel($request);
-            //$repository=$this->makeRepository($request);
+            // $controller=$this->makeController($request);
+            // $model=$this->makeModel($request);
+            // $repository=$this->makeRepository($request);
             // $service=$this->makeService($request);
-            //$provider=$this->makeProvider($request);
-            //$requests=$this->makeRequest($request);
-            //$rule=$this->makeRule($request);
-             $view=$this->makeView($request);
+            // $provider=$this->makeProvider($request);
+            // $requests=$this->makeRequest($request);
+            // if($request->input('module_type')=='catalouge'){
+            //     $rule=$this->makeRule($request);
+            // }
+            // $view=$this->makeView($request);
+            // $router=$this->makeRoute($request);
             // $payload['user_id']= Auth::id();
             // $generate=$this->generateRepository->create($payload);
             DB::commit();
@@ -143,6 +146,8 @@ class GenerateService implements GenerateServiceInterface
             \$table->string('meta_title');
             \$table->string('meta_keyword');
             \$table->text('meta_description');
+            \$table->text('canonical');
+            \$table->timestamps();
         });
         SCHEMA;
         return $pivotSchema;
@@ -396,7 +401,97 @@ class GenerateService implements GenerateServiceInterface
     }
 
     public function makeView($request){
+        try{
+            $name = $request->input('name');
+            $module = $this->convertModuleNameToTableName($name); 
+            $extractModule = explode('_', $module);
+            $basePath =  resource_path("views/backend/{$extractModule[0]}");
+
+            $folderPath = (count($extractModule) == 2) ? "$basePath/{$extractModule[1]}" : "$basePath/{$extractModule[0]}";
+            $componentPath = "$folderPath/component";
+
+            $this->createDirectory($folderPath);
+            $this->createDirectory($componentPath);
+            
+
+            $sourcePath = base_path('app/Templates/views/'.((count($extractModule) == 2) ? 'catalouge' : 'detail').'/');
+            $viewPath = (count($extractModule) == 2) ? "{$extractModule[0]}.{$extractModule[1]}" : $extractModule[0].'.'.$extractModule[0];
+            $replacement = [
+                'view' => $viewPath,
+                'module' => lcfirst($name),
+                'Module' => $name,
+            ];
+           
+            $fileArray = ['create.blade.php','index.blade.php','delete.blade.php'];
+            $componentFile = ['aside.blade.php', 'filter.blade.php','table.blade.php'];
+            $this->CopyAndReplaceContent($sourcePath, $folderPath, $fileArray, $replacement);
+            $this->CopyAndReplaceContent("{$sourcePath}component/", $componentPath, $componentFile, $replacement);
+
+
+            return true;
+        }catch(\Exception $e ){
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();die();
+            return false;
+        } 
+    }
+    //makeView
+    private function createDirectory($path){
+        if(!FILE::exists($path)){
+            File::makeDirectory($path, 0755, true);
+        }
+    }
+    //makeView
+    private function CopyAndReplaceContent(string $sourcePath ,string $destinationPath, array $fileArray, array $replacement){
+        foreach($fileArray as $key => $val){
+            $sourceFile = $sourcePath.$val;
+            $destination = "{$destinationPath}/{$val}";
+            $content = file_get_contents($sourceFile);
+            foreach($replacement as $keyReplace => $replace){
+                $content = str_replace('{'.$keyReplace.'}', $replace, $content);
+            }
+            if(!FILE::exists($destination)){
+                FILE::put($destination, $content);
+            }
+        }
+    }
+
+    public function makeRoute($request){
+        $name = $request->input('name');
+        $module = $this->convertModuleNameToTableName($name);
+        $moduleExtract = explode('_', $module);
+        $routesPath = base_path('routes/web.php');
+        $content = file_get_contents($routesPath);
+        $routeUrl = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}/$moduleExtract[1]" : $moduleExtract[0];
+        $routeName = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}.$moduleExtract[1]" : $moduleExtract[0];
+
+       
         
+        $routeGroup = <<<ROUTE
+        Route::group(['prefix' => '$routeUrl'], function () {
+            Route::get('index', [{$name}Controller::class, 'index'])->name('{$routeName}.index');
+            Route::get('create', [{$name}Controller::class, 'create'])->name('{$routeName}.create');
+            Route::post('store', [{$name}Controller::class, 'store'])->name('{$routeName}.store');
+            Route::get('{id}/edit', [{$name}Controller::class, 'edit'])->name('{$routeName}.edit');
+            Route::post('{id}/update', [{$name}Controller::class, 'update'])->name('{$routeName}.update');
+            Route::get('{id}/delete', [{$name}Controller::class, 'delete'])->name('{$routeName}.delete');
+            Route::delete('{id}/destroy', [{$name}Controller::class, 'destroy'])->name('{$routeName}.destroy');
+        });
+        //@@new-module@@
+
+        ROUTE;
+
+                $useController = <<<ROUTE
+        use App\Http\Controllers\Backend\\{$name}Controller;
+        //@@useController@@
+        ROUTE;
+
+      
+        $content = str_replace('//@@new-module@@', $routeGroup, $content);
+        $content = str_replace('//@@useController@@', $useController, $content);
+       
+        FILE::put($routesPath, $content);
     }
 
     public function update($id, $request){

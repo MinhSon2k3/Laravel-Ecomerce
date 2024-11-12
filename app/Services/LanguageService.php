@@ -129,7 +129,6 @@ class LanguageService implements LanguageServiceInterface
             return false;
         }
     }
-
     public function switch($id){
         DB::beginTransaction();
         try{

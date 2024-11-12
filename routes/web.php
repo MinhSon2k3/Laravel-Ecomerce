@@ -12,7 +12,7 @@ use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\GenerateController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
-
+//@@useController@@
 Route::middleware('locale')->group(function () {
 // Login and logout
 Route::prefix('auth')->group(function () {
@@ -113,6 +113,6 @@ Route::prefix('generate')->middleware('authenticate')->group(function () {
     Route::get('{id}/delete', [GenerateController::class, 'delete'])->name('generate.delete');
     Route::post('{id}/destroy', [GenerateController::class, 'destroy'])->name('generate.destroy');
 });
-
+//@@new-module@@
 
 });
