@@ -12,6 +12,9 @@ use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\GenerateController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
+
+use App\Http\Controllers\Backend\ProductCatalougeController;
+use App\Http\Controllers\Backend\ProductController;
 //@@useController@@
 Route::middleware('locale')->group(function () {
 // Login and logout
@@ -113,6 +116,30 @@ Route::prefix('generate')->middleware('authenticate')->group(function () {
     Route::get('{id}/delete', [GenerateController::class, 'delete'])->name('generate.delete');
     Route::post('{id}/destroy', [GenerateController::class, 'destroy'])->name('generate.destroy');
 });
+
+Route::group(['prefix' => 'product/catalouge'], function () {
+    Route::get('index', [ProductCatalougeController::class, 'index'])->name('product.catalouge.index');
+    Route::get('create', [ProductCatalougeController::class, 'create'])->name('product.catalouge.create');
+    Route::post('store', [ProductCatalougeController::class, 'store'])->name('product.catalouge.store');
+    Route::get('{id}/edit', [ProductCatalougeController::class, 'edit'])->name('product.catalouge.edit');
+    Route::post('{id}/update', [ProductCatalougeController::class, 'update'])->name('product.catalouge.update');
+    Route::get('{id}/delete', [ProductCatalougeController::class, 'delete'])->name('product.catalouge.delete');
+    Route::post('{id}/destroy', [ProductCatalougeController::class, 'destroy'])->name('product.catalouge.destroy');
+});
+Route::group(['prefix' => 'product'], function () {
+    Route::get('index', [ProductController::class, 'index'])->name('product.index');
+    Route::get('create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('store', [ProductController::class, 'store'])->name('product.store');
+    Route::get('{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::post('{id}/update', [ProductController::class, 'update'])->name('product.update');
+    Route::get('{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
+    Route::post('{id}/destroy', [ProductController::class, 'destroy'])->name('product.destroy');
+});
 //@@new-module@@
+
+
+
+
+
 
 });

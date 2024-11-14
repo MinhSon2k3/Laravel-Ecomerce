@@ -15,7 +15,7 @@ return [
             'title' => 'Xóa nhóm hình ảnh'
         ],
     ],
-    'productCatalogue' => [
+    'productCatalouge' => [
         'index' => [
             'title' => 'Quản lý nhóm sản phẩm',
             'table' => 'Danh sách nhóm sản phẩm'
@@ -192,8 +192,8 @@ return [
     'add' => 'Thêm mới',
     'publish' => [
         '0' => 'Chọn tình trạng',
-        '1' => 'Không xuất bản',
-        '2' => 'Xuất bản',
+        '1' => 'Xuất bản',
+        '2' => 'Không xuất bản',
     ],
     'follow' => [
         '1' => 'Follow',

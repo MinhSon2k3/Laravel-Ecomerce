@@ -9,5 +9,8 @@ class Generate extends Model
 {
     use HasFactory;
     protected $table='generates';
+    protected $fillable = [
+        'name',      
+    ];
     
 }

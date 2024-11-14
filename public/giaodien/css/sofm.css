@@ -44,7 +44,7 @@
 
 
 
-.image-post img {
+.image-size img {
   width: 75px !important;
   height: 45px !important;
   object-fit: cover !important;

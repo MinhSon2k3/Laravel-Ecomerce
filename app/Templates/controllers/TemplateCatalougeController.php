@@ -42,7 +42,7 @@ class {ModuleTemplate}Controller  extends Controller
     ${moduleTemplate}s = $this->{moduleTemplate}Service->paginate($request);
     $seo = [
       //Hàm config lấy giá trị từ file cấu hình của ứng dụng.
-      'meta_title' => __('messages.postCatalogue') 
+      'meta_title' => __('messages.{moduleTemplate}') 
     ];
     // Định nghĩa đường dẫn tới template
     $template = 'backend.{moduleView}.index';
@@ -56,7 +56,7 @@ class {ModuleTemplate}Controller  extends Controller
     $this->authorize('modules','{moduleView}.create');
     $template = 'backend.{moduleView}.create';
     $seo = [
-      'meta_title' => __('messages.postCatalogue') 
+      'meta_title' => __('messages.{moduleTemplate}') 
     ];
     $dropdown=$this->nestedsetbie->Dropdown();
     return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
@@ -76,7 +76,7 @@ class {ModuleTemplate}Controller  extends Controller
     $dropdown=$this->nestedsetbie->Dropdown();
     $template = 'backend.{moduleView}.edit';
     $seo = [
-        'meta_title' => __('messages.postCatalogue') 
+        'meta_title' => __('messages.{moduleTemplate}') 
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','{moduleTemplate}','dropdown'));
 }
@@ -92,7 +92,7 @@ class {ModuleTemplate}Controller  extends Controller
     ${moduleTemplate} = $this->{moduleTemplate}Repository->get{ModuleTemplate}ById($id,$this->language);
     $template = 'backend.{moduleView}.delete';
     $seo = [
-        'meta_title' => __('messages.postCatalogue') 
+        'meta_title' => __('messages.{moduleTemplate}') 
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','{moduleTemplate}'));
 }

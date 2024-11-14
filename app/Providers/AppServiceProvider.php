@@ -24,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
          'App\Services\Interfaces\GenerateServiceInterface'=>'App\Services\GenerateService',
         //Base
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',
+        'App\Services\Interfaces\ProductCatalougeServiceInterface' => 'App\Services\ProductCatalougeService',
+        'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
     ];
     /**
      * Register any application services.

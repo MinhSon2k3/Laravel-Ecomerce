@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Classes\Nestedsetbie;
 use App\Http\Requests\Store{ModuleTemplate}Request;
 use App\Http\Requests\Update{ModuleTemplate}Request;
 use  App\Services\Interfaces\{ModuleTemplate}ServiceInterface as {ModuleTemplate}Service;//thao tác create/update/delete/paginate
@@ -23,6 +24,12 @@ class {ModuleTemplate}Controller  extends Controller
 
     $this->{moduleTemplate}Service = ${moduleTemplate}Service;
     $this->{moduleTemplate}Repository = ${moduleTemplate}Repository;
+    $this->nestedsetbie=new Nestedsetbie([
+      'table'=>'{tableName}',
+      'foreignkey'=>'{foreignkey}',
+      'language_id'=>3
+  ]);
+    $this->language=$this->currentLanguage();
   }
 
   public function index(Request $request)
@@ -35,10 +42,11 @@ class {ModuleTemplate}Controller  extends Controller
       //Hàm config lấy giá trị từ file cấu hình của ứng dụng.
       'meta_title' => __('messages.{moduleTemplate}') 
     ];
+    $dropdown=$this->nestedsetbie->Dropdown();
     // Định nghĩa đường dẫn tới template
     $template = 'backend.{moduleView}.index';
     // Trả về view với layout 'backend.dashboard.layout' và truyền biến 'template' và 'users' tới view
-    return view('backend.dashboard.layout', compact('template', '{moduleTemplate}s', 'seo'));
+    return view('backend.dashboard.layout', compact('template', '{moduleTemplate}s', 'seo','dropdown'));
   }
 
   //khi ấn vào dòng thêm người dùng
@@ -49,7 +57,8 @@ class {ModuleTemplate}Controller  extends Controller
     $seo = [
       'meta_title' => __('messages.{moduleTemplate}') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo'));
+    $dropdown=$this->nestedsetbie->Dropdown();
+    return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
   }
   //Khi nhấn vào submit create
   public  function store(Store{ModuleTemplate}Request $request ){ // validate các thông tin cần create
@@ -68,7 +77,8 @@ class {ModuleTemplate}Controller  extends Controller
     $seo = [
         'meta_title' => __('messages.{moduleTemplate}') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo','{moduleTemplate}'));
+    $dropdown=$this->nestedsetbie->Dropdown();
+    return view('backend.dashboard.layout', compact('template', 'seo','{moduleTemplate}','dropdown'));
 }
   public function update($id, Update{ModuleTemplate}Request $request){
     if($this->{moduleTemplate}Service->update($id,$request)){
@@ -84,7 +94,8 @@ class {ModuleTemplate}Controller  extends Controller
     $seo = [
         'meta_title' => __('messages.{moduleTemplate}') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo','{moduleTemplate}'));
+    $dropdown=$this->nestedsetbie->Dropdown();
+    return view('backend.dashboard.layout', compact('template', 'seo','{moduleTemplate}','dropdown'));
 }
 
 public function destroy($id){

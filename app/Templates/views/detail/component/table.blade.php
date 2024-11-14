@@ -20,7 +20,7 @@
                                         <td class="col-lg-8">
                                             <div class="uk-flex uk-flex-middle">
                                                 <div class="image mr5">
-                                                    <div class="img-cover image-{module}">
+                                                    <div class="img-cover image-sizes">
                                                        <img src=" {{${module}->image}}" alt="">
                                                     </div>
                                                    <div class="main-info">

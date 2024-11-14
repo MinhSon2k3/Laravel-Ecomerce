@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
-class {ModuleTemplate} extends Model
+class ProductCatalouge extends Model
 {  
     use HasFactory;
 
-    protected $table='{tableName}';
+    protected $table='product_catalouges';
 
     protected $fillable = [
         'parent_id',
@@ -28,14 +28,14 @@ class {ModuleTemplate} extends Model
       
     ];
 
-    public function {relation}s(){
-      return $this->belongsToMany({relationTable}::class, '{relationPivot}' , '{foreignkey}', '{relation}_id');
+    public function products(){
+      return $this->belongsToMany(Product::class, 'product_catalouge_product' , 'product_catalouge_id', 'product_id');
     }
 
     public function languages(){
-        return $this->belongsToMany(Language::class, '{pivotTable}' , '{foreignkey}', 'language_id')
+        return $this->belongsToMany(Language::class, 'product_catalouge_languages' , 'product_catalouge_id', 'language_id')
         ->withPivot(
-            '{foreignkey}' ,
+            'product_catalouge_id' ,
             'language_id',
             'name',
             'description',
@@ -47,14 +47,14 @@ class {ModuleTemplate} extends Model
         )->withTimestamps();
     }
 
-    public function {pivotTable}(){
-        return $this->hasMany({pivotModel}::class,'{foreignkey}','id');
+    public function product_catalouge_languages(){
+        return $this->hasMany(ProductCatalougeLanguage::class,'product_catalouge_id','id');
     }
 
 
     public static function isNodeCheck($id=0){
-      ${relation}Catalouge={ModuleTemplate}::find($id);
-      if(${relation}Catalouge->rgt - ${relation}Catalouge->lft !=1){
+      $productCatalouge=ProductCatalouge::find($id);
+      if($productCatalouge->rgt - $productCatalouge->lft !=1){
         return false;
       }
       else{
