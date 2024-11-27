@@ -82,9 +82,9 @@ class PostCatalougeController  extends Controller
 }
   public function update($id, UpdatePostCatalougeRequest $request){
     if($this->postCatalougeService->update($id,$request)){
-      return redirect()->route('post.catalouge.index')->with('success', 'Chỉnh sửa bài viết thành công');
+      return redirect()->route('post.catalouge.index')->with('success', 'Chỉnh sửa thành công');
     }
-    return redirect()->route('post.catalouge.index')->with('error', 'Chỉnh sửa bài viết ko thành công');
+    return redirect()->route('post.catalouge.index')->with('error', 'Chỉnh sửa ko thành công');
   }
 
   public function delete($id){
@@ -99,12 +99,10 @@ class PostCatalougeController  extends Controller
 
 public function destroy($id,DeletePostCatalougeRequest $request){
   if($this->postCatalougeService->destroy($id)){
-    return redirect()->route('post.catalouge.index')->with('success', 'Xóa bài viết thành công');
+    return redirect()->route('post.catalouge.index')->with('success', 'Xóa thành công');
   }
-  return redirect()->route('post.catalouge.index')->with('error', 'Xóa bài viết ko thành công');
+  return redirect()->route('post.catalouge.index')->with('error', 'Xóa ko thành công');
 }
-
-
 }
 
 

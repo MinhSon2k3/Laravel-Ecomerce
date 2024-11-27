@@ -126,6 +126,7 @@ class ProductCatalougeService  extends BaseService implements ProductCatalougeSe
                     [ 'controllers','=','App\Http\Controllers\Backend\ProductCatalougeController']
 
                 ];
+               
                 $router=$this->routerRepository->findByCondition($condition);
                 $this->routerRepository->update($router->id,$payloadRouter);
 

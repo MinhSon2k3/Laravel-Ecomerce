@@ -30,7 +30,7 @@ return [
             'title' => 'Xóa nhóm sản phẩm'
         ],
     ],
-    'attributeCatalogue' => [
+    'attributeCatalouge' => [
         'index' => [
             'title' => 'Quản lý loại thuộc tính',
             'table' => 'Danh sách loại thuộc tính'

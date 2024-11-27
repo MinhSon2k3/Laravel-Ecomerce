@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
+
 /**
  * Class GenerateService
  * @package App\Services
@@ -27,7 +28,6 @@ class GenerateService implements GenerateServiceInterface
 
     public function paginate($request){
         $condition['keyword'] = addslashes($request->input('keyword'));
-        $condition['publish'] = $request->integer('publish');
         $generates=$this->generateRepository->pagination(
          $this->paginateSelect(),
          $condition,
@@ -54,7 +54,7 @@ class GenerateService implements GenerateServiceInterface
             $controller=$this->makeController($request);
             $model=$this->makeModel($request);
             $repository=$this->makeRepository($request);
-             $service=$this->makeService($request);
+            $service=$this->makeService($request);
             $provider=$this->makeProvider($request);
             $requests=$this->makeRequest($request);
             if($request->input('module_type')=='catalouge'){
@@ -62,9 +62,10 @@ class GenerateService implements GenerateServiceInterface
             }
             $view=$this->makeView($request);
             $router=$this->makeRoute($request);
-            // $payload['user_id']=Auth::id();
-            // $payload=$request->input('name');
-            // $generate=$this->generateRepository->create($payload);
+            // $payload=$request->only($this->payload());
+            // $payload['user_id'] = Auth::id();
+         
+            // $generate = $this->generateRepository->create($payload);
             DB::commit();
             return true;
         }catch(\Exception $e ){
@@ -250,7 +251,7 @@ class GenerateService implements GenerateServiceInterface
             'moduleTemplate' => lcfirst($name),
             'moduleView'=>str_replace('_','.',$this->convertModuleNameToTableName($name).'.'.$this->convertModuleNameToTableName($name)),
             'foreignkey'=>$this->convertModuleNameToTableName($name.'catalouge_id'),
-            'tableName'=>$this->convertModuleNameToTableName($name.'catalouges')
+            'tableName'=>$this->convertModuleNameToTableName($name.'_catalouges')
         ];
         $controllerContent=str_replace('{ModuleTemplate}',$replace['ModuleTemplate'],$controllerContent);
         $controllerContent=str_replace('{moduleTemplate}',$replace['moduleTemplate'],$controllerContent);
@@ -590,26 +591,10 @@ class GenerateService implements GenerateServiceInterface
         FILE::put($routesPath, $content);
     }
 
-    public function update($id, $request){
-        DB::beginTransaction();
-        try{
-
-            $payload = $request->except(['_token','send']);
-            $generate = $this->generateRepository->update($id, $payload);
-            DB::commit();
-            return true;
-        }catch(\Exception $e ){
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();die();
-            return false;
-        }
-    }
-
     public function destroy($id){
         DB::beginTransaction();
         try{
-            $generate = $this->generateRepository->delete($id);
+            $generate = $this->generateRepository->destroy($id);
 
             DB::commit();
             return true;
@@ -621,4 +606,10 @@ class GenerateService implements GenerateServiceInterface
         }
     }
 
+    private function payload(){
+        return [
+           'name',
+           'schema'
+        ];
+    }
 }

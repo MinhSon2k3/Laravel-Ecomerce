@@ -2,6 +2,29 @@
 return [
     'module' => [
         [
+            'title' => 'QL Sản phẩm',
+            'icon' => 'fa fa-box',
+            'name' => ['user','permission'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Sản phẩm',
+                    'route' => 'product/catalouge/index'
+                ],
+                [
+                    'title' => 'QL Sản phẩm',
+                    'route' => 'product/index'
+                ],
+                [
+                    'title' => 'QL Nhóm thuộc tính',
+                    'route' => 'attribute/catalouge/index'
+                ],
+                [
+                    'title' => 'QL Thuộc tính',
+                    'route' => 'attribute/index'
+                ],
+            ]
+        ],
+        [
             'title' => 'User',
             'icon' => 'fa fa-user',
             'name' => ['user'],

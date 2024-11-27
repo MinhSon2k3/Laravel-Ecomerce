@@ -45,7 +45,7 @@ class LanguageService implements LanguageServiceInterface
             //$payload lấy dữ liệu từ các input request
             $payload=$request->input();
             $payload['user_id']=Auth::id();
-           
+            dd($payload);
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $language=$this->languageRepository->create($payload);//$language biến đại diện cho model Language
            

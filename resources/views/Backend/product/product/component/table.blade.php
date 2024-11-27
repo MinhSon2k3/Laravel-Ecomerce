@@ -20,7 +20,7 @@
                                         <td class="col-lg-8">
                                             <div class="uk-flex uk-flex-middle">
                                                 <div class="image mr5">
-                                                    <div class="img-cover image-size">
+                                                    <div class="img-cover image-size-product">
                                                        <img src=" {{$product->image}}" alt="">
                                                     </div>
                                                    <div class="main-info">

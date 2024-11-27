@@ -82,9 +82,9 @@ class ProductCatalougeController  extends Controller
 }
   public function update($id, UpdateproductCatalougeRequest $request){
     if($this->productCatalougeService->update($id,$request)){
-      return redirect()->route('product.catalouge.index')->with('success', 'Chỉnh sửa bài viết thành công');
+      return redirect()->route('product.catalouge.index')->with('success', 'Chỉnh sửa thành công');
     }
-    return redirect()->route('product.catalouge.index')->with('error', 'Chỉnh sửa bài viết ko thành công');
+    return redirect()->route('product.catalouge.index')->with('error', 'Chỉnh sửa ko thành công');
   }
 
   public function delete($id){
@@ -99,9 +99,9 @@ class ProductCatalougeController  extends Controller
 
 public function destroy($id,DeleteproductCatalougeRequest $request){
   if($this->productCatalougeService->destroy($id)){
-    return redirect()->route('product.catalouge.index')->with('success', 'Xóa bài viết thành công');
+    return redirect()->route('product.catalouge.index')->with('success', 'Xóa thành công');
   }
-  return redirect()->route('product.catalouge.index')->with('error', 'Xóa bài viết ko thành công');
+  return redirect()->route('product.catalouge.index')->with('error', 'Xóa ko thành công');
 }
 
 

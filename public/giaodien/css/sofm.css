@@ -44,9 +44,16 @@
 
 
 
-.image-size img {
+.image-size-product img {
   width: 75px !important;
-  height: 45px !important;
+  height: 100px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.image-size-post img {
+  width: 75px !important;
+  height: 50px !important;
   object-fit: cover !important;
   display: block !important;
 }

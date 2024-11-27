@@ -15,6 +15,8 @@ use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
 
 use App\Http\Controllers\Backend\ProductCatalougeController;
 use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\AttributeCatalougeController;
+use App\Http\Controllers\Backend\AttributeController;
 //@@useController@@
 Route::middleware('locale')->group(function () {
 // Login and logout
@@ -93,7 +95,6 @@ Route::prefix('post')->middleware('authenticate')->group(function () {
     Route::post('{id}/destroy', [PostController::class, 'destroy'])->name('post.destroy');
 });
 
-
 // Manage language
 Route::prefix('language')->middleware('authenticate')->group(function () {
     Route::get('/index', [LanguageController::class, 'index'])->name('language.index');
@@ -135,7 +136,27 @@ Route::group(['prefix' => 'product'], function () {
     Route::get('{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
     Route::post('{id}/destroy', [ProductController::class, 'destroy'])->name('product.destroy');
 });
+Route::group(['prefix' => 'attribute/catalouge'], function () {
+    Route::get('index', [AttributeCatalougeController::class, 'index'])->name('attribute.catalouge.index');
+    Route::get('create', [AttributeCatalougeController::class, 'create'])->name('attribute.catalouge.create');
+    Route::post('store', [AttributeCatalougeController::class, 'store'])->name('attribute.catalouge.store');
+    Route::get('{id}/edit', [AttributeCatalougeController::class, 'edit'])->name('attribute.catalouge.edit');
+    Route::post('{id}/update', [AttributeCatalougeController::class, 'update'])->name('attribute.catalouge.update');
+    Route::get('{id}/delete', [AttributeCatalougeController::class, 'delete'])->name('attribute.catalouge.delete');
+    Route::post('{id}/destroy', [AttributeCatalougeController::class, 'destroy'])->name('attribute.catalouge.destroy');
+});
+Route::group(['prefix' => 'attribute'], function () {
+    Route::get('index', [AttributeController::class, 'index'])->name('attribute.index');
+    Route::get('create', [AttributeController::class, 'create'])->name('attribute.create');
+    Route::post('store', [AttributeController::class, 'store'])->name('attribute.store');
+    Route::get('{id}/edit', [AttributeController::class, 'edit'])->name('attribute.edit');
+    Route::post('{id}/update', [AttributeController::class, 'update'])->name('attribute.update');
+    Route::get('{id}/delete', [AttributeController::class, 'delete'])->name('attribute.delete');
+    Route::post('{id}/destroy', [AttributeController::class, 'destroy'])->name('attribute.destroy');
+});
 //@@new-module@@
+
+
 
 
 

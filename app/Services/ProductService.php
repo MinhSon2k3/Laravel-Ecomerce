@@ -148,6 +148,9 @@ class ProductService  extends BaseService implements productServiceInterface
             'publish',
             'image',
             'album',
+            'code',
+            'price',
+            'made_in',
         ];
     }
     private function payloadLanguage(){

@@ -26,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',
         'App\Services\Interfaces\ProductCatalougeServiceInterface' => 'App\Services\ProductCatalougeService',
         'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
+        'App\Services\Interfaces\AttributeCatalougeServiceInterface' => 'App\Services\AttributeCatalougeService',
+        'App\Services\Interfaces\AttributeServiceInterface' => 'App\Services\AttributeService',
     ];
     /**
      * Register any application services.

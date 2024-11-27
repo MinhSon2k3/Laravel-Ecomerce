@@ -53,7 +53,7 @@ class GenerateController  extends Controller
     return view('backend.dashboard.layout', compact('template', 'seo'));
   }
   //Khi nhấn vào submit create
-  public  function store(StoregenerateRequest $request ){ // validate các thông tin cần create
+  public  function store(Request $request ){ // validate các thông tin cần create
     if($this->generateService->create($request)){
       return redirect()->route('generate.index')->with('success', 'Thêm mới thành công');
     }
@@ -73,9 +73,9 @@ class GenerateController  extends Controller
 }
   public function update($id, UpdategenerateRequest $request){
     if($this->generateService->update($id,$request)){
-      return redirect()->route('generate.index')->with('success', 'Chỉnh sửa ngôn ngữ thành công');
+      return redirect()->route('generate.index')->with('success', 'Chỉnh sửa thành công');
     }
-    return redirect()->route('generate.index')->with('error', 'Chỉnh sửa ngôn ngữ ko thành công');
+    return redirect()->route('generate.index')->with('error', 'Chỉnh sửa ko thành công');
   }
 
   public function delete($id){
@@ -90,9 +90,9 @@ class GenerateController  extends Controller
 
 public function destroy($id){
   if($this->generateService->destroy($id)){
-    return redirect()->route('generate.index')->with('success', 'Xóa ngôn ngữ thành công');
+    return redirect()->route('generate.index')->with('success', 'Xóa thành công');
   }
-  return redirect()->route('generate.index')->with('error', 'Xóa ngôn ngữ ko thành công');
+  return redirect()->route('generate.index')->with('error', 'Xóa ko thành công');
 }
 
 }

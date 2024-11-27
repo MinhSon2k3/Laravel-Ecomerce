@@ -40,7 +40,7 @@ class {$class}CatalougeRepository extends BaseRepository implements {$class}Cata
                 'tb2.canonical',
             ]
         )
-        ->join('{module}_catalouge_language as tb2', 'tb2.{module}_catalouge_id', '=','{module}_catalouges.id')
+        ->join('{module}_catalouge_languages as tb2', 'tb2.{module}_catalouge_id', '=','{module}_catalouges.id')
         ->where('tb2.language_id', '=', $language_id)
         ->find($id);
     }

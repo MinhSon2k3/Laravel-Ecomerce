@@ -23,7 +23,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:routers',
+            'canonical' => 'required|unique:routers,canonical, '.$this->id.',module_id',
             'parent_id' => 'gt:0',
         ];
     }

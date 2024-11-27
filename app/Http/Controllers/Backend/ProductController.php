@@ -81,14 +81,14 @@ class ProductController  extends Controller
 }
   public function update($id, UpdateProductRequest $request){
     if($this->productService->update($id,$request)){
-      return redirect()->route('product.index')->with('success', 'Chỉnh sửa ngôn ngữ thành công');
+      return redirect()->route('product.index')->with('success', 'Chỉnh sửa thành công');
     }
-    return redirect()->route('product.index')->with('error', 'Chỉnh sửa ngôn ngữ ko thành công');
+    return redirect()->route('product.index')->with('error', 'Chỉnh sửa ko thành công');
   }
 
   public function delete($id){
     $this->authorize('modules','product.delete');
-    $product = $this->productRepository->findById($id);  
+    $product = $this->productRepository->getProductById($id,$this->language);  
     $template = 'backend.product.product.delete';
     $seo = [
         'meta_title' => __('messages.product') 
@@ -99,9 +99,9 @@ class ProductController  extends Controller
 
 public function destroy($id){
   if($this->productService->destroy($id)){
-    return redirect()->route('product.index')->with('success', 'Xóa ngôn ngữ thành công');
+    return redirect()->route('product.index')->with('success', 'Xóa thành công');
   }
-  return redirect()->route('product.index')->with('error', 'Xóa ngôn ngữ ko thành công');
+  return redirect()->route('product.index')->with('error', 'Xóa ko thành công');
 }
 
 }

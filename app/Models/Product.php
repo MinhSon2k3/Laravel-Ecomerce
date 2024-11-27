@@ -20,6 +20,9 @@ class Product extends Model
         'order',
         'user_id',
         'product_catalouge_id',
+        'code',
+        'price',
+        'made_in',
     ];
 
     public function languages(){

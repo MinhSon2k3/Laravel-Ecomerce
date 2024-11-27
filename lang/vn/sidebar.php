@@ -14,6 +14,14 @@ return [
                     'title' => 'QL Sản phẩm',
                     'route' => 'product/index'
                 ],
+                [
+                    'title' => 'QL Nhóm thuộc tính',
+                    'route' => 'attribute/catalouge/index'
+                ],
+                [
+                    'title' => 'QL Thuộc tính',
+                    'route' => 'attribute/index'
+                ],
             ]
         ],
         [
