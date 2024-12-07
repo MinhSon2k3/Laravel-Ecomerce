@@ -71,7 +71,7 @@ class AttributeController  extends Controller
   //edit
   public function edit($id){
     $this->authorize('modules','attribute.edit');
-    $attribute = $this->attributeRepository->findById($id);
+    $attribute = $this->attributeRepository->getAttributeById($id,$this->language);
 
     $template = 'backend.attribute.attribute.edit';
     $seo = [

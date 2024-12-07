@@ -48,6 +48,7 @@
 <script src="{{ asset('giaodien/library/location.js') }}"></script>
 <script src="{{ asset('giaodien/library/finder.js') }}"></script>
 <script src="{{ asset('giaodien/library/seo.js') }}"></script>
+<script src="{{ asset('giaodien/library/variant.js') }}"></script>
 
 <!-- CK scripts -->
 <script src="{{ asset('giaodien/plugin/ckfinder_2/ckfinder.js') }}"></script>
@@ -60,3 +61,4 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flot@4.2.1/jquery.flot.min.js"></script>
 
+<script src="{{ asset('giaodien/plugin/nice-select/js/jquery.nice-select.min.js') }}"></script>

@@ -21,6 +21,7 @@
                  @include('backend.product.product.component.general')
                 </div>
               </div>
+              @include('backend.product.product.component.variant')
               @include('backend.product.product.component.seo')
             </div>
             <div class="col-lg-3">

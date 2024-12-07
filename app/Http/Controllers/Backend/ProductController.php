@@ -9,6 +9,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use  App\Services\Interfaces\ProductServiceInterface as ProductService;//thao tác create/update/delete/paginate
 use  App\Repositories\Interfaces\ProductRepositoryInterface as  ProductRepository;//dùng cho tra cứu theo id
+use  App\Repositories\Interfaces\AttributeCatalougeRepositoryInterface as  AttributeCatalougeRepository;
 
 
 
@@ -20,10 +21,12 @@ class ProductController  extends Controller
   public function __construct(
     ProductService $productService,
     ProductRepository $productRepository,
+    AttributeCatalougeRepository $attributeCatalougeRepository
   ) {
 
     $this->productService = $productService;
     $this->productRepository = $productRepository;
+    $this->attributeCatalougeRepository = $attributeCatalougeRepository;
     $this->nestedsetbie=new Nestedsetbie([
       'table'=>'product_catalouges',
       'foreignkey'=>'product_catalouge_id',
@@ -53,12 +56,13 @@ class ProductController  extends Controller
   public function create()
   { 
     $this->authorize('modules','product.create');
+    $attributeCatalouge=$this->attributeCatalougeRepository->getAll();
     $template = 'backend.product.product.create';
     $seo = [
       'meta_title' => __('messages.product') 
     ];
     $dropdown=$this->nestedsetbie->Dropdown();
-    return view('backend.dashboard.layout', compact('template', 'seo','dropdown'));
+    return view('backend.dashboard.layout', compact('template', 'seo','dropdown','attributeCatalouge'));
   }
   //Khi nhấn vào submit create
   public  function store(StoreProductRequest $request ){ // validate các thông tin cần create
