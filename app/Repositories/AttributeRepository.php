@@ -45,5 +45,12 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
         ->where('tb2.language_id', '=', $language_id)
         ->find($id);
     }
+    public function searchAttributes(string $keyword = '', array $option = [], int $languageId){
+        return $this->model->whereHas('attribute_catalouges', function($query) use ($option){
+            $query->where('attribute_catalouge_id', $option['attributeCatalougeId']);
+        })->whereHas('attribute_language', function($query) use ($keyword){
+            $query->where('name', 'like', '%'.$keyword.'%');
+        })->get();
+    }
 
 }

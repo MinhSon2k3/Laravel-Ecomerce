@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 
 
 
-class AttributeService  extends BaseService implements attributeServiceInterface
+class AttributeService  extends BaseService implements AttributeServiceInterface
 {
     protected $attributeRepository;
     protected $routerRepository;

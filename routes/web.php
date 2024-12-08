@@ -10,13 +10,14 @@ use App\Http\Controllers\Backend\PostCatalougeController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\GenerateController;
-use App\Http\Controllers\Ajax\LocationController;
-use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
-
 use App\Http\Controllers\Backend\ProductCatalougeController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\AttributeCatalougeController;
 use App\Http\Controllers\Backend\AttributeController;
+
+use App\Http\Controllers\Ajax\LocationController;
+use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
+use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 //@@useController@@
 Route::middleware('locale')->group(function () {
 // Login and logout
@@ -36,6 +37,7 @@ Route::prefix('ajax')->group(function () {
     Route::get('location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
     Route::post('dashboard/changeStatus', [AjaxDashBoardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus');
     Route::post('dashboard/changeStatusAll', [AjaxDashBoardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll');
+    Route::get('attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
 });
 
 // Manage user
