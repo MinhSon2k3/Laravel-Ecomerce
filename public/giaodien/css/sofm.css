@@ -58,6 +58,13 @@
   display: block !important;
 }
 
+.image-size-min img {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
 .name {
   max-width: 150px !important;
   white-space: nowrap !important;
@@ -115,6 +122,10 @@
   cursor: pointer;
 }
 
+.mr10 {
+  margin-right: 10px;
+}
+
 .variant-container {
   margin-top: 30px;
 }
@@ -146,4 +157,114 @@
 
 .space-top {
   margin-top: 15px !important;
+}
+
+.variantTable thead {
+  background: #333;
+  color: #fff;
+}
+
+.variantTable tbody td,
+.variantTable thead td {
+  text-align: right;
+  cursor: pointer;
+}
+
+.variantTable thead td:first-child {
+  text-align: left;
+}
+
+.variantTable .variant-row .image {
+  width: 28px;
+  height: 28px;
+}
+
+.updateVariant {
+  box-shadow: none !important;
+  background: #eaeaea;
+}
+
+.click-to-upload-variant {
+  text-align: center;
+  border: 1px dashed #b8b2b2;
+  padding: 20px;
+}
+
+.updateVariant label {
+  margin-bottom: 0;
+  font-weight: 600;
+  color: #1a0dab;
+  margin-bottom: 5px;
+}
+
+.control-label {
+  display: block;
+}
+
+.form-control {
+  -webkit-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+  -webkit-transition-property: color, -webkit-box-shadow;
+  transition-property: color, -webkit-box-shadow;
+  transition-property: box-shadow, color;
+  transition-property: box-shadow, color, -webkit-box-shadow;
+  -webkit-box-shadow: inset 0 1px 0 0 rgba(63, 63, 68, .05);
+  box-shadow: inset 0 1px 0 0 rgba(63, 63, 68, .05);
+  border: 1px solid #c4cdd5;
+  outline: none;
+  height: 32px;
+  -webkit-box-shadow: inset 0 1px 0 0 rgba(63, 63, 68, .05);
+  /* box-shadow: inset 0 1px 0 0 rgba(63,63,68,.05); */
+  border-radius: 5px;
+}
+
+/* Xếp các ảnh nằm ngang */
+#sortable {
+  display: flex;
+  flex-wrap: wrap;
+  /* Nếu ảnh quá nhiều, dòng mới sẽ tự xuống */
+  gap: 10px;
+  /* Khoảng cách giữa các ảnh */
+  list-style: none;
+  /* Loại bỏ dấu bullet mặc định */
+  padding: 0;
+  margin: 0;
+}
+
+#sortable li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  width: 120px;
+  /* Kích thước mỗi ảnh */
+  height: 120px;
+  overflow: hidden;
+}
+
+#sortable img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  /* Đảm bảo ảnh vừa khung */
+  display: block;
+}
+
+.delete-image {
+  margin-top: 5px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 3px 5px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.delete-image i {
+  margin-right: 5px;
 }

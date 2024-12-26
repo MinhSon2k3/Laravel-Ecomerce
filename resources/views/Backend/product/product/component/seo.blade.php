@@ -29,7 +29,7 @@
                         <div class="row mb-15">
                             <div class="col-lg-12">
                             <div class="form-row">
-                            <label for="" class="control-label text-right">
+                            <label for="" class="control-label">
                                 <span style="margin-right: auto !important;">{{__('messages.seoMetaKeyword')}}</span>
                               
                             </label>
@@ -40,7 +40,7 @@
                         <div class="row mb-15">
                             <div class="col-lg-12">
                             <div class="form-row">
-                            <label for="" class="control-label text-right" style="display: flex; justify-content: space-between !important; width: 100% !important;">
+                            <label for="" class="control-label " style="display: flex; justify-content: space-between !important; width: 100% !important;">
                                 <span style="margin-right: auto !important;">{{__('messages.seoMetaDescription')}}</span>
                                 <span class="count_meta-description" style="margin-left: auto !important;">{{__('messages.character')}}</span>
                             </label>
@@ -53,7 +53,7 @@
                         <div class="row mb-15">
                             <div class="col-lg-12">
                             <div class="form-row">
-                            <label for="" class="control-label text-right">
+                            <label for="" class="control-label ">
                                 <span style="margin-right: auto !important;">{{__('messages.canonical')}}</span>
                                 <span class="text-danger">(*)</span>
                             </label>

@@ -57,6 +57,7 @@ class ProductService  extends BaseService implements productServiceInterface
         try{
             //$payload lấy dữ liệu từ các input request
             $payload=$request->only($this->payload());
+          
             $payload['user_id']=Auth::id();
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $product=$this->productRepository->create($payload);//$product biến đại diện cho model product

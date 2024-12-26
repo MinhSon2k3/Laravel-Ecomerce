@@ -2,13 +2,18 @@
     "use strict";
     var HT = {};
 
-    // Thiết lập sự kiện cho sản phẩm có nhiều phiên bản
     HT.setupProductVariant = () => {
         if ($(".turnOnVariant").length) {
             $(document).on("click", ".turnOnVariant", function () {
                 let _this = $(this);
-                // Kiểm tra nếu không có thuộc tính nào được chọn, hiển thị các phiên bản
-                if (_this.siblings("input:checked").length == 0) {
+                let price = $("input[name=price]").val();
+                let code = $("input[name=code]").val();
+                if (price == "" || code == "") {
+                    alert(
+                        "Bạn phải nhập giá và mã sản phẩm để sử dụng tính năng này"
+                    );
+                    return false;
+                } else if (_this.siblings("input:checked").length == 0) {
                     $(".variant-wrapper").removeClass("hidden");
                 } else {
                     $(".variant-wrapper").addClass("hidden");
@@ -17,246 +22,111 @@
         }
     };
 
-    // Thêm một phiên bản mới vào danh sách các phiên bản sản phẩm
     HT.addVariant = () => {
         if ($(".add-variant").length) {
             $(document).on("click", ".add-variant", function () {
-                // Render một item phiên bản mới
                 let html = HT.renderVariantItem(attributeCatalouge);
-                $(".variant-body").append(html); // Thêm vào phần thân phiên bản
-                HT.checkMaxAttributeGroup(attributeCatalouge); // Kiểm tra số lượng thuộc tính tối đa
-                HT.updateDisabledOptions(); // Cập nhật các thuộc tính đã bị vô hiệu hóa
-                HT.destroyNiceSelect(); // Hủy bỏ NiceSelect
-                HT.niceSelect(); // Khởi tạo lại NiceSelect
+                $(".variant-body").append(html);
+                $(".variantTable thead").html("");
+                $(".variantTable tbody").html("");
+                HT.checkMaxAttributeGroup(attributeCatalouge);
+                HT.disabledAttributeCatalougeChoose();
             });
         }
     };
 
-    // Hàm render một item phiên bản mới
     HT.renderVariantItem = (attributeCatalouge) => {
         let html = "";
-        html += `
-            <div class="row mb20 space-top variant-item">
-                <div class="col-lg-3">
-                    <div class="attribute-catalogue">
-                        <select name="" id="" class="choose-attribute niceSelect">
-                            <option value="0">Chọn nhóm thuộc tính</option>
-        `;
-        // Thêm các lựa chọn từ attributeCatalouge vào dropdown
-        attributeCatalouge.forEach((item) => {
-            html += `<option value="${item.id}">${item.name}</option>`;
-        });
+        html = html + '<div class="row mb20 variant-item space-top">';
+        html = html + '<div class="col-lg-3">';
+        html = html + '<div class="attribute-catalouge">';
+        html =
+            html +
+            '<select name="attributeCatalouge[]" id="" class="choose-attribute niceSelect">';
+        html = html + '<option value="">Chọn Nhóm thuộc tính</option>';
+        for (let i = 0; i < attributeCatalouge.length; i++) {
+            html =
+                html +
+                '<option value="' +
+                attributeCatalouge[i].id +
+                '">' +
+                attributeCatalouge[i].name +
+                "</option>";
+        }
+        html = html + "</select>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + '<div class="col-lg-8">';
+        html =
+            html +
+            '<input type="text" name="" disabled class="fake-variant form-control">';
+        html = html + "</div>";
+        html = html + '<div class="col-lg-1">';
+        html =
+            html +
+            '<button type="button" class="remove-attribute btn btn-danger"><svg data-icon="TrashSolidLarge" aria-hidden="true" focusable="false" width="15" height="16" viewBox="0 0 15 16" class="bem-Svg" style="display: block;"><path fill="currentColor" d="M2 14a1 1 0 001 1h9a1 1 0 001-1V6H2v8zM13 2h-3a1 1 0 01-1-1H6a1 1 0 01-1 1H1v2h13V2h-1z"></path></svg></button>';
+        html = html + "</div>";
+        html = html + "</div>";
 
-        html += `
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <input type="text" disabled class="fake-variant form-control">
-                </div>
-                <div class="col-lg-1">
-                    <button type="button" class="remove-attribute btn btn-danger">
-                        <svg data-icon="TrashSolidLarge" aria-hidden="true" focusable="false" width="15" height="16" viewBox="0 0 15 16" class="bem-Svg" style="display: block;">
-                            <path fill="currentColor" d="M2 14a1 1 0 001 1h9a1 1 0 001-1V6H2v8zM13 2h-3a1 1 0 01-1-1H6a1 1 0 01-1 1H1v2h13V2h-1z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        `;
         return html;
     };
 
-    // Khởi tạo NiceSelect (plugin tùy chỉnh cho dropdown)
-    HT.niceSelect = () => {
-        $(".niceSelect").niceSelect();
-    };
-
-    // Hủy bỏ NiceSelect
-    HT.destroyNiceSelect = () => {
-        if ($(".niceSelect").length) {
-            $(".niceSelect").niceSelect("destroy");
-        }
-    };
-
-    // Cập nhật các thuộc tính đã chọn trong các dropdown
-    HT.updateDisabledOptions = () => {
-        let selectedIds = [];
-
-        // Lấy tất cả các giá trị đã chọn trong các dropdown
-        $(".choose-attribute").each(function () {
-            let selectedValue = $(this).find("option:selected").val();
-            if (selectedValue != "0" && selectedValue != "") {
-                selectedIds.push(selectedValue);
-            }
-        });
-
-        // Bỏ disabled cho tất cả các tùy chọn
-        $(".choose-attribute").find("option").removeAttr("disabled");
-
-        // Disable các tùy chọn đã được chọn trước đó
-        $(".choose-attribute").each(function () {
-            let $select = $(this);
-            let currentValue = $select.find("option:selected").val();
-            $select.find("option").each(function () {
-                if (
-                    selectedIds.includes($(this).val()) &&
-                    $(this).val() != currentValue
-                ) {
-                    $(this).prop("disabled", true); // Vô hiệu hóa các tùy chọn đã chọn
-                }
-            });
-        });
-
-        HT.destroyNiceSelect(); // Hủy bỏ NiceSelect
-        HT.niceSelect(); // Khởi tạo lại NiceSelect
-    };
-
-    // Kiểm tra số lượng nhóm thuộc tính, nếu vượt quá thì ẩn nút "Thêm phiên bản mới"
-    HT.checkMaxAttributeGroup = (attributeCatalouge) => {
-        let variantItem = $(".variant-item").length;
-        if (variantItem >= attributeCatalouge.length) {
-            $(".add-variant").remove(); // Ẩn nút nếu số lượng nhóm thuộc tính đã đủ
-        } else {
-            $(".variant-foot").html(
-                '<button type="button" class="add-variant">Thêm phiên bản mới</button>'
-            );
-        }
-    };
-
-    // Xóa một thuộc tính khỏi danh sách phiên bản
-    HT.removeAttribute = () => {
-        $(document).on("click", ".remove-attribute", function () {
-            let _this = $(this);
-            _this.parents(".variant-item").remove(); // Xóa item thuộc tính
-            HT.checkMaxAttributeGroup(attributeCatalouge); // Kiểm tra lại số lượng nhóm thuộc tính
-            HT.createVariant(); // Cập nhật danh sách phiên bản
-        });
-    };
-
-    // Xử lý sự kiện khi người dùng chọn nhóm thuộc tính
     HT.chooseVariantGroup = () => {
         $(document).on("change", ".choose-attribute", function () {
             let _this = $(this);
             let attributeCatalougeId = _this.val();
             if (attributeCatalougeId != 0) {
-                // Tạo dropdown con mới cho nhóm thuộc tính đã chọn
                 _this
                     .parents(".col-lg-3")
                     .siblings(".col-lg-8")
                     .html(HT.select2Variant(attributeCatalougeId));
                 $(".selectVariant").each(function (key, index) {
-                    HT.getSelect2($(this)); // Khởi tạo Select2 cho dropdown mới
+                    HT.getSelect2($(this));
                 });
             } else {
                 _this
                     .parents(".col-lg-3")
                     .siblings(".col-lg-8")
                     .html(
-                        '<input type="text" name="" disabled="" class="fake-variant form-control">'
+                        '<input type="text" name="attribute[' +
+                            attributeCatalougeId +
+                            '][]" disabled="" class="fake-variant form-control">'
                     );
             }
 
-            HT.disabledAttributeCatalogueChoose(); // Cập nhật các thuộc tính đã chọn
+            HT.disabledAttributeCatalougeChoose();
         });
     };
 
-    // Render dropdown select2 cho các thuộc tính đã chọn
-    HT.select2Variant = (attributeCatalougeId) => {
-        let html =
-            '<select class="selectVariant variant-' +
-            attributeCatalougeId +
-            ' form-control" name="attribute[' +
-            attributeCatalougeId +
-            '][]" multiple data-catid="' +
-            attributeCatalougeId +
-            '"></select>';
-        return html;
-    };
-
-    // Khởi tạo Select2 cho các dropdowns
-    HT.getSelect2 = (object) => {
-        let option = {
-            attributeCatalougeId: object.attr("data-catid"),
-        };
-        $(object).select2({
-            minimumInputLength: 2, // Tìm kiếm với ít nhất 2 ký tự
-            placeholder: "Nhập tối thiểu 2 kí tự để tìm kiếm",
-            ajax: {
-                url: "ajax/attribute/getAttribute", // Lấy dữ liệu từ API
-                type: "GET",
-                dataType: "json",
-                deley: 250,
-                data: function (params) {
-                    return {
-                        search: params.term, // Tìm kiếm theo từ khóa
-                        option: option,
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.items, // Hiển thị kết quả tìm kiếm
-                    };
-                },
-                cache: true,
-            },
-        });
-    };
-
-    // Vô hiệu hóa các thuộc tính đã chọn trong các dropdown
-    HT.disabledAttributeCatalogueChoose = () => {
-        let id = [];
-        $(".choose-attribute").each(function () {
-            let _this = $(this);
-            let selected = _this.find("option:selected").val();
-            if (selected != 0) {
-                id.push(selected);
-            }
-        });
-
-        $(".choose-attribute").find("option").removeAttr("disabled"); // Bỏ vô hiệu hóa cho tất cả
-        for (let i = 0; i < id.length; i++) {
-            $(".choose-attribute")
-                .find("option[value=" + id[i] + "]")
-                .prop("disabled", true); // Vô hiệu hóa các thuộc tính đã chọn
-        }
-        HT.destroyNiceSelect(); // Hủy bỏ NiceSelect
-        HT.niceSelect(); // Khởi tạo lại NiceSelect
-        $(".choose-attribute").find("option:selected").removeAttr("disabled");
-    };
-
-    // Tạo các phiên bản sản phẩm khi người dùng thay đổi lựa chọn trong dropdown
     HT.createProductVariant = () => {
         $(document).on("change", ".selectVariant", function () {
             let _this = $(this);
-            HT.createVariant(); // Tạo phiên bản mới
+            HT.createVariant();
         });
     };
 
-    // Tạo phiên bản từ các thuộc tính đã chọn
     HT.createVariant = () => {
         let attributes = [];
         let variants = [];
         let attributeTitle = [];
 
-        // Lặp qua tất cả các item variant để tạo các thuộc tính và phiên bản
         $(".variant-item").each(function () {
             let _this = $(this);
             let attr = [];
             let attrVariant = [];
-            const attributeCatalogueId = _this.find(".choose-attribute").val();
+            const attributeCatalougeId = _this.find(".choose-attribute").val();
             const optionText = _this
                 .find(".choose-attribute option:selected")
                 .text();
-            const attribute = $(".variant-" + attributeCatalogueId).select2(
+            const attribute = $(".variant-" + attributeCatalougeId).select2(
                 "data"
             );
 
-            // Lưu các thuộc tính và phiên bản đã chọn
             for (let i = 0; i < attribute.length; i++) {
                 let item = {};
                 let itemVariant = {};
                 item[optionText] = attribute[i].text;
-                itemVariant[attributeCatalogueId] = attribute[i].id;
+                itemVariant[attributeCatalougeId] = attribute[i].id;
                 attr.push(item);
                 attrVariant.push(itemVariant);
             }
@@ -265,7 +135,6 @@
             variants.push(attrVariant);
         });
 
-        // Kết hợp các thuộc tính thành các phiên bản
         attributes = attributes.reduce((a, b) =>
             a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
         );
@@ -274,9 +143,8 @@
             a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
         );
 
-        HT.createTableHeader(attributeTitle); // Tạo tiêu đề cho bảng phiên bản
+        HT.createTableHeader(attributeTitle);
 
-        // Render các phiên bản vào bảng
         let trClass = [];
         attributes.forEach((item, index) => {
             let $row = HT.createVariantRow(item, variants[index]);
@@ -289,7 +157,6 @@
             }
         });
 
-        // Xóa các dòng không còn phù hợp trong bảng
         $("table.variantTable tbody tr").each(function () {
             const $row = $(this);
             const rowClasses = $row.attr("class");
@@ -308,7 +175,11 @@
                 }
             }
         });
+
+        // let html = HT.renderTableHtml(attributes, attributeTitle, variants);
+        // $('table.variantTable').html(html)
     };
+
     HT.createVariantRow = (attributeItem, variantItem) => {
         let attributeString = Object.values(attributeItem).join(", ");
         let attributeId = Object.values(variantItem).join(", ");
@@ -321,7 +192,7 @@
 
         $td = $("<td>").append(
             $("<span>")
-                .addClass("image img-cover image-size-post")
+                .addClass("image img-cover image-size-min")
                 .append(
                     $("<img>")
                         .attr(
@@ -339,16 +210,26 @@
         });
 
         $td = $("<td>").addClass("hidden td-variant");
+        let mainPrice = $("input[name=price]").val();
+        let mainSku = $("input[name=code]").val();
         let inputHiddenFields = [
             { name: "variant[quantity][]", class: "variant_quantity" },
-            { name: "variant[sku][]", class: "variant_sku" },
-            { name: "variant[price][]", class: "variant_price" },
+            {
+                name: "variant[sku][]",
+                class: "variant_sku",
+                value: mainSku + "-" + classModified,
+            },
+            {
+                name: "variant[price][]",
+                class: "variant_price",
+                value: mainPrice,
+            },
             { name: "variant[barcode][]", class: "variant_barcode" },
             { name: "variant[file_name][]", class: "variant_filename" },
             { name: "variant[file_url][]", class: "variant_fileurl" },
             { name: "variant[album][]", class: "variant_album" },
-            { name: "attribute[name][]", value: attributeString },
-            { name: "attribute[id][]", value: attributeId },
+            { name: "productVariant[name][]", value: attributeString },
+            { name: "productVariant[id][]", value: attributeId },
         ];
 
         $.each(inputHiddenFields, function (_, field) {
@@ -363,8 +244,12 @@
         });
 
         $row.append($("<td>").addClass("td-quantity").text("-"))
-            .append($("<td>").addClass("td-price").text("-"))
-            .append($("<td>").addClass("td-sku").text("-"))
+            .append($("<td>").addClass("td-price").text(mainPrice))
+            .append(
+                $("<td>")
+                    .addClass("td-sku")
+                    .text(mainSku + "-" + classModified)
+            )
             .append($td);
         return $row;
     };
@@ -372,32 +257,199 @@
     HT.createTableHeader = (attributeTitle) => {
         let $thead = $("table.variantTable thead");
         let $row = $("<tr>");
-
-        // Add 'font-weight-bold' class to the first "Hình Ảnh" column
-        $row.append($("<td>").text("Hình Ảnh").addClass("font-weight-bold"));
-
-        // Add 'font-weight-bold' class to the dynamic attribute columns
+        $row.append($("<td>").text("Hình Ảnh"));
         for (let i = 0; i < attributeTitle.length; i++) {
-            $row.append(
-                $("<td>").text(attributeTitle[i]).addClass("font-weight-bold")
-            );
+            $row.append($("<td>").text(attributeTitle[i]));
         }
 
-        // Add 'font-weight-bold' class to the "Số lượng", "Giá tiền", and "SKU" columns
-        $row.append($("<td>").text("Số lượng").addClass("font-weight-bold"));
-        $row.append($("<td>").text("Giá tiền").addClass("font-weight-bold"));
-        $row.append($("<td>").text("SKU").addClass("font-weight-bold"));
+        $row.append($("<td>").text("Số lượng"));
+        $row.append($("<td>").text("Giá tiền"));
+        $row.append($("<td>").text("SKU"));
 
-        // Set the row as the table header
         $thead.html($row);
         return $thead;
     };
+
+    HT.renderTableHtml = (attributes, attributeTitle, variants) => {
+        let html = "";
+
+        html = html + "<thead>";
+        html = html + "<tr>";
+        html = html + "<td>Hình ảnh</td>";
+        for (let i = 0; i < attributeTitle.length; i++) {
+            html = html + "<td>" + attributeTitle[i] + "</td>";
+        }
+
+        html = html + "<td>Số lượng</td>";
+        html = html + "<td>Giá tiền</td>";
+        html = html + "<td>SKU</td>";
+        html = html + "</tr>";
+        html = html + "</thead>";
+        html = html + "<tbody>";
+
+        for (let j = 0; j < attributes.length; j++) {
+            html = html + '<tr class="variant-row">';
+            html = html + "<td>";
+            html =
+                html +
+                '<span class="image img-cover"><img src="https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg" alt="" class="imageSrc"></span>';
+            html = html + "</td>";
+            let attributeArray = [];
+            let attributeIdArray = [];
+            $.each(attributes[j], function (index, value) {
+                html = html + "<td>" + value + "</td>";
+                attributeArray.push(value);
+            });
+
+            $.each(variants[j], function (index, value) {
+                attributeIdArray.push(value);
+            });
+
+            let attributeString = attributeArray.join(", ");
+            let attributeId = attributeIdArray.join(", ");
+
+            html = html + '<td class="td-quantity">-</td>';
+            html = html + '<td class="td-price">-</td>';
+            html = html + '<td class="td-sku">-</td>';
+            html = html + '<td class="hidden td-variant">';
+            html =
+                html +
+                '<input type="text" name="variant[quantity][]" class="variant_quantity">';
+            html =
+                html +
+                '<input type="text" name="variant[sku][]" class="variant_sku">';
+            html =
+                html +
+                '<input type="text" name="variant[price][]" class="variant_price">';
+            html =
+                html +
+                '<input type="text" name="variant[barcode][]" class="variant_barcode">';
+            html =
+                html +
+                '<input type="text" name="variant[file_name][]" class="variant_filename">';
+            html =
+                html +
+                '<input type="text" name="variant[file_url][]" class="variant_fileurl">';
+            html =
+                html +
+                '<input type="text" name="variant[album][]" class="variant_album">';
+            html =
+                html +
+                '<input type="text" name="attribute[name][]" value="' +
+                attributeString +
+                '">';
+            html =
+                html +
+                '<input type="text" name="attribute[id][]" value="' +
+                attributeId +
+                '">';
+            html = html + "</td>";
+            html = html + "</tr>";
+        }
+
+        html = html + "</tbody>";
+
+        return html;
+    };
+
+    HT.getSelect2 = (object) => {
+        let option = {
+            attributeCatalougeId: object.attr("data-catid"),
+        };
+        $(object).select2({
+            minimumInputLength: 2,
+            placeholder: "Nhập tối thiểu 2 kí tự để tìm kiếm",
+            ajax: {
+                url: "ajax/attribute/getAttribute",
+                type: "GET",
+                dataType: "json",
+                deley: 250,
+                data: function (params) {
+                    return {
+                        search: params.term,
+                        option: option,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items,
+                    };
+                },
+                cache: true,
+            },
+        });
+    };
+
+    HT.niceSelect = () => {
+        $(".niceSelect").niceSelect();
+    };
+
+    HT.destroyNiceSelect = () => {
+        if ($(".niceSelect").length) {
+            $(".niceSelect").niceSelect("destroy");
+        }
+    };
+
+    HT.disabledAttributeCatalougeChoose = () => {
+        let id = [];
+        $(".choose-attribute").each(function () {
+            let _this = $(this);
+            let selected = _this.find("option:selected").val();
+            if (selected != 0) {
+                id.push(selected);
+            }
+        });
+
+        $(".choose-attribute").find("option").removeAttr("disabled");
+        for (let i = 0; i < id.length; i++) {
+            $(".choose-attribute")
+                .find("option[value=" + id[i] + "]")
+                .prop("disabled", true);
+        }
+        HT.destroyNiceSelect();
+        HT.niceSelect();
+        $(".choose-attribute").find("option:selected").removeAttr("disabled");
+    };
+
+    HT.checkMaxAttributeGroup = (attributeCatalouge) => {
+        let variantItem = $(".variant-item").length;
+        if (variantItem >= attributeCatalouge.length) {
+            $(".add-variant").remove();
+        } else {
+            $(".variant-foot").html(
+                '<button type="button" class="add-variant">Thêm phiên bản mới</button>'
+            );
+        }
+    };
+
+    HT.removeAttribute = () => {
+        $(document).on("click", ".remove-attribute", function () {
+            let _this = $(this);
+            _this.parents(".variant-item").remove();
+            HT.checkMaxAttributeGroup(attributeCatalouge);
+            HT.createVariant();
+        });
+    };
+
+    HT.select2Variant = (attributeCatalougeId) => {
+        let html =
+            '<select class="selectVariant variant-' +
+            attributeCatalougeId +
+            ' form-control" name="attribute[' +
+            attributeCatalougeId +
+            '][]" multiple data-catid="' +
+            attributeCatalougeId +
+            '"></select>';
+        return html;
+    };
+
     HT.variantAlbum = () => {
         $(document).on("click", ".click-to-upload-variant", function (e) {
             HT.browseVariantServerAlbum();
             e.preventDefault();
         });
     };
+
     HT.browseVariantServerAlbum = () => {
         var type = "Images";
         var finder = new CKFinder();
@@ -428,19 +480,357 @@
         };
         finder.popup();
     };
-    // Khởi tạo các sự kiện khi trang đã sẵn sàng
-    $(document).ready(function () {
-        HT.setupProductVariant(); // Thiết lập sản phẩm có nhiều phiên bản
-        HT.addVariant(); // Thêm phiên bản mới
-        HT.niceSelect(); // Khởi tạo NiceSelect
-        HT.removeAttribute(); // Xóa thuộc tính
-        HT.chooseVariantGroup(); // Chọn nhóm thuộc tính
-        HT.createProductVariant(); // Tạo phiên bản sản phẩm
-        HT.variantAlbum();
-    });
 
-    // Cập nhật các tùy chọn khi người dùng thay đổi lựa chọn
-    $(document).on("change", ".choose-attribute", function () {
-        HT.updateDisabledOptions(); // Cập nhật các tùy chọn đã bị vô hiệu hóa
+    HT.deleteVariantAlbum = () => {
+        $(document).on("click", ".variant-delete-image", function () {
+            let _this = $(this);
+            _this.parents(".ui-state-default").remove();
+            if ($(".ui-state-default").length == 0) {
+                $(".click-to-upload-variant").removeClass("hidden");
+                $(".upload-variant-list").addClass("hidden");
+            }
+        });
+    };
+
+    HT.switchChange = () => {
+        $(document).on("change", ".js-switch", function () {
+            let _this = $(this);
+            let isChecked = _this.prop("checked");
+            if (isChecked == true) {
+                _this
+                    .parents(".col-lg-2")
+                    .siblings(".col-lg-10")
+                    .find(".disabled")
+                    .removeAttr("disabled");
+            } else {
+                _this
+                    .parents(".col-lg-2")
+                    .siblings(".col-lg-10")
+                    .find(".disabled")
+                    .attr("disabled", true);
+            }
+        });
+    };
+
+    HT.updateVariant = () => {
+        $(document).on("click", ".variant-row", function () {
+            let _this = $(this);
+            let variantData = {};
+            _this
+                .find(".td-variant input[type=text][class^='variant_']")
+                .each(function () {
+                    let className = $(this).attr("class");
+                    variantData[className] = $(this).val();
+                });
+
+            let updateVariantBox = HT.updateVariantHtml(variantData);
+            if ($(".updateVariantTr").length == 0) {
+                _this.after(updateVariantBox);
+                HT.switchery();
+            }
+        });
+    };
+
+    HT.switchery = () => {
+        $(".js-switch").each(function () {
+            // let _this = $(this)
+            var switchery = new Switchery(this, {
+                color: "#1AB394",
+                size: "small",
+            });
+        });
+    };
+
+    HT.variantAlbumList = (album) => {
+        let html = "";
+        if (album.length && album[0] !== "") {
+            for (let i = 0; i < album.length; i++) {
+                html = html + '<li class="ui-state-default"> ';
+                html = html + '<div class="thumb"> ';
+                html = html + '<span class="span image img-scaledown">';
+                html =
+                    html +
+                    '<img src="' +
+                    album[i] +
+                    '" alt="' +
+                    album[i] +
+                    '">';
+                html =
+                    html +
+                    '<input type="hidden" name="variantAlbum[]" value="' +
+                    album[i] +
+                    '">';
+                html = html + "</span>";
+                html =
+                    html +
+                    '<button class="variant-delete-image"><i class="fa fa-trash"></i>';
+                html = html + "</button>";
+                html = html + "</div>";
+                html = html + "</li>";
+            }
+        }
+        return html;
+    };
+
+    HT.updateVariantHtml = (variantData) => {
+        let variantAlbum = variantData.variant_album.split(",");
+        let variantAlbumItem = HT.variantAlbumList(variantAlbum);
+        let html = "";
+        html = html + '<tr class="updateVariantTr">';
+        html = html + '<td colspan="6">';
+        html = html + '<div class="updateVariant ibox">';
+        html = html + '<div class="ibox-title">';
+        html =
+            html + '<div class="uk-flex uk-flex-middle uk-flex-space-between">';
+        html = html + "<h5>Cập nhật thông tin phiên bản</h5>";
+        html = html + '<div class="button-group">';
+        html = html + '<div class="uk-flex uk-flex-middle">';
+        html =
+            html +
+            '<button type="button" class="cancleUpdate btn btn-danger mr10">Hủy bỏ</button>';
+        html =
+            html +
+            '<button type="button" class="saveUpdateVariant btn btn-success">Lưu lại</button>';
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + '<div class="ibox-content">';
+        html =
+            html +
+            '<div class="click-to-upload-variant ' +
+            (variantAlbum.length > 0 && variantAlbum[0] !== ""
+                ? "hidden"
+                : "") +
+            '">';
+        html = html + '<div class="icon">';
+        html = html + '<a type="button" class="upload-variant-picture">';
+        html =
+            html +
+            '<svg style="width:80px;height:80px;fill: #d3dbe2;margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><path d="M80 57.6l-4-18.7v-23.9c0-1.1-.9-2-2-2h-3.5l-1.1-5.4c-.3-1.1-1.4-1.8-2.4-1.6l-32.6 7h-27.4c-1.1 0-2 .9-2 2v4.3l-3.4.7c-1.1.2-1.8 1.3-1.5 2.4l5 23.4v20.2c0 1.1.9 2 2 2h2.7l.9 4.4c.2.9 1 1.6 2 1.6h.4l27.9-6h33c1.1 0 2-.9 2-2v-5.5l2.4-.5c1.1-.2 1.8-1.3 1.6-2.4zm-75-21.5l-3-14.1 3-.6v14.7zm62.4-28.1l1.1 5h-24.5l23.4-5zm-54.8 64l-.8-4h19.6l-18.8 4zm37.7-6h-43.3v-51h67v51h-23.7zm25.7-7.5v-9.9l2 9.4-2 .5zm-52-21.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm-13-10v43h59v-43h-59zm57 2v24.1l-12.8-12.8c-3-3-7.9-3-11 0l-13.3 13.2-.1-.1c-1.1-1.1-2.5-1.7-4.1-1.7-1.5 0-3 .6-4.1 1.7l-9.6 9.8v-34.2h55zm-55 39v-2l11.1-11.2c1.4-1.4 3.9-1.4 5.3 0l9.7 9.7c-5.2 1.3-9 2.4-9.4 2.5l-3.7 1h-13zm55 0h-34.2c7.1-2 23.2-5.9 33-5.9l1.2-.1v6zm-1.3-7.9c-7.2 0-17.4 2-25.3 3.9l-9.1-9.1 13.3-13.3c2.2-2.2 5.9-2.2 8.1 0l14.3 14.3v4.1l-1.3.1z"></path></svg>';
+        html = html + "</a>";
+        html = html + "</div>";
+        html =
+            html +
+            '<div class="small-text">Sử dụng nút chọn hình để thêm mới hình ảnh</div>';
+        html = html + "</div>";
+        html =
+            html +
+            ' <ul class="upload-variant-list ' +
+            (variantAlbumItem.length ? "" : "hidden") +
+            ' sortui ui-sortable clearfix " id="sortable2">' +
+            variantAlbumItem +
+            "</ul>";
+        html = html + '<div class="row mt20 uk-flex uk-flex-middle">';
+        html = html + '<div class="col-lg-2 uk-flex uk-flex-middle">';
+        html = html + '<label for="" class="mr10">Tồn kho</label>';
+        html =
+            html +
+            '<input type="checkbox" class="js-switch" ' +
+            (variantData.variant_quantity !== "" ? "checked" : "") +
+            ' data-target="variantQuantity">';
+        html = html + "</div>";
+        html = html + '<div class="col-lg-10">';
+        html = html + '<div class="row">';
+        html = html + '<div class="col-lg-3">';
+        html = html + '<label for="" class="control-label">Số lượng</label>';
+        html =
+            html +
+            '<input type="text" ' +
+            (variantData.variant_quantity == "" ? "disabled" : "") +
+            '  name="variant_quantity" value="' +
+            variantData.variant_quantity +
+            '" class="form-control ' +
+            (variantData.variant_quantity == "" ? "disabled" : "") +
+            ' int">';
+        html = html + "</div>";
+        html = html + '<div class="col-lg-3">';
+        html = html + '<label for="" class="control-label">SKU</label>';
+        html =
+            html +
+            '<input type="text" name="variant_sku" value="' +
+            variantData.variant_sku +
+            '" class="form-control text-right">';
+        html = html + "</div>";
+        html = html + '<div class="col-lg-3">';
+        html = html + '<label for="" class="control-label">Giá</label>';
+        html =
+            html +
+            '<input type="text" name="variant_price" value="' +
+            HT.addCommas(variantData.variant_price) +
+            '" class="form-control int">';
+        html = html + "</div>";
+        html = html + '<div class="col-lg-3">';
+        html = html + '<label for="" class="control-label">Barcode</label>';
+        html =
+            html +
+            '<input type="text" name="variant_barcode" value="' +
+            variantData.variant_barcode +
+            '" class="form-control text-right">';
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + '<div class="row mt20 uk-flex uk-flex-middle">';
+        html = html + '<div class="col-lg-2 uk-flex uk-flex-middle">';
+        html = html + '<label for="" class="mr10">QL File</label>';
+        html =
+            html +
+            '<input type="checkbox" class="js-switch" data-target="disabled" ' +
+            (variantData.variant_filename !== "" ? "checked" : "") +
+            ">";
+        html = html + "</div>";
+        html = html + '<div class="col-lg-10">';
+        html = html + '<div class="row">';
+        html = html + '<div class="col-lg-6">';
+        html = html + '<label for="" class="control-label">Tên File</label>';
+        html =
+            html +
+            '<input type="text" ' +
+            (variantData.variant_filename == "" ? "disabled" : "") +
+            ' name="variant_file_name" value="' +
+            variantData.variant_filename +
+            '" class="form-control ' +
+            (variantData.variant_filename == "" ? "disabled" : "") +
+            '">';
+        html = html + "</div>";
+        html = html + '<div class="col-lg-6">';
+        html = html + '<label for="" class="control-label">Đường dẫn</label>';
+        html =
+            html +
+            '<input type="text" ' +
+            (variantData.variant_filename == "" ? "disabled" : "") +
+            ' name="variant_file_url" value="' +
+            variantData.variant_fileurl +
+            '" class="form-control ' +
+            (variantData.variant_filename == "" ? "disabled" : "") +
+            '">';
+        html = html + "</div>";
+        html = html + " </div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</div>";
+        html = html + "</td>";
+        html = html + "</tr>";
+
+        return html;
+    };
+
+    HT.cancleVariantUpdate = () => {
+        $(document).on("click", ".cancleUpdate", function () {
+            HT.closeUpdateVariantBox();
+        });
+    };
+
+    HT.closeUpdateVariantBox = () => {
+        $(".updateVariantTr").remove();
+    };
+
+    HT.addCommas = (nStr) => {
+        nStr = String(nStr);
+        nStr = nStr.replace(/\./gi, "");
+        let str = "";
+        for (let i = nStr.length; i > 0; i -= 3) {
+            let a = i - 3 < 0 ? 0 : i - 3;
+            str = nStr.slice(a, i) + "." + str;
+        }
+        str = str.slice(0, str.length - 1);
+        return str;
+    };
+
+    HT.saveVariantUpdate = () => {
+        $(document).on("click", ".saveUpdateVariant", function () {
+            let variant = {
+                quantity: $("input[name=variant_quantity]").val(),
+                sku: $("input[name=variant_sku]").val(),
+                price: $("input[name=variant_price]").val(),
+                barcode: $("input[name=variant_barcode]").val(),
+                filename: $("input[name=variant_file_name]").val(),
+                fileurl: $("input[name=variant_file_url]").val(),
+                album: $("input[name='variantAlbum[]']")
+                    .map(function () {
+                        return $(this).val();
+                    })
+                    .get(),
+            };
+
+            $.each(variant, function (index, value) {
+                $(".updateVariantTr")
+                    .prev()
+                    .find(".variant_" + index)
+                    .val(value);
+            });
+
+            HT.previewVariantTr(variant);
+            HT.closeUpdateVariantBox();
+        });
+    };
+
+    HT.previewVariantTr = (variant) => {
+        let option = {
+            quantity: variant.quantity,
+            price: variant.price,
+            sku: variant.sku,
+        };
+        $.each(option, function (index, value) {
+            $(".updateVariantTr")
+                .prev()
+                .find(".td-" + index)
+                .html(value);
+        });
+        $(".updateVariantTr")
+            .prev()
+            .find(".imageSrc")
+            .attr("src", variant.album[0]);
+    };
+    HT.setupSelectMutiple = () => {
+        if ($(".selectVariant").length) {
+            $(".selectVariant").each(function () {
+                let _this = $(this);
+                let attributeCatalougeId = _this.attr("data-catid");
+                if (attribute != "") {
+                    $.get(
+                        "ajax/attribute/loadAttribute",
+                        {
+                            attribute: attribute,
+                            attributeCatalougeId: attributeCatalougeId,
+                        },
+                        function (json) {
+                            if (
+                                json.items !== "undefined" &&
+                                json.items.length
+                            ) {
+                                for (let i = 0; i < json.items.length; i++) {
+                                    var option = new Option(
+                                        json.items[i].text,
+                                        json.items[i].id,
+                                        true,
+                                        true
+                                    );
+                                    _this.append(option).trigger("change");
+                                }
+                            }
+                        }
+                    );
+                }
+                HT.getSelect2(_this);
+            });
+        }
+    };
+    $(document).ready(function () {
+        HT.setupProductVariant();
+        HT.addVariant();
+        HT.niceSelect();
+        HT.chooseVariantGroup();
+        HT.removeAttribute();
+        HT.createProductVariant();
+        HT.variantAlbum();
+        HT.deleteVariantAlbum();
+        HT.switchChange();
+        HT.updateVariant();
+        HT.cancleVariantUpdate();
+        HT.saveVariantUpdate();
+        HT.setupSelectMutiple();
     });
 })(jQuery);
