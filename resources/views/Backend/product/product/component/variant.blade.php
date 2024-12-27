@@ -114,4 +114,5 @@
         ];
     })->values());
     var attribute ='{{ base64_encode(json_encode(old('attribute'))) }}'
+    var variant ='{{ base64_encode(json_encode(old('variant'))) }}'
 </script>

@@ -51,13 +51,17 @@ class ProductService  extends BaseService implements productServiceInterface
         'tb2.canonical',
         ];
     }
-
+    function convert_price($price)
+    {
+        // Loại bỏ dấu chấm và trả về số
+        return str_replace('.', '', $price);
+    }
     public function create($request){
         DB::beginTransaction();
         try{
             //$payload lấy dữ liệu từ các input request
+
             $payload=$request->only($this->payload());
-          
             $payload['user_id']=Auth::id();
             //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
             $product=$this->productRepository->create($payload);//$product biến đại diện cho model product
@@ -92,7 +96,9 @@ class ProductService  extends BaseService implements productServiceInterface
         DB::beginTransaction();
         try{
             $product = $this->productRepository->findById($id);
+          
             $payload=$request->only($this->payload());
+            $payload['price'] = $this->convert_price($request->input('price'));
             $flag=$this->productRepository->update($id,$payload);
             if($flag==true){
                 $payloadLanguage=$this->formatLanguageForproduct($product,$request);

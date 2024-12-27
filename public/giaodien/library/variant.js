@@ -784,8 +784,9 @@
             .find(".imageSrc")
             .attr("src", variant.album[0]);
     };
-    HT.setupSelectMutiple = () => {
+    HT.setupSelectMutiple = (callback) => {
         if ($(".selectVariant").length) {
+            let count = $(".selectVariant").length;
             $(".selectVariant").each(function () {
                 let _this = $(this);
                 let attributeCatalougeId = _this.attr("data-catid");
@@ -811,12 +812,77 @@
                                     _this.append(option).trigger("change");
                                 }
                             }
+                            if (--count === 0 && callback) {
+                                callback();
+                            }
                         }
                     );
                 }
                 HT.getSelect2(_this);
             });
         }
+    };
+    HT.productVariant = () => {
+        variant = JSON.parse(atob(variant));
+        $(".variant-row").each(function (index, value) {
+            let _this = $(this);
+            let inputHiddenFields = [
+                {
+                    name: "variant[quantity][]",
+                    class: "variant_quantity",
+                    value: variant.quantity[index],
+                },
+                {
+                    name: "variant[sku][]",
+                    class: "variant_sku",
+                    value: variant.sku[index],
+                },
+                {
+                    name: "variant[price][]",
+                    class: "variant_price",
+                    value: variant.price[index],
+                },
+                {
+                    name: "variant[barcode][]",
+                    class: "variant_barcode",
+                    value: variant.barcode[index],
+                },
+                {
+                    name: "variant[file_name][]",
+                    class: "variant_file_name",
+                    value: variant.file_name[index],
+                },
+                {
+                    name: "variant[file_url][]",
+                    class: "variant_file_url",
+                    value: variant.file_url[index],
+                },
+                {
+                    name: "variant[album][]",
+                    class: "variant_album",
+                    value: variant.album[index],
+                },
+            ];
+            for (let i = 0; i < inputHiddenFields.length; i++) {
+                _this
+                    .find("." + inputHiddenFields[i].class)
+                    .val(
+                        inputHiddenFields[i].value
+                            ? inputHiddenFields[i].value
+                            : 0
+                    );
+            }
+            let album = variant.album[index];
+            let variantImage = album
+                ? album.split(",")[0]
+                : "https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg";
+            _this
+                .find(".td-quantity")
+                .html(HT.addCommas(variant.quantity[index]));
+            _this.find(".td-price").html(HT.addCommas(variant.price[index]));
+            _this.find(".td-sku").html(HT.addCommas(variant.sku[index]));
+            _this.find(".imageSrc").attr("src", variantImage);
+        });
     };
     $(document).ready(function () {
         HT.setupProductVariant();
@@ -831,6 +897,8 @@
         HT.updateVariant();
         HT.cancleVariantUpdate();
         HT.saveVariantUpdate();
-        HT.setupSelectMutiple();
+        HT.setupSelectMutiple(() => {
+            HT.productVariant();
+        });
     });
 })(jQuery);
