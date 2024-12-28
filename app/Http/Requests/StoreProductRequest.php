@@ -27,6 +27,7 @@ class StoreProductRequest extends FormRequest
             'code' => 'required',
             'price' => 'required',
             'made_in' => 'required',
+            'product_catalouge_id' => 'required:product_catalouges,id|not_in:0', // Chèn validation cho product_catalouge_id
         ];
     }
 
@@ -39,6 +40,8 @@ class StoreProductRequest extends FormRequest
             'code.required' => 'Bạn chưa nhập mã sản phẩm.',
             'price.required' => 'Bạn chưa nhập giá.',
             'made_in.required' => 'Bạn chưa nhập xuất sứ.',
+            'product_catalouge_id.required' => 'Bạn chưa chọn danh mục sản phẩm.',
+            'product_catalouge_id.not_in' => 'Danh mục sản phẩm không được là root.',
         ];
     }
 }

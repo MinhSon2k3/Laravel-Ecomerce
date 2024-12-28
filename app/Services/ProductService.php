@@ -23,6 +23,7 @@ class ProductService  extends BaseService implements productServiceInterface
     public function __construct( ProductRepository $productRepository,RouterRepository $routerRepository ){
         $this->productRepository=$productRepository;
         $this->routerRepository=$routerRepository;
+        $this->controllerName = 'ProductController';
        
     }
 //userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
@@ -56,79 +57,46 @@ class ProductService  extends BaseService implements productServiceInterface
         // Loại bỏ dấu chấm và trả về số
         return str_replace('.', '', $price);
     }
-    public function create($request){
+    public function create($request, $languageId){
         DB::beginTransaction();
         try{
-            //$payload lấy dữ liệu từ các input request
-
-            $payload=$request->only($this->payload());
-            $payload['user_id']=Auth::id();
-            //lấy dữ liệu từ payload để thêm vào database bằng create() từ languageRepository
-            $product=$this->productRepository->create($payload);//$product biến đại diện cho model product
-            if($product->id>0){
-                $payloadLanguage=$this->formatLanguageForproduct($product,$request);
-                $language=$this->productRepository->createPivot($product,$payloadLanguage,'languages');
-                $catalouge=$this->catalouge($request);
-                $product->product_catalouges()->sync($catalouge);
-
-                $router=[
-                    'canonical'=>$payloadLanguage['canonical'],
-                    'module_id'=>$product->id,
-                    'controllers'=>'App\Http\Controllers\Backend\ProductController'
-                ];
-             
-               $this->routerRepository->create($router);
+            $product = $this->createProduct($request);
+            if($product->id > 0){
+                $this->updateLanguageForProduct($product, $request, $languageId);
+                $this->updateCatalougeForProduct($product, $request);
+                $this->createRouter($product, $request, $this->controllerName, $languageId);
+                
+                $this->createVariant($product,$request);
             }
-        
             DB::commit();
-
-            return true;//thêm dữ liệu thành công
-        }
-        catch(\Exception $e){
-            DB::rollback();
-            dd($e->getMessage());
+            return true;
+        }catch(\Exception $e ){
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();die();
             return false;
         }
-
     }
 
-    public function update($id,$request){
+    public function update($id, $request, $languageId){
         DB::beginTransaction();
         try{
             $product = $this->productRepository->findById($id);
-          
-            $payload=$request->only($this->payload());
-            $payload['price'] = $this->convert_price($request->input('price'));
-            $flag=$this->productRepository->update($id,$payload);
-            if($flag==true){
-                $payloadLanguage=$this->formatLanguageForproduct($product,$request);
-                $product->languages()->detach([$payloadLanguage['language_id'],$id]);
-                $response = $this->productRepository->createPivot($product, $payloadLanguage,'languages');
-                $catalouge=$this->catalouge($request);
-                $product->product_catalouges()->sync($catalouge); 
-
-                $payloadRouter=[
-                    'canonical'=>$payloadLanguage['canonical'],
-                    'module_id'=>$product->id,
-                    'controllers'=>'App\Http\Controllers\Backend\ProductController'
-                ];
-                $condition=[
-                    [ 'module_id','=',$product->id],
-                    [ 'controllers','=','App\Http\Controllers\Backend\ProductController']
-
-                ];
-                $router=$this->routerRepository->findByCondition($condition);
-                $this->routerRepository->update($router->id,$payloadRouter);
+            if($this->uploadProduct($product, $request)){
+                $this->updateLanguageForProduct($product, $request, $languageId);
+                $this->updateCatalougeForProduct($product, $request);
+                $this->updateRouter(
+                    $product, $request, $this->controllerName, $languageId
+                );
             }
             DB::commit();
-            return true;//sửa dữ liệu thành công
-        }
-        catch(\Exception $e){
-            DB::rollback();
-            dd($e->getMessage());
+            return true;
+        }catch(\Exception $e ){
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();die();
             return false;
         }
-
     }
     
     public function destroy($id){
@@ -172,20 +140,76 @@ class ProductService  extends BaseService implements productServiceInterface
         ];
     }
 
-   private function formatLanguageForProduct($product,$request){
-    $payload=$request->only($this->payloadLanguage());
-    $payload['canonical']=Str::slug($payload['canonical']);
-    $payload['language_id']=$this->currentLanguage();
-    $payload['product_id']=$product->id;
-    return $payload;
-   }
-
-    public function catalouge($request){
-       return array_unique(array_merge($request->input('catalouge'),[$request->product_catalouge_id]));
-
-
+    private function createProduct($request){
+        $payload = $request->only($this->payload());
+        $payload['user_id'] = Auth::id();
+        $payload['album'] = $this->formatAlbum($request);
+        $payload['price'] = $this->convert_price($payload['price']);
+        $product = $this->productRepository->create($payload);
+        return $product;
     }
 
+    private function uploadProduct($product, $request){
+        $payload = $request->only($this->payload());
+        $payload['album'] = $this->formatAlbum($request);
+        $payload['price'] = $this->convert_price($payload['price']);
+        return $this->productRepository->update($product->id, $payload);
+    }
+
+   
+    private function updateLanguageForProduct($product, $request, $languageId){
+        $payload = $request->only($this->payloadLanguage());
+        $payload = $this->formatLanguagePayload($payload, $product->id, $languageId);
+        $product->languages()->detach([$languageId, $product->id]);
+        return $this->productRepository->createPivot($product, $payload, 'languages');
+    }
+
+    private function updateCatalougeForProduct($product, $request){
+        $product->product_catalouges()->sync($this->catalouge($request));
+    }
+
+    private function formatLanguagePayload($payload, $productId, $languageId){
+        $payload['canonical'] = Str::slug($payload['canonical']);
+        $payload['language_id'] =  $languageId;
+        $payload['product_id'] = $productId;
+        return $payload;
+    }
+
+
+    private function catalouge($request){
+        if($request->input('catalouge') != null){
+            return array_unique(array_merge($request->input('catalouge'), [$request->product_catalouge_id]));
+        }
+        return [$request->product_catalouge_id];
+    }
+
+    public function createVariant($product,$request){
+        $payload=$request->only('variant','productVariant');
+        $variant=$this->createVariantArray($payload);
+        $product->product_variants()->delete();
+        $product->product_variants()->createMany($variant);
+       
+    }
+    private function createVariantArray(array $payload = []): array
+{
+    $variant = [];
+    if(isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
+        foreach($payload['variant']['sku'] as $key => $val) {
+            $variant[] = [
+                'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                'sku' => $val,
+                'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
+                'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
+                'file_url' => ($payload['variant']['file_url'][$key]) ?? '',
+                'album' => ($payload['variant']['album'][$key]) ?? '',
+                'user_id' => Auth::id(),
+            ];
+        }
+    }
+    return $variant;
+}
     public function updateStatus($product=[]){
         DB::beginTransaction();
         try{

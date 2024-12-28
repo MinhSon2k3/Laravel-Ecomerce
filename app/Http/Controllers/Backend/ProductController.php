@@ -66,7 +66,7 @@ class ProductController  extends Controller
   }
   //Khi nhấn vào submit create
   public  function store(StoreProductRequest $request ){ // validate các thông tin cần create
-    if($this->productService->create($request)){
+    if($this->productService->create($request,$this->language)){
       return redirect()->route('product.index')->with('success', 'Thêm mới thành công');
     }
     return redirect()->route('product.index')->with('error', 'Thêm mới ko thành công');
@@ -84,7 +84,7 @@ class ProductController  extends Controller
     return view('backend.dashboard.layout', compact('template', 'seo','product','dropdown'));
 }
   public function update($id, UpdateProductRequest $request){
-    if($this->productService->update($id,$request)){
+    if($this->productService->update($id,$request,$this->language)){
       return redirect()->route('product.index')->with('success', 'Chỉnh sửa thành công');
     }
     return redirect()->route('product.index')->with('error', 'Chỉnh sửa ko thành công');

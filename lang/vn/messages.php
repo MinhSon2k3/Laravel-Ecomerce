@@ -162,6 +162,7 @@ return [
     ],
     'parent' => 'Chọn danh mục cha',
     'parentNotice' => 'Chọn Root nếu không có danh mục cha',
+    'parentNotice1' => 'Vui lòng chọn danh mục',
     'subparent' => 'Chọn danh mục phụ (nếu có)',
     'image' => 'Chọn ảnh đại diện',
     'advange' => 'Cấu hình nâng cao',
