@@ -15,6 +15,8 @@ interface BaseRepositoryInterface
 
     public function create(array $payload);
 
+    public function createBatch(array $payload=[]);
+
     public function update(int $id,array $payload);
 
     public function updateByWhereIn(string $whereInField='',array $whereIn=[],array $payload = []);

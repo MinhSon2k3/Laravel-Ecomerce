@@ -6,6 +6,7 @@ use  App\Services\BaseService;
 use  App\Classes\Nestedsetbie;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;//tương tác với database
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
+use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -20,9 +21,15 @@ class ProductService  extends BaseService implements productServiceInterface
 {
     protected $productRepository;
     protected $routerRepository;
-    public function __construct( ProductRepository $productRepository,RouterRepository $routerRepository ){
+    protected $productVariantLanguageRepository;
+    public function __construct( 
+        ProductRepository $productRepository,
+        RouterRepository $routerRepository,
+        ProductVariantLanguageRepository $productVariantLanguageRepository
+         ){
         $this->productRepository=$productRepository;
         $this->routerRepository=$routerRepository;
+        $this->productVariantLanguageRepository=$productVariantLanguageRepository;
         $this->controllerName = 'ProductController';
        
     }
@@ -65,8 +72,7 @@ class ProductService  extends BaseService implements productServiceInterface
                 $this->updateLanguageForProduct($product, $request, $languageId);
                 $this->updateCatalougeForProduct($product, $request);
                 $this->createRouter($product, $request, $this->controllerName, $languageId);
-                
-                $this->createVariant($product,$request);
+                $this->createVariant($product,$request,$languageId);
             }
             DB::commit();
             return true;
@@ -183,11 +189,26 @@ class ProductService  extends BaseService implements productServiceInterface
         return [$request->product_catalouge_id];
     }
 
-    public function createVariant($product,$request){
-        $payload=$request->only('variant','productVariant');
+    public function createVariant($product,$request,$languageId){
+        $payload=$request->only('variant','productVariant','attribute');
         $variant=$this->createVariantArray($payload);
         $product->product_variants()->delete();
-        $product->product_variants()->createMany($variant);
+        $variants=$product->product_variants()->createMany($variant);
+        $variantsId=$variants->pluck('id');
+        $productVariantLanguage=[];
+        if(count($variantsId)){
+            foreach($variantsId as $key => $val){
+                $productVariantLanguage[]=[
+                    'product_variant_id'=>$val,
+                    'language_id'=>$languageId,
+                    'name'=>$payload['productVariant']['name'][$key]
+                ];
+            }
+        }
+        $variantLanguage=$this->productVariantLanguageRepository->createBatch($productVariantLanguage);
+      
+       
+        
        
     }
     private function createVariantArray(array $payload = []): array

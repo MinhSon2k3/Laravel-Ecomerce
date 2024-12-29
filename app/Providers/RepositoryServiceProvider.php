@@ -27,11 +27,14 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\DistrictRepositoryInterface'=>'App\Repositories\DistrictRepository',
         //Router
         'App\Repositories\Interfaces\RouterRepositoryInterface'=>'App\Repositories\RouterRepository',
-        
+         //Product
         'App\Repositories\Interfaces\ProductCatalougeRepositoryInterface' => 'App\Repositories\ProductCatalougeRepository',
         'App\Repositories\Interfaces\ProductRepositoryInterface' => 'App\Repositories\ProductRepository',
+        //Attribute
         'App\Repositories\Interfaces\AttributeCatalougeRepositoryInterface' => 'App\Repositories\AttributeCatalougeRepository',
         'App\Repositories\Interfaces\AttributeRepositoryInterface' => 'App\Repositories\AttributeRepository',
+        //ProductVariantLanguage
+        'App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface' => 'App\Repositories\ProductVariantLanguageRepository',
     ];
     /**
      * Register any application services.
