@@ -33,4 +33,12 @@ class ProductVariant extends Model
         ->withPivot('name')
         ->withTimestamps();
     }
+
+    public function attributes(){
+        return $this->belongsToMany(Attribute::class,'product_variant_attributes','product_variant_id','attribute_id')
+        
+        ->withTimestamps();
+    }
+
+    
 }

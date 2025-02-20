@@ -34,6 +34,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.code',
                 'products.made_in',
                 'products.price',
+                'products.attributeCatalouge',
+                'products.attribute',
+                'products.variant',
                 'tb2.name',
                 'tb2.description',
                 'tb2.content',
@@ -44,7 +47,20 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ]
         )
         ->join('product_languages as tb2', 'tb2.product_id', '=','products.id')
-        ->with('product_catalouges')
+        ->with([
+            'product_catalouges',
+            'product_variants' => function ($query) use ($language_id) {
+                $query->with([
+                    'attributes' => function ($query) use ($language_id) {
+                        $query->with([
+                            'attribute_language' => function ($query) use ($language_id) {
+                                $query->where('language_id', '=', $language_id);
+                            }
+                        ]);
+                    }
+                ]);
+            }
+        ])
         ->where('tb2.language_id', '=', $language_id)
         ->find($id);
     }

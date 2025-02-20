@@ -186,5 +186,20 @@ class AttributeCatalougeService  extends BaseService implements AttributeCatalou
             'canonical'
         ];
     }
+     public function updateStatus($attribute=[]){
+        DB::beginTransaction();
+        try{
+            
+            $payload[$attribute['field']] =(($attribute['value']==1)?2 :1 ) ;//nếu value=1 gán bằng  2 còn lại =1
+            $attribute=$this->attributeCatalougeRepository->update($attribute['modelId'],$payload);
+            DB::commit();
+            return true;
+        }
+        catch(\Exception $e){
+            DB::rollback(); 
+            dd($e->getMessage());
+            return false;   
+        }
+    }
 
 }

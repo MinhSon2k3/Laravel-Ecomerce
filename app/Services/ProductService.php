@@ -7,6 +7,7 @@ use  App\Classes\Nestedsetbie;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;//tương tác với database
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
+use App\Repositories\Interfaces\ProductVariantAttributeRepositoryInterface as ProductVariantAttributeRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -22,18 +23,21 @@ class ProductService  extends BaseService implements productServiceInterface
     protected $productRepository;
     protected $routerRepository;
     protected $productVariantLanguageRepository;
+    protected $productVariantAttributeRepository;
     public function __construct( 
         ProductRepository $productRepository,
         RouterRepository $routerRepository,
-        ProductVariantLanguageRepository $productVariantLanguageRepository
+        ProductVariantLanguageRepository $productVariantLanguageRepository,
+        ProductVariantAttributeRepository $productVariantAttributeRepository
          ){
         $this->productRepository=$productRepository;
         $this->routerRepository=$routerRepository;
         $this->productVariantLanguageRepository=$productVariantLanguageRepository;
+        $this->productVariantAttributeRepository=$productVariantAttributeRepository;
         $this->controllerName = 'ProductController';
        
     }
-//userRepository là dependency của class UserService vì UserService phụ thuộc userRepository
+//productRepository là dependency của class ProductService vì ProductService phụ thuộc productRepository
 
     public function paginate($request){
        $condition['keyword'] = addslashes($request->input('keyword'));
@@ -94,6 +98,17 @@ class ProductService  extends BaseService implements productServiceInterface
                 $this->updateRouter(
                     $product, $request, $this->controllerName, $languageId
                 );
+                $product->product_variants()->each(function($variant) {
+                    // Xóa tất cả dữ liệu trong bảng trung gian trước
+                    $variant->languages()->detach();
+                    $variant->attributes()->detach();
+                
+                    // Sau đó xóa variant
+                    $variant->delete();
+                });
+                
+                $this->createVariant($product,$request,$languageId);
+
             }
             DB::commit();
             return true;
@@ -132,6 +147,9 @@ class ProductService  extends BaseService implements productServiceInterface
             'code',
             'price',
             'made_in',
+            'attributeCatalouge',
+            'attribute',
+            'variant'
         ];
     }
     private function payloadLanguage(){
@@ -142,7 +160,7 @@ class ProductService  extends BaseService implements productServiceInterface
             'meta_title',
             'meta_keyword',
             'meta_description',
-            'canonical'
+            'canonical',
         ];
     }
 
@@ -151,6 +169,9 @@ class ProductService  extends BaseService implements productServiceInterface
         $payload['user_id'] = Auth::id();
         $payload['album'] = $this->formatAlbum($request);
         $payload['price'] = $this->convert_price($payload['price']);
+        $payload['attributeCatalouge']=$this->formatJson($request,'attributeCatalouge');
+        $payload['attribute']=$this->formatJson($request,'attribute');
+        $payload['variant']=$this->formatJson($request,'variant');
         $product = $this->productRepository->create($payload);
         return $product;
     }
@@ -191,11 +212,14 @@ class ProductService  extends BaseService implements productServiceInterface
 
     public function createVariant($product,$request,$languageId){
         $payload=$request->only('variant','productVariant','attribute');
+       
+        
         $variant=$this->createVariantArray($payload);
-        $product->product_variants()->delete();
         $variants=$product->product_variants()->createMany($variant);
         $variantsId=$variants->pluck('id');
         $productVariantLanguage=[];
+        $variantAttribute=[];
+        $attributeCombibes=$this->combineAttribute(array_values($payload['attribute']));
         if(count($variantsId)){
             foreach($variantsId as $key => $val){
                 $productVariantLanguage[]=[
@@ -203,34 +227,56 @@ class ProductService  extends BaseService implements productServiceInterface
                     'language_id'=>$languageId,
                     'name'=>$payload['productVariant']['name'][$key]
                 ];
+
+                if(count($attributeCombibes)){
+                    foreach($attributeCombibes[$key] as $attributeId){
+                        $variantAttribute[]=[
+                            'product_variant_id'=>$val,
+                            'attribute_id'=>$attributeId
+                        ];
+                    }
+                }
             }
         }
-        $variantLanguage=$this->productVariantLanguageRepository->createBatch($productVariantLanguage);
       
-       
-        
+    
+        $variantLanguage=$this->productVariantLanguageRepository->createBatch($productVariantLanguage);
+        $variantAttribute=$this->productVariantAttributeRepository->createBatch($variantAttribute);
        
     }
-    private function createVariantArray(array $payload = []): array
-{
-    $variant = [];
-    if(isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
-        foreach($payload['variant']['sku'] as $key => $val) {
-            $variant[] = [
-                'code' => ($payload['productVariant']['id'][$key]) ?? '',
-                'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
-                'sku' => $val,
-                'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
-                'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
-                'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
-                'file_url' => ($payload['variant']['file_url'][$key]) ?? '',
-                'album' => ($payload['variant']['album'][$key]) ?? '',
-                'user_id' => Auth::id(),
-            ];
+
+    private function combineAttribute($attributes=[],$index =0){
+        if($index===count($attributes)) return [[]];
+        $subComebines=$this->combineAttribute($attributes,$index+1);
+        $comebines=[];
+        foreach($attributes[$index] as $key => $val){
+            foreach($subComebines as $keySub => $valSub){
+                $comebines[]= array_merge([$val],$valSub);
+            }
         }
+        return $comebines;
     }
-    return $variant;
-}
+
+    private function createVariantArray(array $payload = []): array
+    {
+        $variant = [];
+        if(isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
+            foreach($payload['variant']['sku'] as $key => $val) {
+                $variant[] = [
+                    'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                    'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                    'sku' => $val,
+                    'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                    'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
+                    'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
+                    'file_url' => ($payload['variant']['file_url'][$key]) ?? '',
+                    'album' => ($payload['variant']['album'][$key]) ?? '',
+                    'user_id' => Auth::id(),
+                ];
+            }
+        }
+        return $variant;
+    }
     public function updateStatus($product=[]){
         DB::beginTransaction();
         try{

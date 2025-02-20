@@ -1,16 +1,16 @@
 @include('backend.dashboard.component.breadcrumb',['title'=>$seo['meta_title']['delete']['title']])
 @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
 @endif
 <form action="{{ route('product.destroy', ['id' => $product->id]) }}" method="post" class="box">
     @csrf
-   
+
     <div class="wrapper wrapper-content aminated fadeInRight">
         <div class="row">
             <div class="col-lg-5">
@@ -25,7 +25,7 @@
             </div>
             <div class="col-lg-7">
                 <div class="ibox">
-                   
+
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-lg-6">
@@ -33,7 +33,8 @@
                                     <label for="" class="control-lable text-right">Nhóm bài viết
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="name" value="{{old('name',($product->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="name" value="{{old('name',($product->name) ?? '')}}"
+                                        class="form-control" placeholder="" autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -46,7 +47,3 @@
         </div>
     </div>
 </form>
-
-
-
-

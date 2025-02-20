@@ -59,6 +59,18 @@ return [
             ]
         ],
         [
+            'title' => 'QL Menu',
+            'icon' => 'fa fa-gear',
+            'name' => ['menu'],
+            'subModule' => [
+                
+                [
+                    'title' => 'Cài đặt menu',
+                    'route' => 'menu/index'
+                ]
+            ]
+        ],
+        [
             'title' => 'Cấu hình chung',
             'icon' => 'fa fa-gear',
             'name' => ['language','generate'],
@@ -70,6 +82,10 @@ return [
                 [
                     'title' => 'QL Module',
                     'route' => 'generate/index'
+                ],
+                [
+                    'title' => 'Cấu hình hệ thống',
+                    'route' => 'system/index'
                 ],
                 
             ]

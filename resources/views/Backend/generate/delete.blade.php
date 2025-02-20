@@ -2,7 +2,7 @@
 
 <form action="{{ route('generate.destroy', ['id' => $generate->id]) }}" method="post" class="box">
     @csrf
-   
+
     <div class="wrapper wrapper-content aminated fadeInRight">
         <div class="row">
             <div class="col-lg-5">
@@ -27,7 +27,8 @@
                                     <label for="" class="control-lable text-right">Ngôn ngữ
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="name" value="{{old('email',($generate->name) ?? '')}}" class="form-control" placeholder="" autocomplete="off" readonly>
+                                    <input type="text" name="name" value="{{old('email',($generate->name) ?? '')}}"
+                                        class="form-control" placeholder="" autocomplete="off" readonly>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -35,7 +36,9 @@
                                     <label for="" class="control-lable text-right">Ghi chú
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="name" value="{{old('name',($generate->description) ?? '')}}" class="form-control" placeholder="" autocomplete="off" readonly>
+                                    <input type="text" name="name"
+                                        value="{{old('name',($generate->description) ?? '')}}" class="form-control"
+                                        placeholder="" autocomplete="off" readonly>
                                 </div>
                             </div>
                         </div>
@@ -48,7 +51,3 @@
         </div>
     </div>
 </form>
-
-
-
-

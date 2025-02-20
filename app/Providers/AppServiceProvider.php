@@ -24,16 +24,23 @@ class AppServiceProvider extends ServiceProvider
          'App\Services\Interfaces\GenerateServiceInterface'=>'App\Services\GenerateService',
         //Base
         'App\Services\Interfaces\BaseServiceInterface'=>'App\Services\BaseService',
+        //Product
         'App\Services\Interfaces\ProductCatalougeServiceInterface' => 'App\Services\ProductCatalougeService',
         'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
+        //Attribute
         'App\Services\Interfaces\AttributeCatalougeServiceInterface' => 'App\Services\AttributeCatalougeService',
         'App\Services\Interfaces\AttributeServiceInterface' => 'App\Services\AttributeService',
+        //System
+        'App\Services\Interfaces\SystemServiceInterface' => 'App\Services\SystemService',
+         //Menu
+         'App\Services\Interfaces\MenuServiceInterface' => 'App\Services\MenuService',
     ];
     /**
      * Register any application services.
      */
     public function register(): void
-    {
+    {   
+        require_once app_path('Helpers/MyHelper.php');
         foreach($this->serviceBindings as $key => $val ){
             $this->app->bind($key,$val);
         }

@@ -22,7 +22,7 @@ interface BaseRepositoryInterface
     public function updateByWhereIn(string $whereInField='',array $whereIn=[],array $payload = []);
 
     public function destroy(int $id);
-
+    public function updateOrInsert(array $condition=[],array $payload=[]);
     public function pagination(
         array $column=['*'],
         array $condition=[],

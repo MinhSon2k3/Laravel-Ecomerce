@@ -24,6 +24,10 @@ class BaseService implements BaseServiceInterface
     public function formatAlbum($request){
         return ($request->input('album') && !empty($request->input('album'))) ? json_encode($request->input('album')) : '';
     }
+    public function formatJson($request,$inputName){
+        return ($request->input($inputName) && !empty($request->input($inputName))) ? json_encode($request->input($inputName)) : '';
+    }
+    
     public function formatRouterPayload($model, $request, $controllerName, $languageId){
         $router = [
             'canonical' => Str::slug($request->input('canonical')),

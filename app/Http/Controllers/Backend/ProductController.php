@@ -75,13 +75,15 @@ class ProductController  extends Controller
   //edit
   public function edit($id){
     $this->authorize('modules','product.edit');
+    $attributeCatalouge=$this->attributeCatalougeRepository->getAll();
     $product = $this->productRepository->getProductById($id,$this->language);
+   
     $template = 'backend.product.product.edit';
     $seo = [
         'meta_title' => __('messages.product') 
     ];
     $dropdown=$this->nestedsetbie->Dropdown();
-    return view('backend.dashboard.layout', compact('template', 'seo','product','dropdown'));
+    return view('backend.dashboard.layout', compact('template', 'seo','product','dropdown','attributeCatalouge'));
 }
   public function update($id, UpdateProductRequest $request){
     if($this->productService->update($id,$request,$this->language)){
@@ -109,6 +111,3 @@ public function destroy($id){
 }
 
 }
-
-
-

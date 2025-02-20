@@ -14,6 +14,8 @@ use App\Http\Controllers\Backend\ProductCatalougeController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\AttributeCatalougeController;
 use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Backend\SystemController;
+use App\Http\Controllers\Backend\MenuController;
 
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
@@ -157,6 +159,23 @@ Route::group(['prefix' => 'attribute'], function () {
     Route::get('{id}/delete', [AttributeController::class, 'delete'])->name('attribute.delete');
     Route::post('{id}/destroy', [AttributeController::class, 'destroy'])->name('attribute.destroy');
 });
+
+Route::prefix('system')->middleware('authenticate')->group(function () {
+    Route::get('/index', [SystemController::class, 'index'])->name('system.index');
+    Route::post('/store', [SystemController::class, 'store'])->name('system.store');
+    
+});
+
+Route::group(['prefix' => 'menu'], function () {
+    Route::get('index', [MenuController::class, 'index'])->name('menu.index');
+    Route::get('create', [MenuController::class, 'create'])->name('menu.create');
+    Route::post('store', [MenuController::class, 'store'])->name('menu.store');
+    Route::get('{id}/edit', [MenuController::class, 'edit'])->name('menu.edit');
+    Route::post('{id}/update', [MenuController::class, 'update'])->name('menu.update');
+    Route::get('{id}/delete', [MenuController::class, 'delete'])->name('menu.delete');
+    Route::post('{id}/destroy', [MenuController::class, 'destroy'])->name('menu.destroy');
+});
+
 //@@new-module@@
 
 

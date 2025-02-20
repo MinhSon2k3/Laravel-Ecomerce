@@ -160,6 +160,41 @@ return [
             'title' => 'Xóa Module'
         ],
     ],
+    'system' => [
+        'index' => [
+            'title' => 'Cấu hình chung',
+            'table' => 'Danh sách sản phẩm'
+        ],
+        'create' => [
+            'title' => 'Thêm mới sản phẩm'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật sản phẩm'
+        ],
+        'delete' => [
+            'title' => 'Xóa sản phẩm'
+        ],
+        'information' => 'Thông tin chung',
+        'code' => 'Mã sản phẩm',
+        'made_in' => 'Xuất xứ',
+        'price' => 'Giá bán sản phẩm',
+    ],
+    'menu' => [
+        'index' => [
+            'title' => 'Cấu hình menu',
+            'table' => 'Danh sách menu'
+        ],
+        'create' => [
+            'title' => 'Thêm mới menu'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật menu'
+        ],
+        'delete' => [
+            'title' => 'Xóa menu'
+        ],
+        
+    ],
     'parent' => 'Chọn danh mục cha',
     'parentNotice' => 'Chọn Root nếu không có danh mục cha',
     'parentNotice1' => 'Vui lòng chọn danh mục',

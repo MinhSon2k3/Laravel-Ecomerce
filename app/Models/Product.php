@@ -23,6 +23,9 @@ class Product extends Model
         'code',
         'price',
         'made_in',
+        'attributeCatalouge',
+        'attribute',
+        'variant'
     ];
 
     public function languages(){

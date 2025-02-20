@@ -72,6 +72,12 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->update($payload); // or handle the case when model is not found
     }
 
+    public function updateOrInsert(array $condition = [], array $payload = [])
+    {
+        return $this->model->updateOrInsert($condition, $payload);
+    }
+    
+
     public function updateByWhereIn(string $whereInField='',array $whereIn=[],array $payload = []){
         $this->model->whereIn($whereInField,$whereIn)->update($payload);//UPDATE model SET publish[0]=publish[1] WHERE $whereInField IN ($whereIn);
 

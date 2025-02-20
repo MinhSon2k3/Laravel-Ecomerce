@@ -1,12 +1,12 @@
 @include('backend.dashboard.component.breadcrumb',['title'=>$seo['meta_title']['create']['title']])
 @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
 @endif
 <form action="{{route('permission.store')}}" method="post" class="box">
     @csrf
@@ -18,7 +18,7 @@
                         Thông tin chung
                     </div>
                     <div class="panel-decsription">
-                        Nhập thông tin chung của ngôn ngữ
+                        Nhập thông tin quyền
                     </div>
                 </div>
             </div>
@@ -31,10 +31,11 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-lable text-right">Tên ngôn ngữ
+                                    <label for="" class="control-lable text-right">Tên quyền
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="name" value="{{old('name')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="name" value="{{old('name')}}" class="form-control"
+                                        placeholder="" autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -42,22 +43,20 @@
                                     <label for="" class="control-lable text-right">Canonical
                                         <span class="text-danger">(*)</span>
                                     </label>
-                                    <input type="text" name="canonical" value="{{old('canonical')}}" class="form-control" placeholder="" autocomplete="off">
+                                    <input type="text" name="canonical" value="{{old('canonical')}}"
+                                        class="form-control" placeholder="" autocomplete="off">
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
             </div>
 
-            
+            <div class="text-right">
+                <button class="btn btn-primary" type="submit" name="send" value="">Thêm ngôn ngữ</button>
+            </div>
         </div>
-        
-        <div class="text-right">
-            <button class="btn btn-primary" type="submit" name="send" value="">Thêm ngôn ngữ</button>
-        </div>
-    </div>
 
 </form>
-
-
-
