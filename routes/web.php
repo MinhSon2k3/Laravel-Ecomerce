@@ -20,6 +20,7 @@ use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashBoardController as AjaxDashBoardController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
+use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 //@@useController@@
 Route::middleware('locale')->group(function () {
 // Login and logout
@@ -41,6 +42,7 @@ Route::prefix('ajax')->group(function () {
     Route::post('dashboard/changeStatusAll', [AjaxDashBoardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll');
     Route::get('attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
     Route::get('attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
+    Route::post('menu/createCatalouge', [AjaxMenuController::class, 'createCatalouge'])->name('ajax.menu.createCatalouge');
 });
 
 // Manage user
@@ -165,7 +167,7 @@ Route::prefix('system')->middleware('authenticate')->group(function () {
     Route::post('/store', [SystemController::class, 'store'])->name('system.store');
     
 });
-
+// Manage menu
 Route::group(['prefix' => 'menu'], function () {
     Route::get('index', [MenuController::class, 'index'])->name('menu.index');
     Route::get('create', [MenuController::class, 'create'])->name('menu.create');

@@ -60,7 +60,7 @@ return [
         ],
         [
             'title' => 'QL Menu',
-            'icon' => 'fa fa-gear',
+            'icon' => 'fa fa-bars',
             'name' => ['menu'],
             'subModule' => [
                 

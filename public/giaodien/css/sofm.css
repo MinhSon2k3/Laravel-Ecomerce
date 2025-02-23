@@ -268,3 +268,7 @@
 .delete-image i {
   margin-right: 5px;
 }
+
+.mb10 {
+  margin-bottom: 10px !important;
+}

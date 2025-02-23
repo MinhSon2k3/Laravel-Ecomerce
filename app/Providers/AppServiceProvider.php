@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\SystemServiceInterface' => 'App\Services\SystemService',
          //Menu
          'App\Services\Interfaces\MenuServiceInterface' => 'App\Services\MenuService',
+         'App\Services\Interfaces\MenuCatalougeServiceInterface' => 'App\Services\MenuCatalougeService',
     ];
     /**
      * Register any application services.

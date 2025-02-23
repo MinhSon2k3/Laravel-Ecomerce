@@ -49,13 +49,14 @@
 <script src="{{ asset('giaodien/library/finder.js') }}"></script>
 <script src="{{ asset('giaodien/library/seo.js') }}"></script>
 <script src="{{ asset('giaodien/library/variant.js') }}"></script>
+<script src="{{ asset('giaodien/library/menu.js') }}"></script>
 
 <!-- CK scripts -->
 <script src="{{ asset('giaodien/plugin/ckfinder_2/ckfinder.js') }}"></script>
 <script src="{{ asset('giaodien/plugin/ckeditor/ckeditor.js') }}"></script>
 
 <!-- Flasher -->
-<script src="{{ secure_url('vendor/flasher/flasher.min.js') }}"></script>
+<!-- <script src="{{ secure_url('vendor/flasher/flasher.min.js') }}"></script> -->
 
 <!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

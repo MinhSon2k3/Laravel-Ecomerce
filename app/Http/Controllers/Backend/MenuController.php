@@ -9,6 +9,7 @@ use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use  App\Services\Interfaces\MenuServiceInterface as MenuService;
 use  App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
+use  App\Repositories\Interfaces\MenuCatalougeRepositoryInterface as MenuCatalougeRepository;
 
 
 
@@ -16,13 +17,16 @@ class MenuController extends Controller
 {
   protected $menuService;
   protected $menuRepository;
+  protected $menuCatalougeRepository;
   public function __construct(
    MenuService $menuService,
    MenuRepository $menuRepository,
+   MenuCatalougeRepository $menuCatalougeRepository
    
   ) {
     $this->menuService = $menuService;
     $this->menuRepository = $menuRepository;
+    $this->menuCatalougeRepository = $menuCatalougeRepository;
   }
 
   public function index(Request $request)
@@ -44,14 +48,15 @@ class MenuController extends Controller
   public function create()
   { 
     $this->authorize('modules','menu.create');
+    $menuCatalouges=$this->menuCatalougeRepository->all();
     $template = 'backend.menu.menu.create';
     $seo = [
      'meta_title' => __('messages.menu') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo'));
+    return view('backend.dashboard.layout', compact('template', 'seo','menuCatalouges'));
   }
   //Khi nhấn vào submit create
-  public  function store(StoremenuRequest $request ){ //StoremenuRequest validate các menu cần create
+  public  function store(Request $request ){ //StoremenuRequest validate các menu cần create
     if($this->menuService->create($request)){
       return redirect()->route('menu.index')->with('success', 'Thêm mới thành công');
     }
