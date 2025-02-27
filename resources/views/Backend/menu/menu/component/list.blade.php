@@ -5,54 +5,46 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h5 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                                aria-expanded="true">Liên kết tự tạo</a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false"
+                                class="">Liên kết tự tạo</a>
                         </h5>
                     </div>
-                    <div id="collapseOne" class="panel-collapse collapse in">
+                    <div id="collapseOne" class="panel-collapse collapse ">
                         <div class="panel-body">
                             <div class="panel-title">
                                 Tạo menu
                             </div>
                             <div>
                                 <p class="text-danger">Cài đặt menu mà bạn muốn hiển thị</p>
-                                <a href="" class="btn btn-default">Thêm đường dẫn</a>
+                                <a href="#" class="btn btn-default add-menu">Thêm đường dẫn</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                @foreach(__('module.model') as $key => $val)
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Nhóm bài viết</a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#{{$key}}" data-model="{{$key}}"
+                                class=" collapsed menu-module">{{$val}}</a>
                         </h4>
                     </div>
-                    <div id="collapseTwo" class="panel-collapse collapse">
+                    <div id="{{$key}}" class="panel-collapse collapse">
                         <div class="panel-body">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            <form action="" method="get" class="search-model" data-model="{{$key}}">
+                                <div class="form-row">
+                                    <input type="text" name="keyword" class="form-control search-menu"
+                                        placeholder="Nhập từ tìm kiếm ">
+                                </div>
+                            </form>
+                            <div class="menu-list mt10">
+
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Bài viết</a>
-                        </h4>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </div>
-                    </div>
-                </div>
+
+                @endforeach
             </div>
         </div>
     </div>
@@ -60,16 +52,16 @@
         <div class="ibox">
             <div class="ibox-content">
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 text-center">
                         <label for="">Tên menu</label>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 text-center">
                         <label for="">Đường dẫn</label>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 text-center">
                         <label for="">Vị trí</label>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 text-center">
                         <label for="">Xóa</label>
                     </div>
                 </div>
@@ -83,26 +75,9 @@
                             Hãy nhấn vào <span style="color:blue;">Thêm đường dẫn</span> để bắt đầu thêm
                         </p>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <input type="text" class="form-control" name="menu[name][]">
-                        </div>
-                        <div class="col-lg-4">
-                            <input type="text" class="form-control" name="menu[canonical][]">
-                        </div>
-                        <div class="col-lg-2">
-                            <input type="text" class="form-control" name="menu[order][]">
-                        </div>
-                        <div class="col-lg-2">
-                            <div class="form-row">
-                                <a href="" class="delete-menu"><i class="fa fa-trash"></i></a>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>

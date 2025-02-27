@@ -33,5 +33,4 @@
             <button class="btn btn-primary" type="submit" name="send" value="">{{__('messages.add')}}</button>
         </div>
     </div>
-
 </form>

@@ -3,7 +3,7 @@ return [
     'module' => [
         [
             'title' => 'QL Sản phẩm',
-            'icon' => 'fa fa-box',
+            'icon' => 'fa fa-archive',
             'name' => ['user','permission'],
             'subModule' => [
                 [

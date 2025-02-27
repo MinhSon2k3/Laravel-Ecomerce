@@ -10,11 +10,12 @@
 @endif
 <form action="{{route('menu.store')}}" method="post" class="box">
     @csrf
-    @include('backend.menu.menu.component.catalouge')
-
-    @include('backend.menu.menu.component.list')
-    <div class="text-right">
-        <button class="btn btn-primary" type="submit" name="send" value="">Lưu lại</button>
+    <div class="wrapper wrapper-content aminated fadeInRight">
+        @include('backend.menu.menu.component.catalouge')
+        @include('backend.menu.menu.component.list')
+        <div class="text-right">
+            <button class="btn btn-primary" type="submit" name="send" value="">Lưu lại</button>
+        </div>
     </div>
 </form>
 @include('backend.menu.menu.component.popup')

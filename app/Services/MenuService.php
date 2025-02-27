@@ -27,7 +27,6 @@ public function paginate($request){
    return 0;
      
  }
-
  public function paginateSelect(){
      return ['id','email','name','phone','address','publish','user_catalouge_id'];    
  }

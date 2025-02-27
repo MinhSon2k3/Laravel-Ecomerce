@@ -26,15 +26,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-12">
-                        @if(count($menuCatalouges))
-                        <select class="setupSelect2 form-control" name="menu_catalouge_id" id="">
-                            <option value="">Chọn vị trí hiển thị</option>
-                            @foreach($menuCatalouges as $key => $val)
-                            <option value="{{$val->id}}">{{$val->name}}</option>
-                            @endforeach
-                        </select>
-                        @endif
+                    <div class="row">
+                        <div class="col-lg-6 ">
+                            @if(count($menuCatalouges))
+                            <select class="setupSelect2 form-control" name="menu_catalouge_id" id="">
+                                <option value="">Chọn vị trí hiển thị</option>
+                                @foreach($menuCatalouges as $key => $val)
+                                <option value="{{$val->id}}">{{$val->name}}</option>
+                                @endforeach
+                            </select>
+                            @endif
+                        </div>
+                        <div class="col-lg-6 ">
+                            <select class="setupSelect2 form-control" name="menu_type" id="">
+                                <option value="">Chọn kiểu menu</option>
+                                @foreach(__('module.type') as $key => $val)
+                                <option value="{{$key}}">{{$val}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

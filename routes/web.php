@@ -40,6 +40,7 @@ Route::prefix('ajax')->group(function () {
     Route::get('location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
     Route::post('dashboard/changeStatus', [AjaxDashBoardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus');
     Route::post('dashboard/changeStatusAll', [AjaxDashBoardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll');
+    Route::get('dashboard/getMenu', [AjaxDashBoardController::class, 'getMenu'])->name('ajax.dashboard.getMenu');
     Route::get('attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
     Route::get('attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
     Route::post('menu/createCatalouge', [AjaxMenuController::class, 'createCatalouge'])->name('ajax.menu.createCatalouge');

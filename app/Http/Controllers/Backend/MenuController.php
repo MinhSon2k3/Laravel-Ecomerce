@@ -56,7 +56,8 @@ class MenuController extends Controller
     return view('backend.dashboard.layout', compact('template', 'seo','menuCatalouges'));
   }
   //Khi nhấn vào submit create
-  public  function store(Request $request ){ //StoremenuRequest validate các menu cần create
+  public  function store(StoreMenuRequest $request ){ //StoremenuRequest validate các menu cần create
+    dd($request);
     if($this->menuService->create($request)){
       return redirect()->route('menu.index')->with('success', 'Thêm mới thành công');
     }
