@@ -199,6 +199,45 @@
             }
         });
     };
+    HT.setupNestable = () => {
+        if ($("#nestable2").length) {
+            $("#nestable2")
+                .nestable({
+                    group: 1,
+                })
+                .on("change", updateOutput);
+        }
+    };
+
+    HT.updateNestableOutput = () => {
+        const updateOutput = (e) => {
+            const list = e.length ? e : $(e.target);
+            const output = list.data("output");
+
+            if (window.JSON) {
+                output.val(JSON.stringify(list.nestable("serialize")));
+            } else {
+                output.val("JSON browser support required for this demo.");
+            }
+        };
+    };
+    HT.runUpdateNestableOutput = () => {
+        updateOutput($("#nestable2").data("output", $("#nestable2-output")));
+    };
+    HT.expandAndCollapse = () => {
+        $("#nestable-menu").on("click", function (e) {
+            var target = $(e.target),
+                action = target.data("action");
+
+            if (action === "expand-all") {
+                $(".dd").nestable("expandAll");
+            }
+
+            if (action === "collapse-all") {
+                $(".dd").nestable("collapseAll");
+            }
+        });
+    };
 
     $(document).ready(function () {
         HT.createMenuCatalouge();
@@ -207,5 +246,9 @@
         HT.getMenu();
         HT.searchMenu();
         HT.chooseMenu();
+        HT.setupNestable();
+        HT.updateNestableOutput();
+        HT.runUpdateNestableOutput();
+        HT.expandAndCollapse();
     });
 })(jQuery);

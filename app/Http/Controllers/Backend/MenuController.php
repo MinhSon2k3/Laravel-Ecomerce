@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
-use  App\Services\Interfaces\MenuServiceInterface as MenuService;
-use  App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
-use  App\Repositories\Interfaces\MenuCatalougeRepositoryInterface as MenuCatalougeRepository;
+use App\Services\Interfaces\MenuServiceInterface as MenuService;
+use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
+use App\Repositories\Interfaces\MenuCatalougeRepositoryInterface as MenuCatalougeRepository;
+use App\Services\Interfaces\MenuCatalougeServiceInterface as MenuCatalougeService;
 
 
 
@@ -18,22 +19,26 @@ class MenuController extends Controller
   protected $menuService;
   protected $menuRepository;
   protected $menuCatalougeRepository;
+  protected $menuCatalougeService;
   public function __construct(
    MenuService $menuService,
    MenuRepository $menuRepository,
-   MenuCatalougeRepository $menuCatalougeRepository
+   MenuCatalougeRepository $menuCatalougeRepository,
+   MenuCatalougeService $menuCatalougeService
    
   ) {
     $this->menuService = $menuService;
     $this->menuRepository = $menuRepository;
     $this->menuCatalougeRepository = $menuCatalougeRepository;
+    $this->menuCatalougeService = $menuCatalougeService;
+    $this->language=$this->currentLanguage();
   }
 
   public function index(Request $request)
   {
     $this->authorize('modules','menu.index');
     //controller->service->repository thực hiện nghiệp vụ
-    $menus = $this->menuService->paginate($request);
+    $menus = $this->menuCatalougeService->paginate($request);
     $seo = [
         //Hàm config lấy giá trị từ file cấu hình của ứng dụng.
         'meta_title' => __('messages.menu') 
@@ -55,10 +60,10 @@ class MenuController extends Controller
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','menuCatalouges'));
   }
+
   //Khi nhấn vào submit create
   public  function store(StoreMenuRequest $request ){ //StoremenuRequest validate các menu cần create
-    dd($request);
-    if($this->menuService->create($request)){
+    if($this->menuService->create($request,$this->language)){
       return redirect()->route('menu.index')->with('success', 'Thêm mới thành công');
     }
     return redirect()->route('menu.index')->with('error', 'Thêm mới ko thành công');
@@ -67,14 +72,17 @@ class MenuController extends Controller
   //edit
   public function edit($id){
     $this->authorize('modules','menu.edit');
-    $menu = $this->menuRepository->findById($id);
-   
+    $menus = $this->menuRepository->findByCondition([
+      ['menu_catalouge_id','=',$id]
+    ]);
+    dd($menus);
     $template = 'backend.menu.menu.edit';
     $seo = [
        'meta_title' => __('messages.menu') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo', 'menu'));
-}
+    return view('backend.dashboard.layout', compact('template', 'seo', 'menus'));
+  }
+
   public function update($id, UpdatemenuRequest $request)
   {
       if($this->menuService->update($id, $request)) {
@@ -94,14 +102,14 @@ class MenuController extends Controller
        'meta_title' => __('messages.menu') 
     ];
     return view('backend.dashboard.layout', compact('template', 'seo','menu'));
-}
-
-public function destroy($id){
-  if($this->menuService->destroy($id)){
-    return redirect()->route('menu.index')->with('success', 'Xóa menu thành công');
   }
-  return redirect()->route('menu.index')->with('error', 'Xóa menu ko thành công');
-}
+
+  public function destroy($id){
+    if($this->menuService->destroy($id)){
+      return redirect()->route('menu.index')->with('success', 'Xóa menu thành công');
+    }
+    return redirect()->route('menu.index')->with('error', 'Xóa menu ko thành công');
+  }
 
 
 }

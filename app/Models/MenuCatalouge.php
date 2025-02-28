@@ -13,6 +13,7 @@ class MenuCatalouge extends Model
     protected $fillable = [
         'name',
         'keyword',
+        'publish'
       
     ];
 }

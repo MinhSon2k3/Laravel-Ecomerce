@@ -126,6 +126,6 @@ class BaseRepository implements BaseRepositoryInterface
         foreach($condition as $key => $val){
             $query->where($val[0],$val[1],$val[2]);
         }
-        return $query->first();
+        return $query->get();
     }
 }

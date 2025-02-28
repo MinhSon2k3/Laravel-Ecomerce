@@ -67,15 +67,40 @@
                 </div>
                 <div class="hr-line-dashed" style="margin:10px 0;"></div>
                 <div class="menu-wrapper">
+                    @if(!is_array(old('menu')) || empty(old('menu')['name']))
                     <div class="notification text-center">
-                        <h5 style="">
+                        <h5>
                             Danh sách liên kết này chưa có bất kì đường dẫn nào
                         </h5>
                         <p>
                             Hãy nhấn vào <span style="color:blue;">Thêm đường dẫn</span> để bắt đầu thêm
                         </p>
                     </div>
+                    @endif
 
+                    @php
+                    $oldMenu = old('menu', []);
+                    @endphp
+                    @if(is_array($oldMenu) && !empty($oldMenu['name']))
+                    @foreach($oldMenu['name'] as $key => $val)
+                    <div class="row mb10 menu-item">
+                        <div class="col-lg-4">
+                            <input type="text" name="menu[name][]" value="{{ $val ?? '' }}" class="form-control">
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="text" name="menu[canonical][]" value="{{ $oldMenu['canonical'][$key] ?? '' }}"
+                                class="form-control">
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="text" name="menu[order][]" value="{{ $oldMenu['order'][$key] ?? '' }}"
+                                class="form-control">
+                        </div>
+                        <div class="col-lg-2 text-center">
+                            <a href="#" class="delete-menu"><i class="fa fa-trash-o"></i></a>
+                        </div>
+                    </div>
+                    @endforeach
+                    @endif
                 </div>
             </div>
         </div>

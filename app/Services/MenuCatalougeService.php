@@ -23,7 +23,42 @@ class MenuCatalougeService  extends BaseService implements MenuCatalougeServiceI
         $this->menuCatalougeRepository=$menuCatalougeRepository;
     }
   
-
+    public function paginate($request){
+        $condition['keyword'] = addslashes($request->input('keyword'));
+        $condition['publish'] = $request->integer('publish');
+        $menuCatalouges=$this->menuCatalougeRepository->pagination(
+         $this->paginateSelect(),
+         $condition,
+         [],
+         ['path'=>'menu/index'],
+         [],
+         [],
+          10); 
+        return $menuCatalouges;
+     }
+    public function paginateSelect(){
+        return [
+            'id',
+            'name',
+            'keyword',
+            'publish'
+        ];
+    }
+    public function updateStatus($post=[]){
+        DB::beginTransaction();
+        try{
+            $payload[$post['field']] =(($post['value']==1)? 2 : 1 ) ;//nếu value=1 gán bằng  2 còn lại =1
+            $postCatalouge=$this->menuCatalougeRepository->update($post['modelId'],$payload);
+            DB::commit();
+            return true;
+        }
+        catch(\Exception $e){
+            DB::rollback(); 
+            dd($e->getMessage());
+            return false;   
+        }
+    }
+ 
     public function create($request){
         DB::beginTransaction();
         try{

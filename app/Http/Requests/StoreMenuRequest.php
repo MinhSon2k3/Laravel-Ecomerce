@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\checkMenuItem;
+use Illuminate\Validation\Rule;
 class StoreMenuRequest extends FormRequest
 {
     /**
@@ -18,7 +18,10 @@ class StoreMenuRequest extends FormRequest
     {
         return [
             'menu_catalouge_id' => 'gt:0',
-            'menu_type' => 'required',
+            'menu.name'=>[
+                'required',
+            ],
+            'type' => 'required',
 
         ];
     }
@@ -26,11 +29,9 @@ class StoreMenuRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'menu_catalouge_id.gt' => [
-                'Bạn chưa chọn vị trí menu ',
-                new checkMenuItem($id)
-            ],
-            'menu_type.required' => 'Bạn chưa chọn kiểu menu',
+            'menu_catalouge_id.gt' => 'Bạn chưa chọn vị trí menu ',
+            'menu.name.required'=>'Bạn phải tạo ít nhất 1 menu',
+            'type.required' => 'Bạn chưa chọn kiểu menu',
             'keyword.unique' => 'Nhóm menu đã tồn tại',
         ];
     }

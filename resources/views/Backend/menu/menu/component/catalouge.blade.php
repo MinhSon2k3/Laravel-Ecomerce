@@ -38,7 +38,7 @@
                             @endif
                         </div>
                         <div class="col-lg-6 ">
-                            <select class="setupSelect2 form-control" name="menu_type" id="">
+                            <select class="setupSelect2 form-control" name="type" id="">
                                 <option value="">Chọn kiểu menu</option>
                                 @foreach(__('module.type') as $key => $val)
                                 <option value="{{$key}}">{{$val}}</option>
