@@ -16,52 +16,67 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
+    /**
+     * Lấy danh sách dữ liệu theo điều kiện với phân trang.
+     */
     public function pagination(
-       array $column=['*'],
-       array $condition=[],
-       array $join=[],
-       array $extend=[],
-       array $relations=[],
-       array $orderBy=[],
-       int $perpage=5,
-        ){
+       array $column=['*'], // Cột cần lấy
+       array $condition=[], // Điều kiện lọc
+       array $join=[], // Các bảng cần join
+       array $extend=[], // Tham số mở rộng
+       array $relations=[], // Các quan hệ cần load
+       array $orderBy=[], // Điều kiện sắp xếp
+       int $perpage=5, // Số lượng bản ghi trên mỗi trang
+    ){
        $query = $this->model->select($column)->where(function($query) use ($condition){
         if(isset($condition['keyword']) && !empty($condition['keyword'])){
-            $query->where('name','LIKE','%'.$condition['keyword'].'%');
+            $query->where('name','LIKE','%'.$condition['keyword'].'%'); // Lọc theo keyword
         }
         if(isset($condition['publish']) && $condition['publish']!=0){
-              
-            $query->where('publish','=',$condition['publish']);
+            $query->where('publish','=',$condition['publish']); // Lọc theo trạng thái publish
         }
         return $query;
        });
-       if(isset($join) && is_array($join) && count($join)){
+
+       if(!empty($join)){
         foreach($join as $key =>$val){
-            $query->join($val[0],$val[1],$val[2],$val[3]);
+            $query->join($val[0],$val[1],$val[2],$val[3]); // Thực hiện join bảng
         }
        }
-       if(isset($relations) && !empty($relations)){
+
+       if(!empty($relations)){
         foreach($relations as $relation){
-            $query->withCount($relation);
+            $query->withCount($relation); // Đếm số bản ghi liên quan
         }
        }   
-       if(isset($orderBy) && !empty($orderBy)){
-            $query->orderBy($orderBy[0],$orderBy[1]);
+
+       if(!empty($orderBy)){
+            $query->orderBy($orderBy[0],$orderBy[1]); // Thực hiện sắp xếp
        }
+
        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
-       //withQueryString Bảo toàn các tham số query string trên URL trong quá trình phân trang (ví dụ: từ khóa tìm kiếm).
-       //withPath Tùy chỉnh đường dẫn cho phân trang bằng cách ghép APP_URL và đường dẫn được cung cấp trong $extend['path'].
+       // Bảo toàn các tham số query string trên URL khi phân trang
+       // Tùy chỉnh đường dẫn phân trang
     }
 
+    /**
+     * Tạo mới một bản ghi.
+     */
     public function create(array $payload =[]){
-        $model=$this->model->create($payload);
-        return $model->fresh();
+        $model = $this->model->create($payload);
+        return $model->fresh(); // Lấy lại dữ liệu sau khi tạo
     }
 
+    /**
+     * Chèn nhiều bản ghi một lúc.
+     */
     public function createBatch(array $payload=[]){
         return $this->model->insert($payload);
     }
 
+    /**
+     * Cập nhật bản ghi theo ID.
+     */
     public function update(int $id = 0, array $payload = []){
         $model = $this->model->find($id);
         if ($model) {
@@ -69,63 +84,88 @@ class BaseRepository implements BaseRepositoryInterface
             return $model;
         }
 
-        return $model->update($payload); // or handle the case when model is not found
+        return null; // Trả về null nếu không tìm thấy bản ghi
     }
 
-    public function updateOrInsert(array $condition = [], array $payload = [])
-    {
+    /**
+     * Cập nhật hoặc chèn mới nếu chưa có.
+     */
+    public function updateOrInsert(array $condition = [], array $payload = []){
         return $this->model->updateOrInsert($condition, $payload);
     }
-    
 
+    /**
+     * Cập nhật nhiều bản ghi có giá trị trong danh sách chỉ định.
+     */
     public function updateByWhereIn(string $whereInField='',array $whereIn=[],array $payload = []){
-        $this->model->whereIn($whereInField,$whereIn)->update($payload);//UPDATE model SET publish[0]=publish[1] WHERE $whereInField IN ($whereIn);
-
+        $this->model->whereIn($whereInField,$whereIn)->update($payload);
     }
 
+    /**
+     * Xóa bản ghi theo ID.
+     */
     public function destroy(int $id = 0){
-       return  $model = $this->model->find($id)->delete();
+        return $this->model->find($id)?->delete();
     }
 
-    public function all(array $relation = [])
-    {
+    /**
+     * Lấy tất cả bản ghi, có thể kèm theo quan hệ.
+     */
+    public function all(array $relation = []){
         return $this->model->with($relation)->get();
     }
-    
 
+    /**
+     * Tìm kiếm bản ghi theo ID, có thể kèm theo quan hệ và chọn cột cụ thể.
+     */
     public function findById(int $modelId, array $column = ['*'], array $relation = []){
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
-       /* Lấy một model ($this->model).
-        Chọn các cột được chỉ định ($column).
-        Nạp các quan hệ được chỉ định ($relation).
-        Tìm kiếm và trả về một bản ghi với ID là $modelId.*/
     }
 
-    public function createTranslatePivot($model,array $payload=[]){
-   
-        return $model->languages()->attach($model->id,$payload);
-        //Phương thức attach() được sử dụng để thêm một bản ghi mới vào bảng trung gian
+    /**
+     * Tạo bản ghi trong bảng trung gian (pivot) cho quan hệ đa ngôn ngữ.
+     */
+    public function createTranslatePivot($model, array $payload=[]){
+        return $model->languages()->attach($model->id, $payload);
     }
 
-    public function createPivot($model,array $payload=[], string $relation=''){
-   
-        return $model->{$relation}()->attach($model->id,$payload);
-        //Phương thức attach() được sử dụng để thêm một bản ghi mới vào bảng trung gian
+    /**
+     * Tạo bản ghi trong bảng trung gian cho quan hệ nhiều-nhiều.
+     */
+    public function createPivot($model, array $payload=[], string $relation=''){
+        return $model->{$relation}()->attach($model->id, $payload);
     }
-    
-    public function updateByWhere($condition=[],array $payload=[]){
-        $query=$this->model->newQuery();
+
+    /**
+     * Cập nhật nhiều bản ghi dựa trên điều kiện.
+     */
+    public function updateByWhere(array $condition=[], array $payload=[]){
+        $query = $this->model->newQuery();
         foreach($condition as $key => $val){
-            $query->where($val[0],$val[1],$val[2]);
+            $query->where($val[0], $val[1], $val[2]);
         }
         return $query->update($payload);
     }
 
-    public function findByCondition($condition=[]){
-        $query=$this->model->newQuery(); 
+    /**
+     * Tìm bản ghi đầu tiên khớp với điều kiện.
+     */
+    public function findByCondition(array $condition=[]){
+        $query = $this->model->newQuery(); 
         foreach($condition as $key => $val){
-            $query->where($val[0],$val[1],$val[2]);
+            $query->where($val[0], $val[1], $val[2]);
         }
-        return $query->get();
+        return $query->first();
+    }
+
+    /**
+     * Tìm bản ghi theo điều kiện, kèm theo quan hệ.
+     */
+    public function findByConditionAndRelation(array $condition=[], array $relation=[]){
+        $query = $this->model->newQuery(); 
+        foreach($condition as $key => $val){
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        return $query->with($relation)->get();
     }
 }

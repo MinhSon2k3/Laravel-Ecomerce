@@ -174,9 +174,12 @@ Route::group(['prefix' => 'menu'], function () {
     Route::get('create', [MenuController::class, 'create'])->name('menu.create');
     Route::post('store', [MenuController::class, 'store'])->name('menu.store');
     Route::get('{id}/edit', [MenuController::class, 'edit'])->name('menu.edit');
+    Route::get('{id}/children', [MenuController::class, 'children'])->name('menu.children');
+    Route::post('{id}/saveChildren', [MenuController::class, 'saveChildren'])->name('menu.save.children');
     Route::post('{id}/update', [MenuController::class, 'update'])->name('menu.update');
     Route::get('{id}/delete', [MenuController::class, 'delete'])->name('menu.delete');
     Route::post('{id}/destroy', [MenuController::class, 'destroy'])->name('menu.destroy');
+    
 });
 
 //@@new-module@@

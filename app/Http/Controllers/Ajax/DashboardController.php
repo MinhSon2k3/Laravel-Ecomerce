@@ -102,7 +102,7 @@ class DashboardController extends Controller
         $arguments['extend'] ?? [],
         $arguments['relation'] ?? [],
         $arguments['orderBy'] ?? [],
-        $arguments['perpage'] ?? 5
+        $arguments['perpage'] ?? 10
     );
 
     return response()->json([
@@ -144,7 +144,7 @@ class DashboardController extends Controller
             ],
             'relation' => [],
             'orderBy' => [$model . 's.id', 'DESC'],
-            'perpage' => 5
+            'perpage' => 10
         ];
     }
     

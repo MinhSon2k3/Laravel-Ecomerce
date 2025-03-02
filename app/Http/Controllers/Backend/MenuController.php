@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Http\Requests\StoreMenuRequest;
+use App\Http\Requests\StoreMenuChildrenRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Services\Interfaces\MenuServiceInterface as MenuService;
 use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
@@ -72,10 +73,9 @@ class MenuController extends Controller
   //edit
   public function edit($id){
     $this->authorize('modules','menu.edit');
-    $menus = $this->menuRepository->findByCondition([
-      ['menu_catalouge_id','=',$id]
-    ]);
-    dd($menus);
+    $menus = $this->menuRepository->findByConditionAndRelation([
+      ['menu_catalouge_id','=',$id],
+    ],['languages']);
     $template = 'backend.menu.menu.edit';
     $seo = [
        'meta_title' => __('messages.menu') 
@@ -83,16 +83,24 @@ class MenuController extends Controller
     return view('backend.dashboard.layout', compact('template', 'seo', 'menus'));
   }
 
-  public function update($id, UpdatemenuRequest $request)
-  {
-      if($this->menuService->update($id, $request)) {
-          // Thông báo thành công
-          return redirect()->route('menu.index')->with('success', 'Chỉnh sửa menu thành công');
-      }
-      // Thông báo lỗi
-      return redirect()->route('menu.index')->with('error', 'Chỉnh sửa menu không thành công');
+  public function children($id){
+    $this->authorize('modules','menu.create');
+    $menu=$this->menuRepository->findById($id,['*'],['languages']);
+    $template = 'backend.menu.menu.children';
+    $seo = [
+     'meta_title' => __('messages.menu') 
+    ];
+    return view('backend.dashboard.layout', compact('template', 'seo','menu'));
   }
 
+  public function saveChildren(StoreMenuChildrenRequest $request,$id){
+    $menu=$this->menuRepository->findById($id);
+    if($this->menuService->create($request,$this->language,$menu)){
+      return redirect()->route('menu.index')->with('success', 'Thêm mới thành công');
+    }
+    return redirect()->route('menu.index')->with('error', 'Thêm mới ko thành công');
+
+  }
 
   public function delete($id){
     $this->authorize('modules','menu.delete');

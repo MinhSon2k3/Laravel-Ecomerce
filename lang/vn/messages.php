@@ -185,7 +185,8 @@ return [
             'table' => 'Danh sách menu'
         ],
         'create' => [
-            'title' => 'Thêm mới menu'
+            'title' => 'Thêm mới menu',
+            'children' => 'Cập nhật menu con cho mục'
         ],
         'edit' => [
             'title' => 'Cập nhật menu'

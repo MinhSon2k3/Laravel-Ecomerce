@@ -1,0 +1,21 @@
+@include('backend.dashboard.component.breadcrumb',['title'=>$seo['meta_title']['create']['children'].'
+'.$menu->languages->first()->pivot->name])
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+<form action="{{route('menu.save.children',['id' => $menu->id])}}" method="post" class="box">
+    @csrf
+    <div class="wrapper wrapper-content aminated fadeInRight">
+        @include('backend.menu.menu.component.list')
+        <div class="text-right">
+            <button class="btn btn-primary" type="submit" name="send" value="">Lưu lại</button>
+        </div>
+    </div>
+</form>
+@include('backend.menu.menu.component.popup')

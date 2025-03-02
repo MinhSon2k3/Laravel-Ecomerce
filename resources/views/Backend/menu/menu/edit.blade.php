@@ -30,11 +30,16 @@
                         @if(count($menus))
                         <ol class="dd-list">
                             @foreach($menus as $key => $val)
+                            @php
+                            $languageMenu=$val->languages->first();
+                            @endphp
                             <li class="dd-item" data-id="{{$val->id}}">
                                 <div class="dd-handle">
-                                    <span class="label label-info"><i class="fa fa-users"></i></span> Cras ornare
-                                    tristique.
+                                    <span class="label label-info"><i class="fa fa-users"></i></span>
+                                    {{$languageMenu->pivot->name}}
                                 </div>
+                                <a class="create-children-menu" href="{{route('menu.children',$val->id)}}">Quản lý menu
+                                    con</a>
                                 <ol class="dd-list">
                                     <li class="dd-item" data-id="2">
                                         <div class="dd-handle">

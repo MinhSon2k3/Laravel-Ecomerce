@@ -37,5 +37,13 @@ class Language extends Model
         )->withTimestamps();
     }
 
+    public function menus(){
+        return $this->belongsToMany(PostCatalouge::class, 'post_catalouge_languages' , 'language_id', 'menu_id')
+        ->withPivot(
+            'name',
+            'canonical'
+        )->withTimestamps();
+    }
+
    
 }

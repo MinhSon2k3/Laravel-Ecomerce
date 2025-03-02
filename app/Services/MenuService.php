@@ -37,18 +37,20 @@ public function paginate($request){
      return ['id','email','name','phone','address','publish','user_catalouge_id'];    
  }
 
- public function create($request,$languageId){
+ public function create($request, $languageId, $menu=null){
     DB::beginTransaction();
     try{
         $payload=$request->only('menu','menu_catalouge_id','type');
         if(count($payload['menu']['name'])){
             foreach($payload['menu']['name'] as $key =>$val){
                 $menuArray=[
-                    'menu_catalouge_id' => $payload['menu_catalouge_id'],
-                    'type' => $payload['type'],
+                    'menu_catalouge_id' => (isset($payload['menu_catalouge_id'])) ? $payload['menu_catalouge_id'] : $menu->menu_catalouge_id ,
+                    'parent_id'=>(is_null($menu)) ? 0 : $menu->id,
+                    'type' => (is_null($menu)) ? $payload['type'] : '',
                     'order' => $payload['menu']['order'][$key],
-                    'user_id' => Auth::id() // Thêm user_id vào đây
+                    'user_id' => Auth::id()
                 ];  
+                dd($menuArray);
                 $menu=$this->menuRepository->create($menuArray);
                 if (!empty($menu)) {
 
