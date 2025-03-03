@@ -37,20 +37,18 @@ public function paginate($request){
      return ['id','email','name','phone','address','publish','user_catalouge_id'];    
  }
 
- public function create($request, $languageId, $menu=null){
+ public function create($request, $languageId){
     DB::beginTransaction();
     try{
         $payload=$request->only('menu','menu_catalouge_id','type');
         if(count($payload['menu']['name'])){
             foreach($payload['menu']['name'] as $key =>$val){
                 $menuArray=[
-                    'menu_catalouge_id' => (isset($payload['menu_catalouge_id'])) ? $payload['menu_catalouge_id'] : $menu->menu_catalouge_id ,
-                    'parent_id'=>(is_null($menu)) ? 0 : $menu->id,
-                    'type' => (is_null($menu)) ? $payload['type'] : '',
+                    'menu_catalouge_id' => $payload['menu_catalouge_id'] ,
+                    'type' => $payload['type'],
                     'order' => $payload['menu']['order'][$key],
                     'user_id' => Auth::id()
                 ];  
-                dd($menuArray);
                 $menu=$this->menuRepository->create($menuArray);
                 if (!empty($menu)) {
 
@@ -77,5 +75,73 @@ public function paginate($request){
         return false;
     }
  }
+
+ public function saveChildren($request, $languageId, $menu){
+    DB::beginTransaction();
+    try{
+        $payload=$request->only('menu');
+        if(count($payload['menu']['name'])){
+            foreach($payload['menu']['name'] as $key =>$val){
+
+                $menuId=$payload['menu']['id'][$key]; 
+                $menuArray=[
+                    'menu_catalouge_id' =>$menu->menu_catalouge_id,
+                    'parent_id'=>$menu->id,
+                    'order' => $payload['menu']['order'][$key],
+                    'user_id' => Auth::id()
+                ];
+                if($menuId==0){
+                    $menuSave=$this->menuRepository->create($menuArray);
+                }
+                else{
+                    $menuSave=$this->menuRepository->update($menuId,$menuArray);
+                }
+
+                if (!empty($menuSave)) {
+                    $menuSave->languages()->detach([$languageId,$menu->id]);
+                    $payloadLanguage=[
+                        'language_id'=>$languageId,
+                        'name'=>$val,
+                        'canonical'=>$payload['menu']['canonical'][$key]
+                    ];
+                    $this->menuRepository->createPivot($menuSave,$payloadLanguage,'languages');
+                }
+            }
+            $this->nestedsetbie->Get('level ASC,order ASC');
+            $this->nestedsetbie->Recursive(0,$this->nestedsetbie->Set());
+            $this->nestedsetbie->Action();
+        }
+
+        DB::commit();
+        return true;
+    }
+    catch(\Exception $e){
+        DB::rollback();
+        dd($e->getMessage());
+        return false;
+    }
+ }
+
+ public function convertMenu($menu = null): array {
+    $menuList = $this->menuRepository->findByConditionAndRelation([
+        ['parent_id','=',$menu->id],
+        ],['languages']);
+    $temp = [];
+    $fields = ['name', 'canonical', 'order', 'id'];
+    if (count($menuList)) {
+        foreach ($menuList as $key => $val) {
+            foreach ($fields as $field) {
+                if ($field == 'name' || $field == 'canonical') {
+                    $temp[$field][] = $val->languages->first()->pivot->{$field};
+                } else {
+                    $temp[$field][] = $val->{$field};
+                }
+            }
+        }
+    }
+
+    return $temp;
+}
+
 
 }

@@ -76,6 +76,7 @@ class MenuController extends Controller
     $menus = $this->menuRepository->findByConditionAndRelation([
       ['menu_catalouge_id','=',$id],
     ],['languages']);
+    $a=recursive($menus);
     $template = 'backend.menu.menu.edit';
     $seo = [
        'meta_title' => __('messages.menu') 
@@ -86,19 +87,20 @@ class MenuController extends Controller
   public function children($id){
     $this->authorize('modules','menu.create');
     $menu=$this->menuRepository->findById($id,['*'],['languages']);
+    $menuList=$this->menuService->convertMenu($menu);
     $template = 'backend.menu.menu.children';
     $seo = [
      'meta_title' => __('messages.menu') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo','menu'));
+    return view('backend.dashboard.layout', compact('template', 'seo','menu','menuList'));
   }
 
   public function saveChildren(StoreMenuChildrenRequest $request,$id){
     $menu=$this->menuRepository->findById($id);
-    if($this->menuService->create($request,$this->language,$menu)){
-      return redirect()->route('menu.index')->with('success', 'Thêm mới thành công');
+    if($this->menuService->saveChildren($request,$this->language,$menu)){
+      return redirect()->route('menu.edit',['id'=>$menu->menu_catalouge_id])->with('success', 'Thêm mới thành công');
     }
-    return redirect()->route('menu.index')->with('error', 'Thêm mới ko thành công');
+    return redirect()->route('menu.edit',['id'=>$menu->menu_catalouge_id])->with('error', 'Thêm mới ko thành công');
 
   }
 

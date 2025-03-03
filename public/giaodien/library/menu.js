@@ -65,12 +65,14 @@
     HT.menuRowHtml = (option = {}) => {
         let canonical = option.canonical || "";
         let name = option.name || "";
+        let id = option.id || "";
         let $row = $(`
             <div class="row mb10 menu-item ${canonical}">
                 <div class="col-lg-4"><input type="text" name="menu[name][]" value="${name}" class="form-control"></div>
                 <div class="col-lg-4"><input type="text" name="menu[canonical][]" value="${canonical}" class="form-control"></div>
                 <div class="col-lg-2"><input type="text" name="menu[order][]" value="0" class="form-control"></div>
                 <div class="col-lg-2 text-center">
+                    <input class="hidden" name="menu[id][]" value="${id}" >
                     <a href="#" class="delete-menu"><i class="fa fa-trash-o"></i></a>
                 </div>
             </div>

@@ -67,7 +67,10 @@
                 </div>
                 <div class="hr-line-dashed" style="margin:10px 0;"></div>
                 <div class="menu-wrapper">
-                    @if(!is_array(old('menu')) || empty(old('menu')['name']))
+                    @php
+                    $oldMenu = old('menu',($menuList) ?? null);
+                    @endphp
+                    @if(!is_array($oldMenu) || empty($oldMenu))
                     <div class="notification text-center">
                         <h5>
                             Danh sách liên kết này chưa có bất kì đường dẫn nào
@@ -77,10 +80,6 @@
                         </p>
                     </div>
                     @endif
-
-                    @php
-                    $oldMenu = old('menu', []);
-                    @endphp
                     @if(is_array($oldMenu) && !empty($oldMenu['name']))
                     @foreach($oldMenu['name'] as $key => $val)
                     <div class="row mb10 menu-item">
@@ -97,6 +96,8 @@
                         </div>
                         <div class="col-lg-2 text-center">
                             <a href="#" class="delete-menu"><i class="fa fa-trash-o"></i></a>
+                            <input type="text" class="hidden" name="menu[id][]"
+                                value="{{ $oldMenu['id'][$key] ?? '' }}">
                         </div>
                     </div>
                     @endforeach
