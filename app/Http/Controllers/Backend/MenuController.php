@@ -116,7 +116,7 @@ class MenuController extends Controller
 
   public function destroy($id){
     if($this->menuService->destroy($id)){
-      return redirect()->route('menu.index')->with('success', 'Xóa menu thành công');
+    return redirect()->route('menu.index')->with('success', 'Xóa menu thành công');
     }
     return redirect()->route('menu.index')->with('error', 'Xóa menu ko thành công');
   }
