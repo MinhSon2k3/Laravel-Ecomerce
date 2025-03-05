@@ -21,8 +21,6 @@ class StoreMenuRequest extends FormRequest
             'menu.name'=>[
                 'required',
             ],
-            'type' => 'required',
-
         ];
     }
     
@@ -31,7 +29,6 @@ class StoreMenuRequest extends FormRequest
         return [
             'menu_catalouge_id.gt' => 'Bạn chưa chọn vị trí menu ',
             'menu.name.required'=>'Bạn phải tạo ít nhất 1 menu',
-            'type.required' => 'Bạn chưa chọn kiểu menu',
             'keyword.unique' => 'Nhóm menu đã tồn tại',
         ];
     }

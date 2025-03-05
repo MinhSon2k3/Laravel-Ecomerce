@@ -64,7 +64,7 @@ class MenuController extends Controller
 
   //Khi nhấn vào submit create
   public  function store(StoreMenuRequest $request ){ //StoremenuRequest validate các menu cần create
-    if($this->menuService->create($request,$this->language)){
+    if($this->menuService->save($request,$this->language)){
       return redirect()->route('menu.index')->with('success', 'Thêm mới thành công');
     }
     return redirect()->route('menu.index')->with('error', 'Thêm mới ko thành công');
@@ -73,21 +73,35 @@ class MenuController extends Controller
   //edit
   public function edit($id){
     $this->authorize('modules','menu.edit');
+    $menuCatalouge=$this->menuCatalougeRepository->findById($id);
     $menus = $this->menuRepository->findByConditionAndRelation([
       ['menu_catalouge_id','=',$id],
-    ],['languages']);
-    $a=recursive($menus);
+    ],['languages'],['order','DESC']);
     $template = 'backend.menu.menu.edit';
     $seo = [
        'meta_title' => __('messages.menu') 
     ];
-    return view('backend.dashboard.layout', compact('template', 'seo', 'menus'));
+    return view('backend.dashboard.layout', compact('template', 'seo', 'menus','id','menuCatalouge'));
+  }
+
+  public function editMenu($id){
+    $menuCatalouges=$this->menuCatalougeRepository->all();
+    $menuCatalouge=$this->menuCatalougeRepository->findById($id);
+    $menus = $this->menuRepository->findByConditionAndRelation([
+      ['menu_catalouge_id','=',$id],['parent_id','=',0]
+    ],['languages'],['order','DESC']);
+    $menuList=$this->menuService->convertMenu($menus);
+    $template = 'backend.menu.menu.update';
+    $seo = [
+      'meta_title' => __('messages.menu') 
+     ];
+     return view('backend.dashboard.layout', compact('template', 'seo','menuCatalouge','menuList','menuCatalouges'));
   }
 
   public function children($id){
     $this->authorize('modules','menu.create');
     $menu=$this->menuRepository->findById($id,['*'],['languages']);
-    $menuList=$this->menuService->convertMenu($menu);
+    $menuList=$this->menuService->getAndconvertMenu($menu);
     $template = 'backend.menu.menu.children';
     $seo = [
      'meta_title' => __('messages.menu') 

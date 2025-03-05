@@ -19,13 +19,14 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between col-lg-6">
-                        <h5>Menu Chính</h5>
+                        <h5>{{$menuCatalouge->name}}</h5>
                     </div>
                     <div>
-                        <a href="" class="custom-button col-lg-6">Cập nhật Menu</a>
+                        <a href=" {{route('menu.editMenu',['id'=>$id])}}" class="btn btn-primary ml200">Cập nhật
+                            Menu Cấp 1</a>
                     </div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content" id="dataCatalouge" data-catalougeId="{{$id}}">
                     @php
                     $menus=recursive($menus);
                     $menuString=recursive_menu($menus);

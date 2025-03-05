@@ -60,20 +60,42 @@ class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
+     * Lấy tất cả bản ghi, có thể kèm theo quan hệ.
+     */
+    public function all(array $relation = []){
+        return $this->model->with($relation)->get();
+    }
+
+
+    /**
      * Tạo mới một bản ghi.
      */
     public function create(array $payload =[]){
         $model = $this->model->create($payload);
         return $model->fresh(); // Lấy lại dữ liệu sau khi tạo
     }
-
     /**
      * Chèn nhiều bản ghi một lúc.
      */
     public function createBatch(array $payload=[]){
         return $this->model->insert($payload);
     }
+    /**
+     * Tạo bản ghi trong bảng trung gian (pivot) cho quan hệ đa ngôn ngữ.
+     */
+    public function createTranslatePivot($model, array $payload=[]){
+        return $model->languages()->attach($model->id, $payload);
+    }
+    /**
+     * Tạo bản ghi trong bảng trung gian cho quan hệ nhiều-nhiều.
+     */
+    public function createPivot($model, array $payload=[], string $relation=''){
+        return $model->{$relation}()->attach($model->id, $payload);
+    }
 
+    public function destroy(int $id = 0){
+        return $this->model->find($id)?->delete();
+    }
     /**
      * Cập nhật bản ghi theo ID.
      */
@@ -83,7 +105,6 @@ class BaseRepository implements BaseRepositoryInterface
             $model->update($payload);
             return $model;
         }
-
         return null; // Trả về null nếu không tìm thấy bản ghi
     }
 
@@ -102,41 +123,6 @@ class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Xóa bản ghi theo ID.
-     */
-    public function destroy(int $id = 0){
-        return $this->model->find($id)?->delete();
-    }
-
-    /**
-     * Lấy tất cả bản ghi, có thể kèm theo quan hệ.
-     */
-    public function all(array $relation = []){
-        return $this->model->with($relation)->get();
-    }
-
-    /**
-     * Tìm kiếm bản ghi theo ID, có thể kèm theo quan hệ và chọn cột cụ thể.
-     */
-    public function findById(int $modelId, array $column = ['*'], array $relation = []){
-        return $this->model->select($column)->with($relation)->findOrFail($modelId);
-    }
-
-    /**
-     * Tạo bản ghi trong bảng trung gian (pivot) cho quan hệ đa ngôn ngữ.
-     */
-    public function createTranslatePivot($model, array $payload=[]){
-        return $model->languages()->attach($model->id, $payload);
-    }
-
-    /**
-     * Tạo bản ghi trong bảng trung gian cho quan hệ nhiều-nhiều.
-     */
-    public function createPivot($model, array $payload=[], string $relation=''){
-        return $model->{$relation}()->attach($model->id, $payload);
-    }
-
-    /**
      * Cập nhật nhiều bản ghi dựa trên điều kiện.
      */
     public function updateByWhere(array $condition=[], array $payload=[]){
@@ -147,6 +133,12 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->update($payload);
     }
 
+    /**
+     * Tìm kiếm bản ghi theo ID, có thể kèm theo quan hệ và chọn cột cụ thể.
+     */
+    public function findById(int $modelId, array $column = ['*'], array $relation = []){
+        return $this->model->select($column)->with($relation)->findOrFail($modelId);
+    }
     /**
      * Tìm bản ghi đầu tiên khớp với điều kiện.
      */
@@ -161,11 +153,27 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Tìm bản ghi theo điều kiện, kèm theo quan hệ.
      */
-    public function findByConditionAndRelation(array $condition=[], array $relation=[]){
+    public function findByConditionAndRelation(array $condition = [], array $relation = [], array $orderBy = ['id', 'desc']) {
         $query = $this->model->newQuery(); 
-        foreach($condition as $key => $val){
-            $query->where($val[0], $val[1], $val[2]);
+        
+        // Kiểm tra điều kiện trước khi thêm vào query
+        foreach ($condition as $val) {
+            if (is_array($val) && count($val) === 3) {
+                $query->where($val[0], $val[1], $val[2]);
+            }
         }
-        return $query->with($relation)->get();
+    
+        // Kiểm tra nếu có quan hệ thì mới gọi with()
+        if (!empty($relation)) {
+            $query->with($relation);
+        }
+    
+        // Kiểm tra thứ tự sắp xếp hợp lệ trước khi gọi orderBy()
+        if (count($orderBy) === 2 && is_string($orderBy[0]) && in_array(strtolower($orderBy[1]), ['asc', 'desc'])) {
+            $query->orderBy($orderBy[0], $orderBy[1]);
+        }
+    
+        return $query->get();
     }
+    
 }

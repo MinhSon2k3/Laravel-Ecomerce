@@ -44,6 +44,7 @@ Route::prefix('ajax')->group(function () {
     Route::get('attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
     Route::get('attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
     Route::post('menu/createCatalouge', [AjaxMenuController::class, 'createCatalouge'])->name('ajax.menu.createCatalouge');
+    Route::post('menu/drag', [AjaxMenuController::class, 'drag'])->name('ajax.menu.drag');
 });
 
 // Manage user
@@ -174,6 +175,7 @@ Route::group(['prefix' => 'menu'], function () {
     Route::get('create', [MenuController::class, 'create'])->name('menu.create');
     Route::post('store', [MenuController::class, 'store'])->name('menu.store');
     Route::get('{id}/edit', [MenuController::class, 'edit'])->name('menu.edit');
+    Route::get('{id}/editMenu', [MenuController::class, 'editMenu'])->name('menu.editMenu');
     Route::get('{id}/children', [MenuController::class, 'children'])->name('menu.children');
     Route::post('{id}/saveChildren', [MenuController::class, 'saveChildren'])->name('menu.save.children');
     Route::post('{id}/update', [MenuController::class, 'update'])->name('menu.update');

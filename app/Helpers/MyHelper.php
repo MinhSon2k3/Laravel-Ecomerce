@@ -133,7 +133,6 @@ if (!function_exists('recursive_menu')) {
                 $html .= "<span class='label label-info'><i class='fa fa-arrows'></i></span> $itemName";
                 $html .= "</div>";
                 $html .= "<a class='create-children-menu' href='$itemUrl'> Quản lý menu con </a>";
-                $html .= "</li>";
 
                 // Nếu có menu con, gọi đệ quy để tiếp tục tạo danh sách con
                 if (count($val['children'])) {
@@ -141,6 +140,7 @@ if (!function_exists('recursive_menu')) {
                     $html .= recursive_menu($val['children']);
                     $html .= "</ol>";
                 }
+                $html .= "</li>";
             }
         }
         return $html;

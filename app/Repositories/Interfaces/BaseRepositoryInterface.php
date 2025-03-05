@@ -36,7 +36,7 @@ interface BaseRepositoryInterface
 
     public function createPivot($model,array $payload=[],string $relation='');
 
-    public function findByConditionAndRelation(array $condition=[], array $relation=[]);
+    public function findByConditionAndRelation(array $condition=[], array $relation=[],array $orderBy = []);
       
 
 }

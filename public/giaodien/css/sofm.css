@@ -138,6 +138,10 @@
   margin-left: 30px;
 }
 
+.ml200 {
+  margin-left: 200px;
+}
+
 .ml5 {
   margin-left: 5px;
 }
@@ -308,4 +312,8 @@
 .dd-handle {
   position: relative;
   padding-right: 125px !important;
+}
+
+#nestable2 .dd-item>button {
+  z-index: 999;
 }
